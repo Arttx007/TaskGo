@@ -1,0 +1,778 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login</title>
+    <meta property="og:title" content="Login - Jumpy Celebrated Ferret" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <style data-tag="reset-style-sheet">
+      html {  line-height: 1.15;}body {  margin: 0;}* {  box-sizing: border-box;  border-width: 0;  border-style: solid;  -webkit-font-smoothing: antialiased;}p,li,ul,pre,div,h1,h2,h3,h4,h5,h6,figure,blockquote,figcaption {  margin: 0;  padding: 0;}button {  background-color: transparent;}button,input,optgroup,select,textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}button,select {  text-transform: none;}button,[type="button"],[type="reset"],[type="submit"] {  -webkit-appearance: button;  color: inherit;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}button:-moz-focus,[type="button"]:-moz-focus,[type="reset"]:-moz-focus,[type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}a {  color: inherit;  text-decoration: inherit;}pre {  white-space: normal;}input {  padding: 2px 4px;}img {  display: block;}details {  display: block;  margin: 0;  padding: 0;}summary::-webkit-details-marker {  display: none;}[data-thq="accordion"] [data-thq="accordion-content"] {  max-height: 0;  overflow: hidden;  transition: max-height 0.3s ease-in-out;  padding: 0;}[data-thq="accordion"] details[data-thq="accordion-trigger"][open] + [data-thq="accordion-content"] {  max-height: 1000vh;}details[data-thq="accordion-trigger"][open] summary [data-thq="accordion-icon"] {  transform: rotate(180deg);}html { scroll-behavior: smooth  }
+    </style>
+    <style data-tag="default-style-sheet">
+      html {
+        font-family: Lato;
+        font-size: 1rem;
+      }
+
+      body {
+        font-weight: 400;
+        font-style:normal;
+        text-decoration: undefined;
+        text-transform: undefined;
+        letter-spacing: 0.02em;
+        line-height: 1.6;
+        color: var(--color-on-surface);
+        background: var(--color-surface);
+
+        fill: var(--color-on-surface);
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/animate.css@4.1.1/animate.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css"
+    />
+  </head>
+  <body>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <div>
+      <link href="../assets/css/login.css" rel="stylesheet" />
+
+      <div class="login-container1">
+        <navigation-wrapper class="navigation-wrapper">
+          <div class="navigation-container1">
+            <nav class="navigation-wrapper">
+              <div class="navigation-container">
+                <div class="navigation-main-content">
+                  <a href="../index.html">
+                    <div aria-label="TaskGO Home" class="navigation-logo-link">
+                      <span class="navigation-brand section-title">
+                        TaskGO
+                      </span>
+                    </div>
+                  </a>
+                  <div class="navigation-desktop-menu">
+                    <ul class="navigation-links-list">
+                      <li class="navigation-item">
+                        <a href="../index.html">
+                          <div class="navigation-link"><span>Inicio</span></div>
+                        </a>
+                      </li>
+                      <li class="navigation-item">
+                        <a href="../index.html">
+                          <div class="navigation-link">
+                            <span>Como Funciona</span>
+                          </div>
+                        </a>
+                      </li>
+                      <li class="navigation-item">
+                        <a href="../index.html">
+                          <div class="navigation-link">
+                            <span>Servicos</span>
+                          </div>
+                        </a>
+                      </li>
+                      <li class="navigation-item">
+                        <a href="profissionais-prximos.html"><div class="navigation-link"><span>Para Profissionais</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <aside class="navigation-sidebar">
+                  <div class="navigation-actions">
+                    <a href="login.html"><div class="navigation-auth-btn btn btn-outline btn-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"
+                          ></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Entrar</span>
+                      </div>
+                    </a>
+                    <a href="profissionais-prximos.html"><div class="navigation-cta-btn btn btn-sm btn-primary">
+                        <span>Contratar</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M5 12h14m-7-7l7 7l-7 7"></path>
+                        </svg>
+                      </div>
+                    </a>
+                  </div>
+                  <button
+                    id="navigation-mobile-toggle"
+                    aria-expanded="false"
+                    aria-controls="navigation-mobile-overlay"
+                    aria-label="Abrir menu"
+                    class="navigation-toggle-btn"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                  </button>
+                </aside>
+              </div>
+            </nav>
+            <div
+              id="navigation-mobile-overlay"
+              class="navigation-mobile-overlay"
+            >
+              <div class="navigation-overlay-header">
+                <a href="../index.html">
+                  <div class="navigation-logo-link">
+                    <span class="navigation-brand section-title">TaskGO</span>
+                  </div>
+                </a>
+                <button
+                  id="navigation-mobile-close"
+                  aria-label="Fechar menu"
+                  class="navigation-close-btn"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M18 6L6 18M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="navigation-overlay-content">
+                <ul class="navigation-mobile-links">
+                  <li class="navigation-mobile-item">
+                    <a href="../index.html">
+                      <div class="navigation-mobile-link">
+                        <span>Inicio</span>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="navigation-mobile-item">
+                    <a href="../index.html">
+                      <div class="navigation-mobile-link">
+                        <span>Como Funciona</span>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="navigation-mobile-item">
+                    <a href="../index.html">
+                      <div class="navigation-mobile-link">
+                        <span>Servicos</span>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="navigation-mobile-item">
+                    <a href="profissionais-prximos.html"><div class="navigation-mobile-link"><span>Para Profissionais</span>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <div class="navigation-mobile-footer">
+                  <a href="profissionais-prximos.html"><div class="navigation-mobile-cta btn btn-primary btn-lg">
+                      <span>Comear Agora</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M5 12h14m-7-7l7 7l-7 7"></path>
+                      </svg>
+                    </div>
+                  </a>
+                  <a href="login.html"><div class="navigation-mobile-auth btn btn-outline btn-lg">
+                      <span>Entrar na Conta</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="navigation-container2">
+              <div class="navigation-container3">
+                
+              </div>
+            </div>
+          </div>
+        </navigation-wrapper>
+        <section class="login-section">
+          <div class="login-section-background">
+            <img
+              src="https://images.pexels.com/photos/7347538/pexels-photo-7347538.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+              alt="Profissional de servicos trabalhando"
+              class="login-section-bg-image"
+            />
+            <div class="login-section-overlay"></div>
+          </div>
+          <div class="login-section-container">
+            <div class="login-section-card">
+              <div class="login-section-header">
+                <h1 class="login-section-title hero-title">
+                  Bem-vindo ao TaskGO
+                </h1>
+                <p class="login-section-subtitle section-content">
+                  Conectando voce aos melhores profissionais locais com
+                  inteligencia e transparencia.
+                </p>
+              </div>
+
+              <form
+                id="loginForm"
+                onsubmit="fazerLogin(event)"
+                data-form-id="b9a00a7b-e9e1-48e9-a9df-98d92d95baf6"
+                class="login-section-form"
+              >
+                <div class="login-section-field-group">
+                  <label class="login-section-label">Entrar como</label>
+                  <div class="login-section-role-group">
+                    <label class="login-section-role-option">
+                      <input type="radio" name="tipoUsuario" value="CLIENTE" checked />
+                      <span class="login-section-role-card"><i class="fas fa-search"></i> Cliente</span>
+                    </label>
+                    <label class="login-section-role-option">
+                      <input type="radio" name="tipoUsuario" value="PRESTADOR" />
+                      <span class="login-section-role-card"><i class="fas fa-tools"></i> Profissional</span>
+                    </label>
+                    <label class="login-section-role-option">
+                      <input type="radio" name="tipoUsuario" value="ADMIN" />
+                      <span class="login-section-role-card"><i class="fas fa-user-shield"></i> Admin</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="login-section-field-group">
+                  <label for="email" class="login-section-label">E-mail</label>
+                  <div class="login-section-input-wrapper">
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value="" 
+                      placeholder="seu@email.com"
+                      required="true"
+                      class="login-section-input"
+                    />
+                  </div>
+                </div>
+                <div class="login-section-field-group">
+                  <div class="login-section-label-row">
+                    <label for="password" class="login-section-label">
+                      Senha
+                    </label>
+                    <a href="login.html">
+                      <div class="login-section-forgot btn-link btn-sm">
+                        <span>Esqueceu a senha?</span>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="login-section-input-wrapper">
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value="" 
+                      placeholder="••••••••"
+                      required="true"
+                      minlength="8"
+                      class="login-section-input"
+                    />
+                    <button
+                      type="button"
+                      id="togglePassword"
+                      aria-label="Mostrar senha"
+                      name="button"
+                      class="login-section-visibility-btn"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <g
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                        >
+                          <path
+                            d="M2.062 12.348a1 1 0 0 1 0-.696a10.75 10.75 0 0 1 19.876 0a1 1 0 0 1 0 .696a10.75 10.75 0 0 1-19.876 0"
+                          ></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </g>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  id="thq_button_Z0ao"
+                  name="button"
+                  class="login-section-submit btn btn-primary btn-lg"
+                >
+                  <span>Entrar na conta</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <g
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M9 8V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-2"
+                      ></path>
+                      <path d="M3 12h13l-3-3m0 6l3-3"></path>
+                    </g>
+                  </svg>
+                </button>
+                <div id="loginErro" class="field-error" style="text-align: center;"></div>
+              </form>
+              <div class="login-section-divider">
+                <span class="login-section-divider-text">ou continue com</span>
+              </div>
+              <div class="login-section-social-grid">
+                <button
+                  type="button"
+                  class="login-section-social-btn btn btn-outline"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M12 2a9.96 9.96 0 0 1 6.29 2.226a1 1 0 0 1 .04 1.52l-1.51 1.362a1 1 0 0 1-1.265.06a6 6 0 1 0 2.103 6.836l.001-.004h-3.66a1 1 0 0 1-.992-.883L13 13v-2a1 1 0 0 1 1-1h6.945a1 1 0 0 1 .994.89q.06.55.061 1.11c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2"
+                    ></path>
+                  </svg>
+                  <span>Google</span>
+                </button>
+                <button
+                  type="button"
+                  class="login-section-social-btn btn btn-outline"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M15 2a1 1 0 0 1 .117 1.993L15 4c-.693 0-1.33.694-1.691 1.552a5.1 5.1 0 0 1 1.982-.544L15.556 5C18.538 5 21 8.053 21 11.32c0 3.547-.606 5.862-2.423 8.578c-1.692 2.251-4.092 2.753-6.41 1.234a.31.31 0 0 0-.317-.01c-2.335 1.528-4.735 1.027-6.46-1.27C3.607 17.184 3 14.868 3 11.32l.004-.222C3.112 7.917 5.530 5 8.444 5c.94 0 1.852.291 2.688.792C11.551 3.842 12.95 2 15 2M7.966 8.154C6.606 9.012 6 10.214 6 12a1 1 0 0 0 2 0c0-1.125.28-1.678 1.034-2.154a1 1 0 1 0-1.068-1.692"
+                    ></path>
+                  </svg>
+                  <span>Apple</span>
+                </button>
+              </div>
+              <div class="login-section-footer">
+                <p class="section-content">
+                  <span>Nao tem uma conta?</span>
+                  <a href="login.html"></a>
+                </p>
+                <div class="btn-link">
+                  <a href="cadastro.html"><span>Cadastre-se agora</span></a>
+                </div>
+                <a href="login.html"></a>
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div class="login-container2">
+          <div class="login-container3">
+            
+          </div>
+        </div>
+        <div class="login-container4">
+          <div class="login-container5">
+            
+          </div>
+        </div>
+        <footer-wrapper class="footer-wrapper">
+          <div class="footer-container1">
+            <footer class="footer-wrapper">
+              <div class="footer-wave-container">
+                <svg
+                  viewBox="0 0 1440 120"
+                  preserveAspectRatio="none"
+                  class="footer-wave"
+                >
+                  <path
+                    d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="footer-main-content">
+                <div class="footer-container">
+                  <div class="footer-top-grid">
+                    <div class="footer-brand-column">
+                      <div class="footer-logo-group">
+                        <h2 class="footer-logo-text section-title">TaskGO</h2>
+                        <div class="footer-badge">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path
+                              d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                            ></path>
+                            <path d="m9 12l2 2l4-4"></path>
+                          </svg>
+                          <span class="footer-badge-text">IA Verificada</span>
+                        </div>
+                      </div>
+                      <p class="footer-description section-content">
+                        Conectando voce aos melhores profissionais locais com
+                        transparencia, seguranca e a inteligencia da IA para
+                        oramentos precisos.
+                      </p>
+                      <div class="footer-social-links">
+                        <a href="#">
+                          <div aria-label="Facebook" class="footer-social-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                              ></path>
+                            </svg>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div
+                            aria-label="Instagram"
+                            class="footer-social-icon"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <g
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  width="20"
+                                  height="20"
+                                  x="2"
+                                  y="2"
+                                  rx="5"
+                                  ry="5"
+                                ></rect>
+                                <path
+                                  d="M16 11.37A4 4 0 1 1 12.63 8A4 4 0 0 1 16 11.37m1.5-4.87h.01"
+                                ></path>
+                              </g>
+                            </svg>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div aria-label="LinkedIn" class="footer-social-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <g
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                              >
+                                <path
+                                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6M2 9h4v12H2z"
+                                ></path>
+                                <circle cx="4" cy="4" r="2"></circle>
+                              </g>
+                            </svg>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div aria-label="WhatsApp" class="footer-social-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <g
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                              >
+                                <path
+                                  d="m3 21l1.65-3.8a9 9 0 1 1 3.4 2.9z"
+                                ></path>
+                                <path
+                                  d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0za5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"
+                                ></path>
+                              </g>
+                            </svg>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <nav class="footer-nav-column">
+                      <h3 class="footer-column-title">Servicos Populares</h3>
+                      <ul class="footer-nav-list">
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Eletricistas</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Encanadores</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Pintores</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Pedreiros</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Limpeza Residencial</span>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                    <nav class="footer-nav-column">
+                      <h3 class="footer-column-title">Institucional</h3>
+                      <ul class="footer-nav-list">
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Sobre Ns</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Como Funciona</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Seja um Profissional</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link"><span>Blog</span></div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Contato</span>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                    <div class="footer-cta-column">
+                      <h3 class="footer-column-title">Pronto para comear?</h3>
+                      <p class="footer-cta-text section-content">
+                        Obtenha uma estimativa inteligente para o seu projeto
+                        hoje mesmo.
+                      </p>
+                      <div class="footer-button-group">
+                        <a href="#">
+                          <div class="footer-main-btn btn btn-primary">
+                            <span>Solicitar Servico</span>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div class="footer-sub-btn btn btn-outline">
+                            <span>Baixar App</span>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="footer-divider"></div>
+                  <div class="footer-bottom-bar">
+                    <div class="footer-legal-links">
+                      <p class="footer-copyright">
+                         2026 TaskGO Tecnologia. Todos os direitos reservados.
+                      </p>
+                      <div class="footer-legal-group">
+                        <a href="#">
+                          <div class="footer-legal-link">
+                            <span>Termos de Uso</span>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div class="footer-legal-link">
+                            <span>Privacidade</span>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div class="footer-legal-link">
+                            <span>Cookies</span>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="footer-payment-methods">
+                      <span class="footer-payment-label">
+                        Pagamento Seguro:
+                      </span>
+                      <div class="footer-payment-icons">
+                        <div class="footer-payment-chip"><span>PIX</span></div>
+                        <div class="footer-payment-chip">
+                          <span>Carto</span>
+                        </div>
+                        <div class="footer-payment-chip">
+                          <span>Boleto</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </footer>
+            <div class="footer-container2">
+              <div class="footer-container3">
+                
+              </div>
+            </div>
+          </div>
+        </footer-wrapper>
+        
+      </div>
+      <link
+        rel="canonical"
+        href="https://jumpy-celebrated-ferret-u21wka.teleporthq.app/login"
+      />
+    </div>
+  
+    <script src='../assets/js/navigation.js' defer></script>
+    <script src='../assets/js/footer.js' defer></script>
+    <script src='../assets/js/api.js'></script>
+    <script src='../assets/js/validacao.js'></script>
+    <script src='../assets/js/login.js'></script>
+  </body>
+</html>

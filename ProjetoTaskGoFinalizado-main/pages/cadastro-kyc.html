@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskGO - Verificação de Cadastro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/cadastro.css">
+    <style>
+        .kyc-card { max-width: 520px; }
+        .kyc-intro { color: var(--text-gray); font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+        .kyc-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: border-color 0.2s ease;
+        }
+        .kyc-upload:hover { border-color: var(--primary-blue); }
+        .kyc-upload i { font-size: 28px; color: var(--text-gray); margin-bottom: 8px; display: block; }
+        .kyc-upload-title { color: var(--text-white); font-weight: 500; font-size: 14px; margin-bottom: 4px; }
+        .kyc-upload-hint { color: var(--text-gray); font-size: 12px; }
+        .kyc-upload-nome { color: var(--primary-blue); font-size: 13px; margin-top: 8px; word-break: break-all; }
+        .kyc-upload.is-ok { border-color: #2ecc71; border-style: solid; }
+        .kyc-status {
+            display: none;
+            text-align: center;
+            padding: 32px 20px;
+        }
+        .kyc-status i { font-size: 48px; color: #f1c40f; margin-bottom: 16px; display: block; }
+        .kyc-status h3 { color: var(--text-white); margin-bottom: 8px; }
+        .kyc-status p { color: var(--text-gray); font-size: 14px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="register-background">
+        <div class="register-card kyc-card">
+            <div class="register-header">
+                <h2>Verificação de identidade</h2>
+                <p>Para publicar serviços na TaskGO, precisamos confirmar seus dados.</p>
+            </div>
+
+            <div id="kycForm">
+                <p class="kyc-intro">Envie uma foto ou PDF do seu documento de identidade e um comprovante da sua conta/chave Pix. Formatos aceitos: PNG, JPEG ou PDF, até 5MB cada.</p>
+
+                <input type="file" id="inputIdentidade" accept="image/png,image/jpeg,application/pdf" style="display:none">
+                <div class="kyc-upload" id="uploadIdentidade" onclick="document.getElementById('inputIdentidade').click()">
+                    <i class="fas fa-id-card"></i>
+                    <div class="kyc-upload-title">Documento de identidade</div>
+                    <div class="kyc-upload-hint">Clique para selecionar o arquivo</div>
+                    <div class="kyc-upload-nome" id="nomeIdentidade"></div>
+                </div>
+
+                <input type="file" id="inputPix" accept="image/png,image/jpeg,application/pdf" style="display:none">
+                <div class="kyc-upload" id="uploadPix" onclick="document.getElementById('inputPix').click()">
+                    <i class="fas fa-receipt"></i>
+                    <div class="kyc-upload-title">Comprovante de conta/chave Pix</div>
+                    <div class="kyc-upload-hint">Clique para selecionar o arquivo</div>
+                    <div class="kyc-upload-nome" id="nomePix"></div>
+                </div>
+
+                <div id="kycErro" class="field-error" style="text-align: center;"></div>
+
+                <button type="button" class="btn-register" id="btnEnviarKyc" onclick="enviarDocumentos()">
+                    Enviar documentos <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <div class="kyc-status" id="kycStatus">
+                <i class="fas fa-hourglass-half"></i>
+                <h3>Cadastro em análise</h3>
+                <p>Recebemos seus documentos. Assim que forem aprovados, você poderá publicar seus serviços. Você já pode acessar seu painel.</p>
+                <br>
+                <a href="painel-profissional.html" class="btn-register" style="display:inline-block; text-decoration:none;">Ir para o painel</a>
+            </div>
+
+            <div class="login-link">
+                <a href="painel-profissional.html">Fazer isso depois</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/kyc.js"></script>
+</body>
+</html>

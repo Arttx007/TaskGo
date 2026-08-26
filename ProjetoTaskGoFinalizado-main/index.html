@@ -1,0 +1,1521 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TaskGo</title>
+    <meta property="og:title" content="TaskGo" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <style data-tag="reset-style-sheet">
+      html {  line-height: 1.15;}body {  margin: 0;}* {  box-sizing: border-box;  border-width: 0;  border-style: solid;  -webkit-font-smoothing: antialiased;}p,li,ul,pre,div,h1,h2,h3,h4,h5,h6,figure,blockquote,figcaption {  margin: 0;  padding: 0;}button {  background-color: transparent;}button,input,optgroup,select,textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}button,select {  text-transform: none;}button,[type="button"],[type="reset"],[type="submit"] {  -webkit-appearance: button;  color: inherit;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}button:-moz-focus,[type="button"]:-moz-focus,[type="reset"]:-moz-focus,[type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}a {  color: inherit;  text-decoration: inherit;}pre {  white-space: normal;}input {  padding: 2px 4px;}img {  display: block;}details {  display: block;  margin: 0;  padding: 0;}summary::-webkit-details-marker {  display: none;}[data-thq="accordion"] [data-thq="accordion-content"] {  max-height: 0;  overflow: hidden;  transition: max-height 0.3s ease-in-out;  
+        font-family: Lato;
+        font-size: 1rem;
+      }
+
+      body {
+        font-weight: 400;
+        font-style:normal;
+        text-decoration: undefined;
+        text-transform: undefined;
+        letter-spacing: 0.02em;
+        line-height: 1.6;
+        color: var(--color-on-surface);
+        background: var(--color-surface);
+
+        fill: var(--color-on-surface);
+      }
+
+      .ai-estimate-card {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.35rem 0.65rem;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 0.65rem;
+        background: rgba(255, 255, 255, 0.14);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        color: inherit;
+        font-size: 0.82rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: 0.01em;
+        backdrop-filter: blur(6px);
+      }
+
+      .ai-estimate-card::before {
+        content: "✦";
+        display: grid;
+        width: 1.35rem;
+        height: 1.35rem;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        font-size: 0.85rem;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/animate.css@4.1.1/animate.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css"
+    />
+  </head>
+  <body>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <div>
+      <link href="./assets/css/index.css" rel="stylesheet" />
+
+      <div class="home-container1">
+        <navigation-wrapper class="navigation-wrapper">
+          <!--Navigation component-->
+          <div class="navigation-container1">
+            <nav class="navigation-wrapper">
+              <div class="navigation-container">
+                <div class="navigation-main-content">
+                  <a href="index.html">
+                    <div aria-label="TaskGO Home" class="navigation-logo-link">
+                      <span class="navigation-brand section-title">
+                        TaskGO
+                      </span>
+                    </div>
+                  </a>
+                  <div class="navigation-desktop-menu">
+                    <ul class="navigation-links-list">
+                      <li class="navigation-item">
+                        <a href="index.html">
+                          <div class="navigation-link"><span>Inicio</span></div>
+                        </a>
+                      </li>
+                      <li class="navigation-item">
+                        <a href="pages/como-funciona.html">
+                          <div class="navigation-link">
+                            <span>Como Funciona</span>
+                          </div>
+                        </a>
+                      </li>
+                      <li class="navigation-item">
+                        <a href="pages/servicos.html">
+                          <div class="navigation-link">
+                            <span>Servicos</span>
+                          </div>
+                        </a>
+                      </li>
+                      <li class="navigation-item">
+                        <a href="pages/profissionais-prximos.html"><div class="navigation-link"><span>Para Profissionais</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <aside class="navigation-sidebar">
+                  <div class="navigation-actions">
+                    <a href="pages/login.html"><div class="navigation-auth-btn btn btn-outline btn-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"
+                          ></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Entrar</span>
+                      </div>
+                    </a>
+                    <a href="pages/profissionais-prximos.html"><div class="navigation-cta-btn btn btn-sm btn-primary">
+                        <span>Contratar</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M5 12h14m-7-7l7 7l-7 7"></path>
+                        </svg>
+                      </div>
+                    </a>
+                  </div>
+                  <button
+                    id="navigation-mobile-toggle"
+                    aria-expanded="false"
+                    aria-controls="navigation-mobile-overlay"
+                    aria-label="Abrir menu"
+                    class="navigation-toggle-btn"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                  </button>
+                </aside>
+              </div>
+            </nav>
+            <div
+              id="navigation-mobile-overlay"
+              class="navigation-mobile-overlay"
+            >
+              <div class="navigation-overlay-header">
+                <a href="index.html">
+                  <div class="navigation-logo-link">
+                    <span class="navigation-brand section-title">TaskGO</span>
+                  </div>
+                </a>
+                <button
+                  id="navigation-mobile-close"
+                  aria-label="Fechar menu"
+                  class="navigation-close-btn"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M18 6L6 18M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="navigation-overlay-content">
+                <ul class="navigation-mobile-links">
+                  <li class="navigation-mobile-item">
+                    <a href="index.html">
+                      <div class="navigation-mobile-link">
+                        <span>Inicio</span>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="navigation-mobile-item">
+                    <a href="pages/como-funciona.html">
+                      <div class="navigation-mobile-link">
+                        <span>Como Funciona</span>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="navigation-mobile-item">
+                    <a href="pages/servicos.html">
+                      <div class="navigation-mobile-link">
+                        <span>Servicos</span>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="navigation-mobile-item">
+                    <a href="pages/profissionais-prximos.html"><div class="navigation-mobile-link"><span>Para Profissionais</span>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <div class="navigation-mobile-footer">
+                  <a href="pages/profissionais-prximos.html"><div class="navigation-mobile-cta btn btn-primary btn-lg">
+                      <span>Comecar Agora</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M5 12h14m-7-7l7 7l-7 7"></path>
+                      </svg>
+                    </div>
+                  </a>
+                  <a href="pages/login.html"><div class="navigation-mobile-auth btn btn-outline btn-lg">
+                      <span>Entrar na Conta</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="navigation-container2">
+              <div class="navigation-container3">
+                
+              </div>
+            </div>
+          </div>
+        </navigation-wrapper>
+        <main class="servizo-page">
+          <section class="hero-search">
+            <div class="hero-search-bg">
+              <video
+                autoplay="true"
+                muted="true"
+                loop="true"
+                playsinline="true"
+                poster="https://images.pexels.com/videos/20693178/pictures/preview-0.jpeg"
+                src="https://videos.pexels.com/video-files/20693178/20693178-hd_1280_720_25fps.mp4"
+                class="hero-search-video"
+              ></video>
+              <div class="hero-search-overlay"></div>
+            </div>
+            <div class="hero-search-container">
+              <div class="hero-search-content">
+                <h1 class="home-hero-title hero-title">
+                  Encontre o profissional certo em segundos.
+                </h1>
+                <p class="hero-subtitle">
+                  Marketplace inteligente que conecta voce a prestadores locais
+                  com estimativas de preco geradas por IA.
+                </p>
+                <div class="search-bar-wrapper">
+                  <form
+                    action="pages/profissionais-prximos.html"
+                    method="GET"
+                    data-form-id="1d0b6e36-c823-4d1f-a0d5-deaf092d4005"
+                    class="search-form"
+                  >
+                    <div class="search-inputs">
+                      <div class="input-group">
+                        <label for="service-type" class="sr-only">
+                          Tipo de Servico
+                        </label>
+                        <select
+                          id="service-type"
+                          name="service"
+                          required="true"
+                          data-form-field-id="service-type"
+                        >
+                          <option value="true" disabled="true" selected="true">
+                            Que servico voce precisa?
+                          </option>
+                          <option value="eletricista">Eletricista</option>
+                          <option value="encanador">Encanador</option>
+                          <option value="pedreiro">Pedreiro</option>
+                          <option value="pintor">Pintor</option>
+                        </select>
+                      </div>
+                      <div class="input-group">
+                        <label for="proximity" class="sr-only">
+                          Raio de Proximidade
+                        </label>
+                        <select
+                          id="proximity"
+                          name="radius"
+                          data-form-field-id="proximity"
+                        >
+                          <option value="5">Ate 5km</option>
+                          <option value="10">Ate 10km</option>
+                          <option value="20">Ate 20km</option>
+                          <option value="50">Ate 50km</option>
+                        </select>
+                      </div>
+                      <button
+                        type="submit"
+                        id="thq_button_XdDV"
+                        name="button"
+                        data-form-field-id="thq_button_XdDV"
+                        class="search-btn btn btn-primary"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                        <div class="ai-estimate-card">Gerar Estimativa IA</div>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="hero-search-visual">
+                <div class="ai-badge">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M12 18V5m3 8a4.17 4.17 0 0 1-3-4a4.17 4.17 0 0 1-3 4m8.598-6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"
+                    ></path>
+                    <path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path>
+                    <path d="M18 18a4 4 0 0 0 2-7.464"></path>
+                    <path
+                      d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"
+                    ></path>
+                    <path d="M6 18a4 4 0 0 1-2-7.464"></path>
+                    <path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path>
+                  </svg>
+                  <span>Estimativa em Tempo Real</span>
+                </div>
+              </div>
+            </div>
+            <div class="split-diagonal-divider"></div>
+          </section>
+          <section class="ia-estimate">
+            <div class="ia-estimate-container">
+              <div class="ia-estimate-header">
+                <h2 class="section-title">Previsibilidade Total com IA</h2>
+                <p class="section-subtitle">
+                  Nossa tecnologia analisa milhares de pontos de dados para
+                  fornecer o valor justo antes mesmo de voce contratar.
+                </p>
+              </div>
+              <div class="bento-grid-ia">
+                <div class="bento-cell wide-cell">
+                  <div class="calc-simulation">
+                    <div class="sim-step">
+                      <span class="step-label">Entrada</span>
+                      <div class="sim-content">
+                        <span>
+                          "Troca de fiaçao em apartamento de 2 quartos"
+                        </span>
+                      </div>
+                    </div>
+                    <div class="sim-arrow">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m9 18 6-6-6-6"></path>
+                      </svg>
+                    </div>
+                    <div class="sim-step">
+                      <span class="step-label">Complexidade</span>
+                      <div class="sim-tag high"><span>Alta Escala</span></div>
+                    </div>
+                    <div class="sim-arrow">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m9 18 6-6-6-6"></path>
+                      </svg>
+                    </div>
+                    <div class="sim-step result-step">
+                      <span class="step-label">Preco Estimado</span>
+                      <div class="sim-price"><span>R$ 450 - R$ 600</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bento-cell narrow-cell">
+                  <div class="ia-info-card">
+                    <div class="icon-box">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M12 18V5m3 8a4.17 4.17 0 0 1-3-4a4.17 4.17 0 0 1-3 4m8.598-6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"
+                        ></path>
+                        <path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path>
+                        <path d="M18 18a4 4 0 0 0 2-7.464"></path>
+                        <path
+                          d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"
+                        ></path>
+                        <path d="M6 18a4 4 0 0 1-2-7.464"></path>
+                        <path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path>
+                      </svg>
+                    </div>
+                    <h3>Transparencia Pura</h3>
+                    <p>
+                      O algoritmo TaskGO elimina surpresas e garante que tanto
+                      cliente quanto profissional saibam o que esperar do
+                      orçamento.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="nearby-pros">
+            <div class="section-intro">
+              <h2 class="section-title">Profissionais Proximos a Você</h2>
+              <p class="section-subtitle">
+                Disponiveis agora para atender sua necessidade com segurança.
+              </p>
+            </div>
+            <div id="pros-carousel" class="carousel-wrapper">
+              <div class="carousel-track">
+                <article class="pro-card">
+                  <div class="pro-image">
+                    <img
+                      src="https://images.pexels.com/photos/17063686/pexels-photo-17063686.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                      alt="Eletricista Profissional"
+                    />
+                    <span class="pro-distance">1.2 km</span>
+                  </div>
+                  <div class="pro-info">
+                    <div class="pro-meta">
+                      <span class="pro-category">Eletricista</span>
+                      <div class="pro-rating">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          stroke="none"
+                        >
+                          <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                          ></path>
+                        </svg>
+                        <span>4.9 (124)</span>
+                      </div>
+                    </div>
+                    <h3>Ricardo Santos</h3>
+                    <div class="pro-pricing">
+                      <span class="price-label">Estimativa Media</span>
+                      <span class="price-value">R$ 180</span>
+                    </div>
+                    <button class="pro-btn btn btn-outline btn-sm">
+                      Ver Perfil
+                    </button>
+                  </div>
+                </article>
+                <article class="pro-card">
+                  <div class="pro-image">
+                    <img
+                      src="https://images.pexels.com/photos/8486975/pexels-photo-8486975.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                      alt="Encanadora Profissional"
+                    />
+                    <span class="pro-distance">2.5 km</span>
+                  </div>
+                  <div class="pro-info">
+                    <div class="pro-meta">
+                      <span class="pro-category">Encanadora</span>
+                      <div class="pro-rating">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          stroke="none"
+                        >
+                          <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                          ></path>
+                        </svg>
+                        <span>4.8 (89)</span>
+                      </div>
+                    </div>
+                    <h3>Carla Oliveira</h3>
+                    <div class="pro-pricing">
+                      <span class="price-label">Estimativa Media</span>
+                      <span class="price-value">R$ 150</span>
+                    </div>
+                    <button class="pro-btn btn btn-outline btn-sm">
+                      Ver Perfil
+                    </button>
+                  </div>
+                </article>
+                <article class="pro-card">
+                  <div class="pro-image">
+                    <img
+                      src="https://images.pexels.com/photos/5767932/pexels-photo-5767932.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                      alt="Pintor Profissional"
+                    />
+                    <span class="pro-distance">0.8 km</span>
+                  </div>
+                  <div class="pro-info">
+                    <div class="pro-meta">
+                      <span class="pro-category">Pintor</span>
+                      <div class="pro-rating">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          stroke="none"
+                        >
+                          <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                          ></path>
+                        </svg>
+                        <span>5.0 (56)</span>
+                      </div>
+                    </div>
+                    <h3>Marcos Lima</h3>
+                    <div class="pro-pricing">
+                      <span class="price-label">Estimativa Media</span>
+                      <span class="price-value">R$ 220</span>
+                    </div>
+                    <button class="pro-btn btn btn-outline btn-sm">
+                      Ver Perfil
+                    </button>
+                  </div>
+                </article>
+                <article class="pro-card">
+                  <div class="pro-image">
+                    <img
+                      src="https://images.pexels.com/photos/8486927/pexels-photo-8486927.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                      alt="Pedreira Profissional"
+                    />
+                    <span class="pro-distance">3.1 km</span>
+                  </div>
+                  <div class="pro-info">
+                    <div class="pro-meta">
+                      <span class="pro-category">Pedreira</span>
+                      <div class="pro-rating">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          stroke="none"
+                        >
+                          <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                          ></path>
+                        </svg>
+                        <span>4.7 (210)</span>
+                      </div>
+                    </div>
+                    <h3>Juliana Costa</h3>
+                    <div class="pro-pricing">
+                      <span class="price-label">Estimativa Media</span>
+                      <span class="price-value">R$ 350</span>
+                    </div>
+                    <button class="pro-btn btn btn-outline btn-sm">
+                      Ver Perfil
+                    </button>
+                  </div>
+                </article>
+              </div>
+              <div class="carousel-controls">
+                <button aria-label="Anterior" class="carousel-btn prev">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m15 18-6-6 6-6"></path>
+                  </svg>
+                </button>
+                <button aria-label="Proximo" class="carousel-btn next">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m9 18 6-6-6-6"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </section>
+          <section class="how-it-works">
+            <div class="how-it-works-container">
+              <h2 class="section-title">O Caminho para um Serviço Perfeito</h2>
+              <div class="timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline-item left">
+                  <div class="timeline-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <h3>Buscar</h3>
+                    <p>
+                      Escolha o serviço e veja os profissionais disponiveis em
+                      sua região instantaneamente.
+                    </p>
+                  </div>
+                </div>
+                <div class="timeline-item right">
+                  <div class="timeline-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M12 18V5m3 8a4.17 4.17 0 0 1-3-4a4.17 4.17 0 0 1-3 4m8.598-6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"
+                      ></path>
+                      <path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path>
+                      <path d="M18 18a4 4 0 0 0 2-7.464"></path>
+                      <path
+                        d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"
+                      ></path>
+                      <path d="M6 18a4 4 0 0 1-2-7.464"></path>
+                      <path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path>
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <h3>Comparar Estimativas</h3>
+                    <p>
+                      Nossa IA gera uma faixa de preço justa. Compare perfis,
+                      avaliações e a proximidade do profissional.
+                    </p>
+                  </div>
+                </div>
+                <div class="timeline-item left">
+                  <div class="timeline-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                      ></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <polyline points="16 11 18 13 22 9"></polyline>
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <h3>Reservar</h3>
+                    <p>
+                      Escolha o melhor horario e agende o servico diretamente
+                      pelo aplicativo com poucos cliques.
+                    </p>
+                  </div>
+                </div>
+                <div class="timeline-item right">
+                  <div class="timeline-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                      <path d="M2 10h20"></path>
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <h3>Pagar Online</h3>
+                    <p>
+                      Segurança total: o pagamento e processado online e so e
+                      liberado apos a confirmacao do servico.
+                    </p>
+                  </div>
+                </div>
+                <div class="timeline-item left">
+                  <div class="timeline-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"
+                      ></path>
+                      <circle cx="12" cy="13" r="3"></circle>
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <h3>Comprovar com Fotos</h3>
+                    <p>
+                      O profissional envia fotos do antes e depois para garantir
+                      que tudo ficou conforme o esperado.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="trust-features">
+            <div class="trust-features-container">
+              <h2 class="section-title">Sua Segurança e Nossa Prioridade</h2>
+              <div class="bento-trust">
+                <div class="bento-card main-trust">
+                  <div class="trust-icon-main">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="48"
+                      height="48"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                      ></path>
+                      <path d="m9 12l2 2l4-4"></path>
+                    </svg>
+                  </div>
+                  <h3>Pagamento Seguro &amp; Garantido</h3>
+                  <p>
+                    Utilizamos tecnologia de ponta para proteger suas
+                    transacoes. O valor pago fica retido em nossa plataforma e
+                    so e transferido ao profissional quando voce valida a
+                    conclusão do servico atraves das fotos e do checkout final.
+                  </p>
+                  <div class="trust-badges">
+                    <span class="badge">SSL Encrypted</span>
+                    <span class="badge">PCI Compliant</span>
+                  </div>
+                </div>
+                <div class="bento-card side-trust">
+                  <div class="trust-icon-small">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="7" r="4"></circle>
+                      <path d="M10.3 15H7a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="17" cy="17" r="3"></circle>
+                      <path d="m21 21-1.9-1.9"></path>
+                    </svg>
+                  </div>
+                  <h4>Verificacao Rigorosa</h4>
+                  <p>
+                    Todos os profissionais passam por uma checagem de
+                    antecedentes e validacao de documentos antes de entrarem na
+                    rede TaskGO.
+                  </p>
+                </div>
+                <div class="bento-card side-trust">
+                  <div class="trust-icon-small">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"
+                      ></path>
+                      <circle cx="12" cy="13" r="3"></circle>
+                    </svg>
+                  </div>
+                  <h4>Evidencia Visual</h4>
+                  <p>
+                    O sistema de fotos antes/depois cria um historico
+                    transparente do trabalho realizado, protegendo ambas as
+                    partes de mal-entendidos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="testimonials">
+            <div class="testimonials-container">
+              <h2 class="section-title">O que dizem sobre o TaskGO</h2>
+              <div id="test-carousel" class="testimonials-carousel">
+                <div class="testimonials-track">
+                  <div class="test-card">
+                    <div class="test-rating">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="test-text">
+                      "A estimativa da IA foi certeira! O eletricista chegou no
+                      horario e o preco final foi exatamente o que o app previu.
+                      Muito transparente."
+                    </p>
+                    <div class="test-user">
+                      <img
+                        src="https://images.pexels.com/photos/8486928/pexels-photo-8486928.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                        alt="Ana Silva"
+                      />
+                      <div class="user-info">
+                        <strong>Ana Silva</strong>
+                        <span>Sao Paulo, SP</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="test-card">
+                    <div class="test-rating">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="test-text">
+                      "Pagar pelo app me deu muita seguranca. O sistema de fotos
+                      antes e depois e genial, voce tem a prova real do servico
+                      bem feito."
+                    </p>
+                    <div class="test-user">
+                      <img
+                        src="https://images.pexels.com/photos/16552851/pexels-photo-16552851.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                        alt="Roberto Mendes"
+                      />
+                      <div class="user-info">
+                        <strong>Roberto Mendes</strong>
+                        <span>Curitiba, PR</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="test-card">
+                    <div class="test-rating">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path></svg
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="test-text">
+                      "Precisava de um encanador urgente e encontrei um a 1km de
+                      casa. Em 30 minutos ele estava aqui. Rapidez
+                      impressionante!"
+                    </p>
+                    <div class="test-user">
+                      <img
+                        src="https://images.pexels.com/photos/8486929/pexels-photo-8486929.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                        alt="Lucia Ferreira"
+                      />
+                      <div class="user-info">
+                        <strong>Lucia Ferreira</strong>
+                        <span>Belo Horizonte, MG</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="final-cta">
+            <div class="split-diagonal-cta"></div>
+            <div class="final-cta-container">
+              <div class="cta-content">
+                <h2 class="home-hero-title hero-title">
+                  Pronto para resolver seu problema?
+                </h2>
+                <p class="hero-subtitle">
+                  Junte-se a milhares de pessoas que ja usam o TaskGO para
+                  encontrar profissionais de confianca com preco justo.
+                </p>
+                <div class="cta-actions">
+                  <a href="#">
+                    <div class="btn btn-primary btn-xl">
+                      <span>Comecar Busca Agora</span>
+                    </div>
+                  </a>
+                  <div class="cta-links">
+                    <a href="#">
+                      <div class="btn-link"><span>Baixar App</span></div>
+                    </a>
+                    <span class="divider">|</span>
+                    <a href="#">
+                      <div class="btn-link">
+                        <span>Criar Conta Profissional</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="cta-image">
+                <img
+                  src="https://images.pexels.com/photos/8486978/pexels-photo-8486978.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
+                  alt="App TaskGO Mockup"
+                />
+              </div>
+            </div>
+          </section>
+        </main>
+        <div class="home-container2">
+          <div class="home-container3">
+            
+          </div>
+        </div>
+        <div class="home-container4">
+          <div class="home-container5">
+            
+          </div>
+        </div>
+        <footer-wrapper class="footer-wrapper">
+          <!--Footer component-->
+          <div class="footer-container1">
+            <footer class="footer-wrapper">
+              <div class="footer-wave-container">
+                <svg
+                  viewBox="0 0 1440 120"
+                  preserveAspectRatio="none"
+                  class="footer-wave"
+                >
+                  <path
+                    d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="footer-main-content">
+                <div class="footer-container">
+                  <div class="footer-top-grid">
+                    <div class="footer-brand-column">
+                      <div class="footer-logo-group">
+                        <h2 class="footer-logo-text section-title">TaskGO</h2>
+                        <div class="footer-badge">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path
+                              d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                            ></path>
+                            <path d="m9 12l2 2l4-4"></path>
+                          </svg>
+                          <span class="footer-badge-text">IA Verificada</span>
+                        </div>
+                      </div>
+                      <p class="footer-description section-content">
+                        Conectando voce aos melhores profissionais locais com
+                        transparencia, seguranca e a inteligencia da IA para
+                        orcamentos precisos.
+                      </p>
+                      <div class="footer-social-links">
+                        <a href="#">
+                          <div aria-label="Facebook" class="footer-social-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                              ></path>
+                            </svg>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div
+                            aria-label="Instagram"
+                            class="footer-social-icon"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <g
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                              >
+                                <rect
+                                  width="20"
+                                  height="20"
+                                  x="2"
+                                  y="2"
+                                  rx="5"
+                                  ry="5"
+                                ></rect>
+                                <path
+                                  d="M16 11.37A4 4 0 1 1 12.63 8A4 4 0 0 1 16 11.37m1.5-4.87h.01"
+                                ></path>
+                              </g>
+                            </svg>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div aria-label="LinkedIn" class="footer-social-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <g
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                              >
+                                <path
+                                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6M2 9h4v12H2z"
+                                ></path>
+                                <circle cx="4" cy="4" r="2"></circle>
+                              </g>
+                            </svg>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div aria-label="WhatsApp" class="footer-social-icon">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                            >
+                              <g
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                              >
+                                <path
+                                  d="m3 21l1.65-3.8a9 9 0 1 1 3.4 2.9z"
+                                ></path>
+                                <path
+                                  d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0za5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"
+                                ></path>
+                              </g>
+                            </svg>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <nav class="footer-nav-column">
+                      <h3 class="footer-column-title">Servicos Populares</h3>
+                      <ul class="footer-nav-list">
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Eletricistas</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Encanadores</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Pintores</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Pedreiros</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Limpeza Residencial</span>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                    <nav class="footer-nav-column">
+                      <h3 class="footer-column-title">Institucional</h3>
+                      <ul class="footer-nav-list">
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Sobre Nos</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Como Funciona</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Seja um Profissional</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link"><span>Blog</span></div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <div class="footer-nav-link">
+                              <span>Contato</span>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                    <div class="footer-cta-column">
+                      <h3 class="footer-column-title">Pronto para comecar?</h3>
+                      <p class="footer-cta-text section-content">
+                        Obtenha uma estimativa inteligente para o seu projeto
+                        hoje mesmo.
+                      </p>
+                      <div class="footer-button-group">
+                        <a href="#">
+                          <div class="footer-main-btn btn btn-primary">
+                            <span>Solicitar Servico</span>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div class="footer-sub-btn btn btn-outline">
+                            <span>Baixar App</span>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="footer-divider"></div>
+                  <div class="footer-bottom-bar">
+                    <div class="footer-legal-links">
+                      <p class="footer-copyright">
+                         2026 TaskGO Tecnologia. Todos os direitos reservados.
+                      </p>
+                      <div class="footer-legal-group">
+                        <a href="#">
+                          <div class="footer-legal-link">
+                            <span>Termos de Uso</span>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div class="footer-legal-link">
+                            <span>Privacidade</span>
+                          </div>
+                        </a>
+                        <a href="#">
+                          <div class="footer-legal-link">
+                            <span>Cookies</span>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="footer-payment-methods">
+                      <span class="footer-payment-label">
+                        Pagamento Seguro:
+                      </span>
+                      <div class="footer-payment-icons">
+                        <div class="footer-payment-chip"><span>PIX</span></div>
+                        <div class="footer-payment-chip">
+                          <span>Cartao</span>
+                        </div>
+                        <div class="footer-payment-chip">
+                          <span>Boleto</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </footer>
+            <div class="footer-container2">
+              <div class="footer-container3">
+                
+              </div>
+            </div>
+          </div>
+        </footer-wrapper>
+              
+      </div>
+      <link
+        rel="canonical"
+        href="https://jumpy-celebrated-ferret-u21wka.teleporthq.app/"
+      />
+    </div>
+  
+    <script src='./assets/js/navigation.js' defer></script>
+    <script src='./assets/js/footer.js' defer></script>
+    <script src='./assets/js/index.js' defer></script>
+  </body>
+</html>
+
+
+
+
+

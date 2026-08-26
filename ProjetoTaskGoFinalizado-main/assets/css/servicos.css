@@ -1,0 +1,316 @@
+/* ========================================== */
+/* 1. VARIÁVEIS E BASE (DARK MODE PREMIUM)    */
+/* ========================================== */
+:root {
+  --color-primary: #3b82f6; 
+  --color-primary-glow: rgba(59, 130, 246, 0.4);
+  --color-accent: #60a5fa;  
+  --color-surface: #0a0f1a; /* Fundo principal um pouco mais profundo */
+  --color-surface-elevated: rgba(30, 41, 59, 0.5); /* Translúcido para o efeito de vidro */
+  --color-on-surface: #ffffff; 
+  --color-text-muted: #94a3b8;
+  --color-border: rgba(255, 255, 255, 0.08); 
+  --glass-blur: blur(16px);
+  --color-surface-card: rgba(30, 41, 59, 0.4); /* Card semi-transparente */
+  --color-primary-glow: rgba(59, 130, 246, 0.2); /* Brilho neon suave */
+  --glass-blur: blur(20px); /* O segredo do visual moderno */
+}
+
+body { 
+    background-color: #09090b; /* Preto levemente azulado */
+    color: var(--color-on-surface); 
+    font-family: 'Inter', sans-serif; /* Inter é mais moderna que Lato */
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+    background-attachment: fixed;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.text-center { text-align: center; }
+
+/* ========================================== */
+/* 2. NAVEGAÇÃO DESKTOP E MOBILE (MANTIDO)    */
+/* ========================================== */
+.navigation-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
+.navigation-main-content { display: flex; align-items: center; gap: 48px; }
+.navigation-brand { color: var(--color-primary) !important; font-size: 1.8rem; font-weight: 900; text-decoration: none; letter-spacing: -0.5px; }
+.navigation-links-list { display: flex; list-style: none; gap: 32px; margin: 0; padding: 0; }
+.navigation-link { color: #e0e0e0; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s ease; }
+.navigation-link:hover { color: var(--color-primary); }
+.navigation-wrapper a { text-decoration: none; }
+.navigation-actions { display: flex; align-items: center; gap: 16px; }
+.navigation-actions .btn-outline { border: 1px solid #444 !important; color: #fff !important; background-color: transparent !important; }
+.navigation-actions .btn-outline:hover { border-color: var(--color-primary) !important; }
+.navigation-mobile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--color-surface); color: var(--color-on-surface); z-index: 9999; display: flex; flex-direction: column; padding: 30px 20px; transform: translateY(-100%); opacity: 0; transition: transform 0.3s, opacity 0.3s; pointer-events: none; box-sizing: border-box; }
+.navigation-mobile-overlay.show-overlay { transform: translateY(0); opacity: 1; pointer-events: auto; }
+@media (min-width: 992px) { #navigation-mobile-toggle { display: none; } }
+@media (max-width: 991px) { .navigation-desktop-menu, .navigation-actions { display: none !important; } #navigation-mobile-toggle { display: block; cursor: pointer; background: none; border: none; } }
+
+/* ========================================== */
+/* 3. CABEÇALHO HERO E BUSCA PREMIUM          */
+/* ========================================== */
+.services-hero { 
+    padding: 120px 0 80px; 
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+}
+
+.hero-title { 
+    font-size: 3.8rem; 
+    font-weight: 900; 
+    margin-bottom: 20px; 
+    letter-spacing: -1px;
+    background: linear-gradient(to right, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle { 
+    font-size: 1.25rem; 
+    color: var(--color-text-muted); 
+    max-width: 650px; 
+    margin: 0 auto 50px; 
+    line-height: 1.6; 
+}
+
+/* Barra de Busca Estilo Spotlight */
+.search-bar { 
+    display: flex; 
+    align-items: center; 
+    max-width: 650px; 
+    margin: 0 auto; 
+    background: rgba(255, 255, 255, 0.03); 
+    border: 1px solid var(--color-border); 
+    border-radius: 50px; 
+    padding: 12px 28px; 
+    transition: all 0.4s ease;
+    backdrop-filter: blur(10px);
+}
+
+.search-bar:focus-within { 
+    border-color: var(--color-primary); 
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+    transform: scale(1.02);
+}
+
+.search-bar svg { color: var(--color-text-muted); width: 22px; height: 22px; transition: 0.3s; }
+.search-bar:focus-within svg { color: var(--color-primary); }
+
+.search-bar input { 
+    flex: 1; 
+    background: transparent; 
+    border: none; 
+    padding: 16px; 
+    color: var(--color-on-surface); 
+    font-size: 1.1rem; 
+    outline: none; 
+}
+.search-bar input::placeholder { color: #64748b; }
+
+/* ========================================== */
+/* 4. BOTÕES DE FILTRO (PILLS)                */
+/* ========================================== */
+.services-section { padding: 80px 0; }
+.filter-btn-group { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 60px; }
+
+.filter-btn { 
+    background: rgba(255,255,255,0.03); 
+    border: 1px solid var(--color-border); 
+    color: var(--color-text-muted); 
+    padding: 12px 28px; 
+    border-radius: 50px; 
+    font-size: 1rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.filter-btn:hover { 
+    border-color: rgba(255,255,255,0.3); 
+    color: var(--color-on-surface); 
+    background: rgba(255,255,255,0.08);
+}
+
+.filter-btn.active { 
+    background: var(--color-primary); 
+    border-color: var(--color-primary); 
+    color: #fff; 
+    box-shadow: 0 4px 15px var(--color-primary-glow);
+}
+
+/* ========================================== */
+/* 5. GRADE DE CATEGORIAS (GLASSMORPHISM)     */
+/* ========================================== */
+.services-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 30px; 
+}
+
+  .service-card { 
+    background: var(--color-surface-card); 
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur); /* Suporte para Safari */
+    border: 1px solid rgba(255, 255, 255, 0.06); 
+    border-radius: 24px; 
+    padding: 35px; 
+    display: flex; 
+    flex-direction: column; 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+    text-decoration: none; 
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito de brilho na borda superior do card */
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    opacity: 0.5;
+}
+
+.service-card.hidden { display: none !important; }
+
+.service-card:hover { 
+    transform: translateY(-10px) scale(1.02); 
+    border-color: rgba(59, 130, 246, 0.4); 
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 30px var(--color-primary-glow); 
+    background: rgba(30, 41, 59, 0.6);
+}
+
+.service-icon { 
+    width: 64px; 
+    height: 64px; 
+    border-radius: 18px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-bottom: 24px; 
+    font-size: 24px;
+    transition: all 0.4s ease;
+    /* Adiciona uma bordinha sutil no ícone */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Faz o ícone "pular" e rodar levemente quando passa o mouse no card */
+.service-card:hover .service-icon {
+    transform: scale(1.1) rotate(8deg);
+    background-color: var(--color-primary);
+    color: white !important;
+}
+
+.service-icon svg { width: 30px; height: 30px; }
+
+.service-card h3 { 
+    font-size: 1.5rem; 
+    margin-bottom: 12px; 
+    color: var(--color-on-surface); 
+    font-weight: 800;
+}
+
+.service-card p { 
+    color: var(--color-text-muted); 
+    font-size: 1.05rem; 
+    line-height: 1.6; 
+    margin-bottom: 30px; 
+    flex-grow: 1; 
+}
+
+.service-link { 
+    color: var(--color-primary); 
+    font-weight: 700; 
+    font-size: 1rem; 
+    transition: all 0.3s ease; 
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.service-card:hover .service-link { 
+    gap: 15px; /* Faz a setinha empurrar pro lado no hover */
+    color: var(--color-accent);
+}
+
+/* ========================================== */
+/* 6. GARANTIA DE QUALIDADE                   */
+/* ========================================== */
+.quality-guarantee { 
+    background: rgba(255,255,255,0.01); 
+    padding: 100px 0; 
+    border-top: 1px solid var(--color-border); 
+    border-bottom: 1px solid var(--color-border); 
+}
+
+.quality-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 40px; 
+}
+
+.quality-item { 
+    background: var(--color-surface-elevated); 
+    padding: 40px 30px; 
+    border-radius: 24px; 
+    border: 1px solid var(--color-border); 
+    transition: transform 0.3s ease;
+}
+
+.quality-item:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.15); }
+.quality-icon { font-size: 3.5rem; margin-bottom: 20px; }
+.quality-item h3 { color: var(--color-on-surface); margin-bottom: 15px; font-size: 1.4rem; font-weight: 800;}
+.quality-item p { color: var(--color-text-muted); font-size: 1.05rem; line-height: 1.6; }
+
+/* ========================================== */
+/* 7. CTA E ANIMAÇÕES                         */
+/* ========================================== */
+.cta-banner { 
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, var(--color-surface) 100%); 
+    padding: 100px 20px; 
+    border-bottom: 1px solid var(--color-border);
+}
+
+.cta-banner h2 { font-size: 2.5rem; margin-bottom: 20px; color: var(--color-on-surface); font-weight: 900;}
+.cta-banner p { color: var(--color-text-muted); font-size: 1.2rem; max-width: 650px; margin: 0 auto; line-height: 1.6;}
+
+/* Botões baseados no Bootstrap/Tailwind padrão do seu projeto */
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+}
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-primary:hover { background: var(--color-accent); transform: translateY(-3px); box-shadow: 0 10px 20px var(--color-primary-glow); }
+.btn-lg { font-size: 1.1rem; }
+
+/* Animações de Scroll */
+.reveal-on-scroll { 
+    opacity: 0; 
+    transform: translateY(50px); 
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+}
+.reveal-on-scroll.visible { 
+    opacity: 1; 
+    transform: translateY(0); 
+}
+
+/* ========================================== */
+/* 8. RESPONSIVIDADE                          */
+/* ========================================== */
+@media (max-width: 768px) { 
+    .hero-title { font-size: 2.5rem; } 
+    .hero-subtitle { font-size: 1.1rem; }
+    .services-grid { grid-template-columns: 1fr; } 
+    .services-hero { padding: 80px 20px 40px; }
+    .cta-banner h2 { font-size: 2rem; }
+}

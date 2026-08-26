@@ -1,0 +1,389 @@
+/* ========================================== */
+/* VARIÁVEIS GLOBAIS (Garantia do Dark Mode)  */
+/* ========================================== */
+:root {
+  --color-primary: #3b82f6; 
+  --color-accent: #60a5fa;  
+  --color-surface: #121212; 
+  --color-surface-elevated: #1e1e1e; 
+  --color-on-surface: #ffffff; 
+  --color-border: #333333; 
+}
+/* ========================================== */
+/* NAVEGAÇÃO DESKTOP (Idêntica à Home)        */
+/* ========================================== */
+.navigation-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.navigation-main-content {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+/* Força a logo a ficar Azul igual na Home e sem sublinhado */
+.navigation-brand {
+  color: var(--color-primary) !important;
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+/* Alinhamento dos Links em linha reta */
+.navigation-links-list {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo do Texto dos Links */
+.navigation-link {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navigation-link:hover {
+  color: var(--color-primary);
+}
+
+/* Tira o sublinhado padrão de todos os links da barra */
+.navigation-wrapper a {
+  text-decoration: none;
+}
+
+/* Alinhamento dos botões da direita */
+.navigation-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Ajuste sutil no botão "Entrar" pra combinar com o fundo escuro */
+.navigation-actions .btn-outline {
+  border: 1px solid #444;
+  color: #fff;
+}
+.navigation-actions .btn-outline:hover {
+  border-color: var(--color-primary);
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.cw-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.highlight {
+  color: var(--color-primary);
+}
+
+/* ========================================== */
+/* HERO SECTION                               */
+/* ========================================== */
+.cw-hero {
+  padding: 100px 0 60px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+  background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+}
+
+.cw-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.cw-subtitle {
+  font-size: 1.2rem;
+  color: #aaaaaa;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ========================================== */
+/* PASSO A PASSO (Alternado)                  */
+/* ========================================== */
+.cw-steps {
+  padding: 80px 0;
+}
+
+.step-card {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-bottom: 80px;
+  align-items: center;
+}
+
+.step-card:last-child {
+  margin-bottom: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-number {
+  font-size: 4rem;
+  font-weight: 900;
+  color: rgba(59, 130, 246, 0.2);
+  line-height: 1;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.step-content h2 {
+  font-size: 2rem;
+  margin-bottom: 16px;
+  color: var(--color-on-surface);
+}
+
+.step-content p {
+  font-size: 1.1rem;
+  color: #aaaaaa;
+  line-height: 1.6;
+}
+
+.step-image {
+  flex: 1;
+  width: 100%;
+}
+
+.step-image img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  border: 1px solid var(--color-border);
+}
+
+/* O card falso da IA */
+.ia-mockup {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-primary);
+  border-radius: 20px;
+  padding: 60px 40px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.ia-mockup h3 { margin: 20px 0 10px; color: #fff;}
+.mockup-price { font-size: 2.5rem; font-weight: 900; color: var(--color-primary); }
+
+/* Responsivo para Desktop (Fica um lado a lado com o outro) */
+@media (min-width: 992px) {
+  .step-card {
+    flex-direction: row;
+  }
+  .step-card.reverse {
+    flex-direction: row-reverse;
+  }
+  .step-content {
+    padding: 0 40px;
+  }
+}
+
+/* ========================================== */
+/* FAQ (PERGUNTAS FREQUENTES)                 */
+/* ========================================== */
+.cw-faq {
+  padding: 60px 0 100px;
+  background-color: var(--color-surface-elevated);
+}
+
+.faq-list {
+  max-width: 800px;
+  margin: 40px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.faq-item summary {
+  padding: 24px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-on-surface);
+  outline: none;
+}
+
+/* Cria uma setinha manual bonita pro Accordion */
+.faq-item summary::after {
+  content: '+';
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  transition: transform 0.3s;
+}
+
+.faq-item[open] summary::after {
+  content: '-';
+}
+
+.faq-answer {
+  padding: 0 24px 24px;
+  color: #aaaaaa;
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+/* ========================================== */
+/* CTA FINAL                                  */
+/* ========================================== */
+.cta-final {
+  background: #0f172a;
+  padding: 80px 5%;
+  border-top: 1px solid var(--color-border);
+}
+/* ========================================== */
+/* RESPONSIVIDADE DA NAVEGAÇÃO                */
+/* ========================================== */
+@media (min-width: 992px) {
+  #navigation-mobile-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .navigation-desktop-menu, 
+  .navigation-actions {
+    display: none !important;
+  }
+  
+  #navigation-mobile-toggle {
+    display: block;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  
+  .navigation-container {
+    padding: 20px;
+  }
+}
+/* ========================================== */
+/* MENU MOBILE (PAINEL OVERLAY)               */
+/* ========================================== */
+.navigation-mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--color-surface, #121212);
+  color: var(--color-on-surface, #ffffff);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  transform: translateY(-100%); /* Fica escondido lá em cima */
+  opacity: 0;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.navigation-mobile-overlay.show-overlay {
+  transform: translateY(0); /* Desce para a tela quando clica */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ========================================== */
+/* AJUSTES GERAIS PARA CELULAR (Até 768px)    */
+/* ========================================== */
+@media (max-width: 768px) {
+  /* Diminui o título principal para caber na tela */
+  .cw-hero {
+    padding: 60px 0 40px;
+  }
+  .cw-title {
+    font-size: 2.2rem; 
+  }
+  .cw-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Ajusta o espaçamento dos Passos */
+  .cw-steps {
+    padding: 40px 0;
+  }
+  .step-card {
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+  .step-number {
+    font-size: 3rem;
+  }
+  .step-content h2 {
+    font-size: 1.6rem;
+  }
+  
+  /* Ajusta o "Card falso" da IA para não vazar */
+  .ia-mockup {
+    padding: 40px 20px;
+  }
+  .mockup-price {
+    font-size: 1.8rem;
+  }
+
+  /* Diminui as fontes do FAQ */
+  .faq-item summary {
+    font-size: 1rem;
+    padding: 16px;
+  }
+  .faq-answer {
+    font-size: 0.95rem;
+    padding: 0 16px 16px;
+  }
+
+  /* Ajusta o rodapé e a CTA Final */
+  .cta-final {
+    padding: 60px 20px;
+  }
+  .cta-final .section-title {
+    font-size: 1.8rem;
+  }
+  .btn-lg {
+    width: 100%; /* Botão ocupa a largura toda no celular para ficar mais fácil de clicar */
+  }
+}

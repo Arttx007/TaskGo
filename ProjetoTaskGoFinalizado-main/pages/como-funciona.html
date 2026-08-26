@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title>Como Funciona - TaskGO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    
+    <link rel="stylesheet" href="https://unpkg.com/animate.css@4.1.1/animate.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" />
+    
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/como-funciona.css" />
+  </head>
+  <body>
+    <div>
+      <div class="tprt-navigation-root">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" data-tag="font" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" data-tag="font" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" data-tag="font" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" data-tag="font" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" data-tag="font" />
+  
+  <style>
+    .tprt-navigation-root {  line-height: 1.15; margin: 0;}
+    .tprt-navigation-root * {  box-sizing: border-box;  border-width: 0;  border-style: solid;  -webkit-font-smoothing: antialiased;}
+    .tprt-navigation-root p, .tprt-navigation-root li, .tprt-navigation-root ul, .tprt-navigation-root pre, .tprt-navigation-root div, .tprt-navigation-root h1, .tprt-navigation-root h2, .tprt-navigation-root h3, .tprt-navigation-root h4, .tprt-navigation-root h5, .tprt-navigation-root h6, .tprt-navigation-root figure, .tprt-navigation-root blockquote, .tprt-navigation-root figcaption {  margin: 0;  padding: 0;}
+    .tprt-navigation-root button {  background-color: transparent;}
+    .tprt-navigation-root button, .tprt-navigation-root input, .tprt-navigation-root optgroup, .tprt-navigation-root select, .tprt-navigation-root textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}
+    .tprt-navigation-root button, .tprt-navigation-root select {  text-transform: none;}
+    .tprt-navigation-root button, .tprt-navigation-root [type="button"], .tprt-navigation-root [type="reset"], .tprt-navigation-root [type="submit"] {  -webkit-appearance: button;  color: inherit;}
+    .tprt-navigation-root button::-moz-focus-inner, .tprt-navigation-root [type="button"]::-moz-focus-inner, .tprt-navigation-root [type="reset"]::-moz-focus-inner, .tprt-navigation-root [type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}
+    .tprt-navigation-root button:-moz-focus, .tprt-navigation-root [type="button"]:-moz-focus, .tprt-navigation-root [type="reset"]:-moz-focus, .tprt-navigation-root [type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}
+    .tprt-navigation-root a {  color: inherit;  text-decoration: inherit;}
+    .tprt-navigation-root pre {  white-space: normal;}
+    .tprt-navigation-root input {  padding: 2px 4px;}
+    .tprt-navigation-root img {  display: block;}
+    .tprt-navigation-root details {  display: block;  margin: 0;  padding: 0;}
+    .tprt-navigation-root summary::-webkit-details-marker {  display: none;}
+    .tprt-navigation-root [data-thq="accordion"] [data-thq="accordion-content"] {  max-height: 0;  overflow: hidden;  transition: max-height 0.3s ease-in-out;  padding: 0;}
+    .tprt-navigation-root [data-thq="accordion"] details[data-thq="accordion-trigger"][open] + [data-thq="accordion-content"] {  max-height: 1000vh;}
+    .tprt-navigation-root details[data-thq="accordion-trigger"][open] summary [data-thq="accordion-icon"] {  transform: rotate(180deg);}
+    .tprt-navigation-root { scroll-behavior: smooth  }
+
+    .tprt-navigation-root {
+      font-family: Lato;
+      font-size: 1rem;
+      font-weight: 400;
+      font-style:normal;
+      text-decoration: undefined;
+      text-transform: undefined;
+      letter-spacing: 0.02em;
+      line-height: 1.6;
+      color: var(--color-on-surface);
+      background: var(--color-surface);
+      fill: var(--color-on-surface);
+    }
+
+    .tprt-navigation-root {
+      --spacing-lg: 1rem;
+      --spacing-md: 0.75rem;
+      --spacing-sm: 0.5rem;
+      --spacing-xl: 1.5rem;
+      --spacing-xs: 0.25rem;
+      --color-scrim: color-mix(in oklab, #ffffff 70%, transparent);
+      --spacing-2xl: 2rem;
+      --spacing-3xl: 3rem;
+      --spacing-4xl: 4rem;
+      --color-accent: #00b37e;
+      --color-border: #222528;
+      --font-size-lg: clamp(1.125rem, 1.2rem, 1.25rem);
+      --font-size-sm: clamp(0.875rem, 0.95rem, 1rem);
+      --font-size-xl: clamp(1.25rem, 1.35rem, 1.5rem);
+      --font-size-xs: clamp(0.75rem, 0.8rem, 0.85rem);
+      --color-neutral: #2b2f36;
+      --color-outline: #1a1d20;
+      --color-overlay: color-mix(in oklab, #ffffff 40%, transparent);
+      --color-primary: #2ea3ff;
+      --color-surface: #0f1113;
+      --divider-value: 1px solid var(--color-border);
+      --font-size-2xl: clamp(1.5rem, 1.6rem, 1.75rem);
+      --font-size-3xl: clamp(2.2rem, 2.4rem, 2.6rem);
+      --font-size-4xl: clamp(3rem, 3.4rem, 4rem);
+      --font-size-base: clamp(0.95rem, 1rem, 1rem);
+      --shadow-level-1: 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-level-2: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --shadow-level-3: 0 12px 32px rgba(0, 0, 0, 0.18);
+      --color-backplate: color-mix(in oklab, #ffffff 60%, transparent);
+      --color-on-accent: #ffffff;
+      --color-secondary: #169988;
+      --border-radius-lg: 12px;
+      --border-radius-md: 8px;
+      --border-radius-sm: 4px;
+      --border-radius-xl: 16px;
+      --color-on-primary: #ffffff;
+      --color-on-surface: #f8fafb;
+      --font-family-body: "Lato", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --font-weight-body: 400;
+      --line-height-body: 1.6;
+      --content-max-width: 76rem;
+      --border-radius-card: 12px;
+      --border-radius-full: 9999px;
+      --border-radius-none: 0px;
+      --color-on-secondary: #ffffff;
+      --font-style-heading: normal;
+      --font-weight-medium: 500;
+      --font-family-heading: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --font-weight-heading: 600;
+      --letter-spacing-body: 0.02em;
+      --line-height-heading: 1.25;
+      --dl-layout-size-large: 144px;
+      --dl-layout-size-small: 48px;
+      --dl-layout-space-unit: 16px;
+      --border-radius-control: 8px;
+      --dl-layout-size-medium: 96px;
+      --dl-layout-size-xlarge: 192px;
+      --dl-layout-size-xsmall: 16px;
+      --font-style-subheading: normal;
+      --color-surface-elevated: color-mix(in oklab, var(--color-surface) 92%, var(--color-secondary));
+      --dl-color-theme-accent1: #FFFFFF;
+      --dl-color-theme-accent2: #F5D1B0;
+      --dl-layout-radius-round: 50%;
+      --dl-layout-size-xxlarge: 288px;
+      --letter-spacing-heading: 0.01em;
+      --text-transform-heading: none;
+      --dl-color-theme-primary1: #BF4408;
+      --dl-color-theme-primary2: #E65103;
+      --dl-layout-size-maxwidth: 1400px;
+      --dl-layout-radius-radius2: 2px;
+      --dl-layout-radius-radius4: 4px;
+      --dl-layout-radius-radius8: 8px;
+      --dl-layout-space-halfunit: 8px;
+      --dl-layout-space-sixunits: 96px;
+      --dl-layout-space-twounits: 32px;
+      --dl-color-theme-secondary1: #FFFFFF;
+      --dl-color-theme-secondary2: #FBF1EB;
+      --dl-layout-space-fiveunits: 80px;
+      --dl-layout-space-fourunits: 64px;
+      --color-on-surface-secondary: #c9d6df;
+      --dl-layout-space-threeunits: 48px;
+      --dl-color-theme-neutral-dark: #191818;
+      --dl-layout-radius-cardradius: 8px;
+      --dl-color-theme-neutral-light: #FBFAF9;
+      --dl-layout-radius-imageradius: 8px;
+      --dl-layout-radius-inputradius: 24px;
+      --dl-layout-radius-buttonradius: 24px;
+      --dl-layout-space-oneandhalfunits: 24px;
+    }
+
+    .tprt-navigation-root .btn {
+      gap: var(--spacing-xs);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      padding: var(--spacing-md) var(--spacing-lg);
+      font-size: var(--font-size-base);
+      box-shadow: var(--shadow-level-1);
+      text-align: center;
+      transition: all 0.2s ease-in-out;
+      align-items: center;
+      font-family: var(--font-family-body);
+      font-weight: var(--font-weight-medium);
+      line-height: var(--line-height-body);
+      user-select: none;
+      white-space: nowrap;
+      border-radius: var(--border-radius-control);
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .tprt-navigation-root .btn-primary {
+      color: var(--color-on-primary);
+      border-color: var(--color-primary);
+      background-color: var(--color-primary);
+    }
+
+    .tprt-navigation-root .btn-outline {
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      background-color: var(--color-surface);
+    }
+
+    .tprt-navigation-root .btn-sm { padding: var(--spacing-sm) var(--spacing-md); }
+    .tprt-navigation-root .btn-lg { padding: var(--spacing-lg) var(--spacing-xl); }
+
+    .tprt-navigation-root .section-title {
+      font-size: var(--font-size-3xl);
+      font-style: var(--font-style-heading);
+      font-family: var(--font-family-heading);
+      font-weight: var(--font-weight-heading);
+      line-height: var(--line-height-heading);
+      letter-spacing: var(--letter-spacing-heading);
+      text-transform: var(--text-transform-heading);
+    }
+
+    .tprt-navigation-root .btn:focus-visible { outline: 2px solid var(--color-outline); outline-offset: 2px; }
+    .tprt-navigation-root .btn:disabled { cursor: not-allowed; opacity: 0.6; pointer-events: none; }
+
+    .tprt-navigation-root .btn-primary:hover:not(:disabled) {
+      border-color: color-mix(in oklab, var(--color-primary) 90%, var(--color-surface));
+      background-color: color-mix(in oklab, var(--color-primary) 90%, var(--color-surface));
+    }
+
+    .tprt-navigation-root .btn-outline:hover:not(:disabled) {
+      color: var(--color-on-primary);
+      border-color: var(--color-primary);
+      background-color: var(--color-primary);
+    }
+
+    .tprt-navigation-root .navigation-wrapper {
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      position: sticky;
+      transition: background-color 0.3s ease;
+      border-bottom: var(--divider-value);
+      background-color: var(--color-surface);
+    }
+
+    .tprt-navigation-root .navigation-container {
+      height: 80px;
+      margin: 0 auto;
+      display: flex;
+      padding: var(--spacing-md) var(--spacing-xl);
+      max-width: var(--content-max-width);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tprt-navigation-root .navigation-main-content { gap: var(--spacing-4xl); flex: 1; display: flex; align-items: center; }
+    .tprt-navigation-root .navigation-sidebar { gap: var(--spacing-lg); display: flex; align-items: center; }
+    .tprt-navigation-root .navigation-logo-link { display: flex; align-items: center; text-decoration: none; }
+    .tprt-navigation-root .navigation-desktop-menu { display: flex; align-items: center; }
+    .tprt-navigation-root .navigation-actions { gap: var(--spacing-md); display: flex; align-items: center; }
+    .tprt-navigation-root .navigation-toggle-btn { color: var(--color-on-surface); border: none; cursor: pointer; display: none; padding: var(--spacing-sm); background: none; }
+    .tprt-navigation-root .navigation-brand { color: var(--color-primary); margin: 0; font-size: var(--font-size-2xl); }
+    .tprt-navigation-root .navigation-links-list { gap: var(--spacing-2xl); margin: 0; display: flex; padding: 0; list-style: none; }
+    .tprt-navigation-root .navigation-auth-btn { gap: var(--spacing-sm); color: var(--color-on-surface); display: flex; border-color: var(--color-border); }
+    .tprt-navigation-root .navigation-cta-btn { gap: var(--spacing-sm); display: flex; }
+
+    .tprt-navigation-root .navigation-link {
+      color: var(--color-on-surface);
+      padding: var(--spacing-xs) 0;
+      position: relative;
+      font-size: var(--font-size-sm);
+      transition: color 0.2s ease;
+      font-family: var(--font-family-body);
+      font-weight: var(--font-weight-medium);
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .tprt-navigation-root .navigation-mobile-overlay {
+      inset: 0;
+      display: none;
+      z-index: 1100;
+      position: fixed;
+      transform: translateX(100%);
+      min-height: 100vh;
+      overflow-y: auto;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-direction: column;
+      background-color: var(--color-surface);
+    }
+
+    .tprt-navigation-root .navigation-overlay-header {
+      top: 0;
+      height: 80px;
+      display: flex;
+      padding: var(--spacing-md) var(--spacing-xl);
+      z-index: 1110;
+      position: sticky;
+      align-items: center;
+      border-bottom: var(--divider-value);
+      justify-content: space-between;
+      background-color: var(--color-surface);
+    }
+
+    .tprt-navigation-root .navigation-overlay-content { gap: var(--spacing-4xl); flex: 1; display: flex; padding: var(--spacing-3xl) var(--spacing-xl); flex-direction: column; }
+    .tprt-navigation-root .navigation-close-btn { color: var(--color-on-surface); border: none; cursor: pointer; padding: var(--spacing-sm); background: none; }
+    .tprt-navigation-root .navigation-mobile-links { gap: var(--spacing-xl); margin: 0; display: flex; padding: 0; list-style: none; flex-direction: column; }
+    .tprt-navigation-root .navigation-mobile-footer { gap: var(--spacing-md); display: flex; margin-top: auto; flex-direction: column; padding-bottom: var(--spacing-4xl); }
+    .tprt-navigation-root .navigation-mobile-cta { width: 100%; }
+    .tprt-navigation-root .navigation-mobile-auth { color: var(--color-on-surface); width: 100%; border-color: var(--color-border); }
+    
+    .tprt-navigation-root .navigation-mobile-link {
+      color: var(--color-on-surface);
+      font-size: var(--font-size-3xl);
+      transition: color 0.2s ease;
+      font-family: var(--font-family-heading);
+      font-weight: var(--font-weight-heading);
+      text-decoration: none;
+    }
+
+    .tprt-navigation-root .navigation-link::after { left: 0; width: 0; bottom: 0; height: 2px; content: ""; position: absolute; transition: width 0.3s ease; background-color: var(--color-primary); }
+    .tprt-navigation-root .navigation-link:hover { color: var(--color-primary); }
+    .tprt-navigation-root .navigation-link:hover::after { width: 100%; }
+    .tprt-navigation-root .navigation-auth-btn:hover { color: var(--color-primary); border-color: var(--color-primary); background-color: transparent; }
+    .tprt-navigation-root .navigation-mobile-overlay.is-active { display: flex; transform: translateX(0); }
+    .tprt-navigation-root .navigation-mobile-link:hover { color: var(--color-primary); }
+
+    @media(max-width: 991px) { .tprt-navigation-root .navigation-main-content { gap: var(--spacing-xl); } }
+    @media(max-width: 767px) {
+      .tprt-navigation-root .navigation-container { height: 70px; }
+      .tprt-navigation-root .navigation-desktop-menu, .tprt-navigation-root .navigation-actions { display: none; }
+      .tprt-navigation-root .navigation-toggle-btn { display: block; }
+      .tprt-navigation-root .navigation-overlay-header { height: 70px; }
+    }
+    @media(max-width: 479px) {
+      .tprt-navigation-root .navigation-container { padding: var(--spacing-md) var(--spacing-lg); }
+      .tprt-navigation-root .navigation-mobile-link { font-size: var(--font-size-2xl); }
+    }
+
+    .tprt-navigation-root .navigation-container1, .tprt-navigation-root .navigation-container3 { display: contents; }
+    .tprt-navigation-root .navigation-container2 { display: none; }
+  </style>
+  
+  <div class="navigation-container1">
+    <nav class="navigation-wrapper">
+      <div class="navigation-container">
+        <div class="navigation-main-content">
+          <a href="../index.html">
+            <div aria-label="TaskGO Home" class="navigation-logo-link">
+              <span class="navigation-brand section-title">TaskGO</span>
+            </div>
+          </a>
+          <div class="navigation-desktop-menu">
+            <ul class="navigation-links-list">
+              <li class="navigation-item">
+                <a href="../index.html">
+                  <div class="navigation-link"><span>Início</span></div>
+                </a>
+              </li>
+              <li class="navigation-item">
+                <a href="como-funciona.html">
+                  <div class="navigation-link"><span>Como Funciona</span></div>
+                </a>
+              </li>
+              <li class="navigation-item">
+                <a href="servicos.html">
+                  <div class="navigation-link"><span>Serviços</span></div>
+                </a>
+              </li>
+              <li class="navigation-item">
+                <a href="profissionais-prximos.html">
+                  <div class="navigation-link"><span>Para Profissionais</span></div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <aside class="navigation-sidebar">
+          <div class="navigation-actions">
+            <a href="login.html">
+              <div class="navigation-auth-btn btn btn-outline btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Entrar</span>
+              </div>
+            </a>
+            <a href="profissionais-prximos.html">
+              <div class="navigation-cta-btn btn btn-sm btn-primary">
+                <span>Contratar</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14m-7-7l7 7l-7 7"></path>
+                </svg>
+              </div>
+            </a>
+          </div>
+          <button id="navigation-mobile-toggle" aria-expanded="false" aria-controls="navigation-mobile-overlay" aria-label="Abrir menu" class="navigation-toggle-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </aside>
+      </div>
+    </nav>
+    <div id="navigation-mobile-overlay" class="navigation-mobile-overlay">
+      <div class="navigation-overlay-header">
+        <a href="../index.html">
+          <div class="navigation-logo-link">
+            <span class="navigation-brand section-title">TaskGO</span>
+          </div>
+        </a>
+        <button id="navigation-mobile-close" aria-label="Fechar menu" class="navigation-close-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="navigation-overlay-content">
+        <ul class="navigation-mobile-links">
+          <li class="navigation-mobile-item">
+            <a href="../index.html">
+              <div class="navigation-mobile-link"><span>Início</span></div>
+            </a>
+          </li>
+          <li class="navigation-mobile-item">
+            <a href="como-funciona.html">
+              <div class="navigation-mobile-link"><span>Como Funciona</span></div>
+            </a>
+          </li>
+          <li class="navigation-mobile-item">
+            <a href="servicos.html">
+              <div class="navigation-mobile-link"><span>Serviços</span></div>
+            </a>
+          </li>
+          <li class="navigation-mobile-item">
+            <a href="profissionais-prximos.html">
+              <div class="navigation-mobile-link"><span>Para Profissionais</span></div>
+            </a>
+          </li>
+        </ul>
+        <div class="navigation-mobile-footer">
+          <a href="profissionais-prximos.html">
+            <div class="navigation-mobile-cta btn btn-primary btn-lg">
+              <span>Começar Agora</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14m-7-7l7 7l-7 7"></path>
+              </svg>
+            </div>
+          </a>
+          <a href="login.html">
+            <div class="navigation-mobile-auth btn btn-outline btn-lg">
+              <span>Entrar na Conta</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="navigation-container2">
+      <div class="navigation-container3">
+        <script defer data-name="navigation-logic">
+          document.addEventListener('DOMContentLoaded', function() {
+            (function(){
+              const mobileToggle = document.getElementById("navigation-mobile-toggle")
+              const mobileClose = document.getElementById("navigation-mobile-close")
+              const mobileOverlay = document.getElementById("navigation-mobile-overlay")
+              const mobileLinks = document.querySelectorAll(".navigation-mobile-link")
+
+              const openMenu = () => {
+                mobileOverlay.style.display = "flex"
+                setTimeout(() => {
+                  mobileOverlay.classList.add("is-active")
+                  mobileToggle.setAttribute("aria-expanded", "true")
+                  document.body.style.overflow = "hidden"
+                }, 10)
+              }
+
+              const closeMenu = () => {
+                mobileOverlay.classList.remove("is-active")
+                mobileToggle.setAttribute("aria-expanded", "false")
+                document.body.style.overflow = ""
+                setTimeout(() => {
+                  if (!mobileOverlay.classList.contains("is-active")) {
+                    mobileOverlay.style.display = "none"
+                  }
+                }, 400)
+              }
+
+              mobileToggle.addEventListener("click", openMenu)
+              mobileClose.addEventListener("click", closeMenu)
+
+              mobileLinks.forEach((link) => {
+                link.addEventListener("click", closeMenu)
+              })
+
+              document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && mobileOverlay.classList.contains("is-active")) {
+                  closeMenu()
+                }
+              })
+
+              window.addEventListener("scroll", () => {
+                const nav = document.querySelector(".navigation-wrapper")
+                if (window.scrollY > 20) {
+                  nav.style.boxShadow = "var(--shadow-level-2)"
+                  nav.style.backgroundColor = "color-mix(in oklab, var(--color-surface) 95%, transparent)"
+                  nav.style.backdropFilter = "blur(8px)"
+                } else {
+                  nav.style.boxShadow = "none"
+                  nav.style.backgroundColor = "var(--color-surface)"
+                  nav.style.backdropFilter = "none"
+                }
+              })
+            })()
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <main class="cw-page">
+        <section class="cw-hero">
+          <div class="cw-container">
+            <h1 class="cw-title animate__animated animate__fadeInUp">Resolvendo seus problemas em <span class="highlight">4 passos simples</span></h1>
+            <p class="cw-subtitle animate__animated animate__fadeInUp animate__delay-1s">A tecnologia do TaskGO une transparência, segurança e inteligência artificial para conectar você aos melhores profissionais da sua região.</p>
+          </div>
+        </section>
+
+        <section class="cw-steps">
+          <div class="cw-container">
+            
+            <div class="step-card reveal-on-scroll">
+              <div class="step-content">
+                <span class="step-number">01</span>
+                <h2>Busque pelo serviço desejado</h2>
+                <p>Selecione o que você precisa, seja um eletricista, encanador ou pedreiro. Informe seu endereço ou CEP e a complexidade do projeto.</p>
+              </div>
+              <div class="step-image">
+                <img src="https://images.pexels.com/photos/4033148/pexels-photo-4033148.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Pessoa buscando no celular">
+              </div>
+            </div>
+
+            <div class="step-card reverse reveal-on-scroll">
+              <div class="step-content">
+                <span class="step-number">02</span>
+                <h2>Receba uma estimativa via IA</h2>
+                <p>Antes mesmo de falar com o profissional, nossa Inteligência Artificial calcula uma faixa de preço justa baseada no mercado local e na distância, eliminando surpresas.</p>
+              </div>
+              <div class="step-image">
+                <div class="ia-mockup">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18V5m3 8a4.17 4.17 0 0 1-3-4a4.17 4.17 0 0 1-3 4m8.598-6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"></path><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path><path d="M18 18a4 4 0 0 0 2-7.464"></path><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"></path><path d="M6 18a4 4 0 0 1-2-7.464"></path><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path></svg>
+                  <h3>Preço Estimado</h3>
+                  <span class="mockup-price">R$ 150 - R$ 220</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-card reveal-on-scroll">
+              <div class="step-content">
+                <span class="step-number">03</span>
+                <h2>Escolha, Agende e Pague Seguro</h2>
+                <p>Analise o portfólio e as avaliações de profissionais próximos. Agende o melhor horário e faça o pagamento retido no app — o dinheiro só é liberado após a conclusão do serviço.</p>
+              </div>
+              <div class="step-image">
+                <img src="https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Pagamento seguro">
+              </div>
+            </div>
+
+            <div class="step-card reverse reveal-on-scroll">
+              <div class="step-content">
+                <span class="step-number">04</span>
+                <h2>Aprovação por Fotos e Avaliação</h2>
+                <p>O profissional envia fotos do "Antes e Depois" pelo aplicativo. Você aprova o serviço e avalia o profissional, ajudando a manter nossa comunidade segura e qualificada.</p>
+              </div>
+              <div class="step-image">
+                <img src="https://images.pexels.com/photos/8961699/pexels-photo-8961699.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Trabalho concluído">
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="cw-faq">
+          <div class="cw-container">
+            <h2 class="section-title text-center" style="text-align: center;">Perguntas Frequentes</h2>
+            <div class="faq-list reveal-on-scroll">
+              
+              <details class="faq-item">
+                <summary>Como a Inteligência Artificial calcula o preço?</summary>
+                <div class="faq-answer">
+                  <p>Nossa IA analisa milhares de orçamentos reais realizados na sua cidade, cruzando informações como o tipo de serviço, a complexidade (escala) e a distância do profissional até a sua casa, gerando uma estimativa incrivelmente precisa.</p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary>O pagamento é seguro?</summary>
+                <div class="faq-answer">
+                  <p>100% seguro. Usamos um sistema de retenção de fundos. Você paga pelo app, mas o dinheiro fica guardado com o TaskGO. O profissional só recebe o valor após você confirmar que o serviço foi executado corretamente.</p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary>E se o profissional não aparecer?</summary>
+                <div class="faq-answer">
+                  <p>Caso o profissional cancele ou não compareça, você é reembolsado integralmente de forma imediata, e nossa equipe ajuda a realocar outro profissional com urgência para o seu caso.</p>
+                </div>
+              </details>
+
+            </div>
+          </div>
+        </section>
+
+        <section class="cta-final">
+          <div class="cta-final__container" style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <h2 class="section-title" style="color: #fff;">Não adie mais aquele reparo.</h2>
+            <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 1.1rem;">Contrate agora um profissional de confiança com preço justo.</p>
+            <a href="profissionais-prximos.html" class="btn btn-primary btn-lg">Buscar Profissionais</a>
+          </div>
+        </section>
+      </main>
+
+      <footer style="background: #0f172a; padding: 40px 20px; border-top: 1px solid #333; text-align: center; color: #888;">
+        <h2 style="color: white; margin-bottom: 10px;">TaskGO</h2>
+        <p>© 2026 TaskGO Tecnologia. Todos os direitos reservados.</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Menu Mobile Toggle
+        const btn = document.getElementById('navigation-mobile-toggle');
+        const menu = document.getElementById('navigation-mobile-overlay');
+        const close = document.getElementById('navigation-mobile-close');
+
+        if(btn && menu && close) {
+          btn.onclick = () => menu.classList.add('show-overlay');
+          close.onclick = () => menu.classList.remove('show-overlay');
+        }
+
+        // Animação de Scroll
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if(entry.isIntersecting) {
+              entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+              entry.target.style.opacity = 1;
+            }
+          });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+          el.style.opacity = 0;
+          observer.observe(el);
+        });
+      });
+    </script>
+  </body>
+</html>

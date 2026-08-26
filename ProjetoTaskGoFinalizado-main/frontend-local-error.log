@@ -1,0 +1,21 @@
+127.0.0.1 - - [19/Aug/2026 18:23:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:23:19] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:30] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:44] "GET /assets/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:44] "GET /assets/css/index.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:44] "GET /assets/js/footer.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:44] "GET /assets/js/navigation.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:44] "GET /assets/js/index.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:26:47] code 404, message File not found
+127.0.0.1 - - [19/Aug/2026 18:26:47] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [19/Aug/2026 18:27:06] "GET /pages/login.html HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:27:06] "GET /assets/css/login.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:27:10] "GET /pages/cadastro.html HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:27:10] "GET /assets/css/cadastro.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:27:10] "GET /assets/js/cadastro.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:27:42] "GET /pages/painel-profissional.html HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:29:51] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:30:26] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 18:32:09] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [19/Aug/2026 20:23:55] "GET /index.html HTTP/1.1" 304 -

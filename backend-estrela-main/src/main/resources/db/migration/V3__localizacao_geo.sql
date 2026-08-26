@@ -1,0 +1,3 @@
+ALTER TABLE dim_localizacao
+    ADD COLUMN latitude DOUBLE PRECISION,
+    ADD COLUMN longitude DOUBLE PRECISION;

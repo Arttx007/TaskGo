@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskGO Admin - Painel de Controle</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/painel.css">
+
+    <style>
+        #toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
+
+        .sidebar-logo span { color: var(--primary-blue); font-size: 14px; background: rgba(29,161,242,0.1); padding: 4px 8px; border-radius: 6px; }
+
+        .btn-danger {
+            background-color: var(--danger-red); color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+        }
+        .btn-danger:hover { background-color: #c0392b; transform: translateY(-2px); }
+        .btn-danger:disabled, .btn-primary:disabled, .btn-outline:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .pill-danger { background: rgba(231, 76, 60, 0.1); color: var(--danger-red); }
+        .pill-progress { background: rgba(241, 196, 15, 0.1); color: var(--warning-yellow); }
+
+        .kyc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+        .kyc-card { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        .kyc-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .kyc-card-header h3 { font-size: 18px; font-weight: 700; }
+        .kyc-sub { color: var(--text-gray); font-size: 13px; margin-top: 4px; }
+        .kyc-info { color: var(--text-gray); font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .kyc-docs { display: flex; flex-direction: column; gap: 10px; }
+        .kyc-actions { display: flex; gap: 12px; margin-top: auto; }
+        .kyc-actions button { flex: 1; }
+
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-gray); }
+        .empty-state i { font-size: 40px; color: var(--success-green); margin-bottom: 15px; display: block; }
+        .empty-state h3 { color: white; font-size: 18px; margin-bottom: 6px; }
+
+        .param-descricao { color: var(--text-gray); font-size: 12px; margin-top: 4px; }
+        .param-input {
+            width: 100%; max-width: 180px; background: var(--bg-dark); border: 1px solid var(--border-color);
+            color: var(--text-white); padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none;
+        }
+        .param-input:focus { border-color: var(--primary-blue); }
+        .btn-salvar-parametro {
+            background-color: var(--primary-blue); color: white; border: none; padding: 10px 18px;
+            border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-salvar-parametro:hover { background-color: var(--primary-hover); }
+        .btn-salvar-parametro:disabled { opacity: 0.6; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <div class="dashboard-layout">
+
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="../index.html" style="color: var(--text-white); text-decoration: none; display: flex; align-items: center; gap: 8px;">TaskGO <span>ADMIN</span></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="mudarAba(event, 'aba-dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="#" class="nav-item" onclick="mudarAba(event, 'aba-kyc')"><i class="fas fa-user-check"></i> Verificação KYC <span class="badge" id="kyc-count" style="display:none; margin-left: auto;">0</span></a>
+                <a href="#" class="nav-item" onclick="mudarAba(event, 'aba-parametros')"><i class="fas fa-sliders-h"></i> Parâmetros</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn" onclick="TaskGoAPI.logout()"><i class="fas fa-sign-out-alt"></i> Sair da Conta</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="top-header">
+                <div class="welcome-text">
+                    <h1>Painel do Administrador</h1>
+                    <p id="boas-vindas">Visão geral da operação e verificações pendentes.</p>
+                </div>
+            </header>
+
+            <div id="aba-dashboard" class="conteudo-aba active">
+                <section class="stats-grid" id="stats-grid">
+                    <div class="stat-card glass-card"><div class="stat-icon icon-blue"><i class="fas fa-users"></i></div><div class="stat-info"><p>Clientes</p><h3 id="stat-clientes">—</h3></div></div>
+                    <div class="stat-card glass-card"><div class="stat-icon icon-blue"><i class="fas fa-user-tie"></i></div><div class="stat-info"><p>Prestadores</p><h3 id="stat-prestadores">—</h3></div></div>
+                    <div class="stat-card glass-card"><div class="stat-icon icon-green"><i class="fas fa-briefcase"></i></div><div class="stat-info"><p>Serviços Totais</p><h3 id="stat-servicos">—</h3></div></div>
+                    <div class="stat-card glass-card"><div class="stat-icon icon-yellow"><i class="fas fa-clock"></i></div><div class="stat-info"><p>Agendados</p><h3 id="stat-agendados">—</h3></div></div>
+                    <div class="stat-card glass-card"><div class="stat-icon icon-green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><p>Concluídos</p><h3 id="stat-concluidos">—</h3></div></div>
+                    <div class="stat-card glass-card"><div class="stat-icon icon-blue" style="background: rgba(231, 76, 60, 0.1); color: var(--danger-red);"><i class="fas fa-times-circle"></i></div><div class="stat-info"><p>Cancelados</p><h3 id="stat-cancelados">—</h3></div></div>
+                </section>
+            </div>
+
+            <div id="aba-kyc" class="conteudo-aba">
+                <div class="section-header">
+                    <h2><i class="fas fa-user-check" style="color: var(--primary-blue);"></i> Prestadores Aguardando Verificação</h2>
+                </div>
+                <div class="kyc-grid" id="kyc-container">
+                    <div class="empty-state"><i class="fas fa-circle-notch fa-spin"></i>Carregando…</div>
+                </div>
+            </div>
+
+            <div id="aba-parametros" class="conteudo-aba">
+                <div class="section-header">
+                    <h2><i class="fas fa-sliders-h" style="color: var(--text-gray);"></i> Parâmetros de Negócio</h2>
+                </div>
+                <section class="table-wrapper glass-card">
+                    <table id="parametros-table">
+                        <thead><tr><th>Parâmetro</th><th>Valor</th><th></th></tr></thead>
+                        <tbody>
+                            <tr><td colspan="3" style="text-align:center; color: var(--text-gray);">Carregando parâmetros…</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+    <script src="../assets/js/painel-administrador.js"></script>
+</body>
+</html>

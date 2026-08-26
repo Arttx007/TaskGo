@@ -1,0 +1,176 @@
+/* Configurações Globais idênticas ao Login */
+:root {
+    --bg-dark: #090b0e;
+    --card-bg: #15181e;
+    --primary-blue: #1DA1F2;
+    --primary-hover: #1a8ce6;
+    --text-white: #ffffff;
+    --text-gray: #a0a4ab;
+    --border-color: #2a2e35;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+body { background-color: var(--bg-dark); color: var(--text-white); min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Navbar (Mesma do login) */
+.navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background-color: rgba(9, 11, 14, 0.9); border-bottom: 1px solid var(--border-color); position: relative; z-index: 10; }
+.logo { font-size: 24px; font-weight: 700; color: var(--primary-blue); text-decoration: none; }
+.nav-links { display: flex; gap: 30px; }
+.nav-links a { color: var(--text-white); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.3s; }
+.nav-links a:hover { color: var(--primary-blue); }
+.nav-actions { display: flex; align-items: center; gap: 20px; }
+.btn-text { color: var(--text-white); text-decoration: none; font-size: 14px; font-weight: 500; display: flex; gap: 8px; align-items: center; transition: 0.3s; }
+.btn-text:hover { color: var(--primary-blue); }
+
+/* Fundo da tela de Cadastro */
+.register-background {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1504307651254-35680f356f12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    background-attachment: fixed;
+}
+
+/* Card de Cadastro (Um pouco mais largo que o de login para caber os campos) */
+.register-card {
+    background-color: var(--card-bg);
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.register-header { text-align: center; margin-bottom: 30px; }
+.register-header h2 { font-size: 28px; margin-bottom: 10px; font-weight: 700; }
+.register-header p { color: var(--text-gray); font-size: 14px; line-height: 1.5; }
+
+/* Formulário e Inputs */
+.input-group { margin-bottom: 20px; }
+.input-group label { font-size: 13px; color: var(--text-white); font-weight: 500; display: block; margin-bottom: 8px; }
+
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"] {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.input-group input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.2); }
+
+.password-wrapper { position: relative; }
+.password-wrapper i { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-gray); cursor: pointer; transition: 0.3s; }
+.password-wrapper i:hover { color: var(--text-white); }
+
+/* Seleção do Tipo de Conta (Botões Radio customizados) */
+.account-type-options { display: flex; gap: 15px; }
+.type-radio { flex: 1; cursor: pointer; }
+.type-radio input { display: none; /* Esconde a bolinha padrão do radio */ }
+.radio-card {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    border: 1px solid var(--border-color);
+    padding: 15px; border-radius: 8px;
+    color: var(--text-gray); font-size: 13px; font-weight: 500;
+    transition: 0.3s; text-align: center; background: rgba(255,255,255,0.02);
+}
+.radio-card i { font-size: 20px; }
+/* Efeito quando selecionado */
+.type-radio input:checked + .radio-card {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    background: rgba(29, 161, 242, 0.08);
+}
+
+/* Checkbox de Termos */
+.terms-group { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 25px; }
+.terms-group input { margin-top: 3px; cursor: pointer; accent-color: var(--primary-blue); }
+.terms-group label { font-size: 13px; color: var(--text-gray); line-height: 1.5; }
+.terms-group a { color: var(--primary-blue); text-decoration: none; }
+.terms-group a:hover { text-decoration: underline; }
+
+/* Botões */
+.btn-register {
+    width: 100%; background-color: var(--primary-blue); color: white;
+    border: none; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 16px;
+    cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;
+}
+.btn-register:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(29, 161, 242, 0.3); }
+
+/* Divisor e Social */
+.divider { display: flex; align-items: center; text-align: center; margin: 25px 0; color: var(--text-gray); font-size: 11px; letter-spacing: 1px; }
+.divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+.divider span { padding: 0 10px; }
+
+.social-login { display: flex; gap: 15px; margin-bottom: 25px; }
+.btn-social {
+    flex: 1; background: transparent; border: 1px solid var(--border-color);
+    color: white; padding: 12px; border-radius: 8px; cursor: pointer;
+    display: flex; justify-content: center; align-items: center; gap: 10px; font-weight: 500; transition: 0.3s;
+}
+.btn-social:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--text-white); }
+.btn-social img { width: 18px; }
+
+/* Footer do Card */
+.login-link { text-align: center; color: var(--text-gray); font-size: 14px; line-height: 1.6; }
+.login-link a { color: var(--primary-blue); text-decoration: none; font-weight: 600; }
+.login-link a:hover { text-decoration: underline; }
+/* Container dos botões sociais */
+.social-login { 
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 25px; 
+}
+
+/* Estilo do botão em si */
+.btn-social {
+    flex: 1; 
+    background: transparent; 
+    border: 1px solid var(--border-color);
+    color: white; 
+    padding: 12px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    
+    /* Isso faz o ícone e o texto ficarem alinhados lado a lado */
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px; 
+    
+    font-weight: 500; 
+    transition: 0.3s;
+}
+
+/* Tamanho exato para a imagem do Google */
+.btn-social img { 
+    width: 18px; 
+    height: 18px;
+}
+
+/* Validação de formulário (assets/js/validacao.js) */
+.has-error {
+    border-color: #e5484d !important;
+}
+.field-error {
+    display: block;
+    color: #e5484d;
+    font-size: 13px;
+    margin-top: 4px;
+    min-height: 1.2em;
+}
+
+/* Efeito ao passar o mouse */
+.btn-social:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-white);
+}
