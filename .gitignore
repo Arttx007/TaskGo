@@ -1,0 +1,63 @@
+# ==========================================================
+# Segredos e configuração sensível
+# Nunca versionar credenciais reais — use variáveis de ambiente
+# (ex.: TASKGO_JWT_SECRET, TASKGO_ADMIN_SENHA) ou um arquivo
+# application-local.properties fora do controle de versão.
+# ==========================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+application-local.properties
+application-secrets.properties
+application-*.local.properties
+**/src/main/resources/application-local.yml
+
+# ==========================================================
+# Documentos de KYC enviados por prestadores (dados pessoais
+# sensíveis — RG, comprovante PIX). Nunca devem ir para o repo.
+# ==========================================================
+backend-estrela-main/storage/
+
+# ==========================================================
+# Logs locais
+# ==========================================================
+*.log
+*.log.*
+
+# ==========================================================
+# Node (caso ferramentas como `npx serve` ou `npx playwright`
+# sejam instaladas localmente no frontend)
+# ==========================================================
+node_modules/
+npm-debug.log*
+
+# ==========================================================
+# IDEs e editores
+# ==========================================================
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# ==========================================================
+# Sistema operacional
+# ==========================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================================================
+# Ferramentas de IA — configuração local do Claude Code
+# (permissões e caminhos da máquina de quem desenvolve;
+# skills e comandos compartilhados continuam versionados)
+# ==========================================================
+.claude/settings.local.json
