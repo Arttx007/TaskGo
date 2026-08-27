@@ -2,7 +2,6 @@ package com.example.Estrela.Controller;
 
 import com.example.Estrela.Entity.Tempo;
 import com.example.Estrela.repository.TempoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/tempos")
 public class TempoController {
 
-    @Autowired
-    private TempoRepository repository;
+    private final TempoRepository repository;
+
+    public TempoController(TempoRepository repository) {
+        this.repository = repository;
+    }
 
     @PostMapping
     public Tempo criar(@RequestBody Tempo tempo) {

@@ -2,7 +2,6 @@ package com.example.Estrela.Controller;
 
 import com.example.Estrela.Entity.Localizacao;
 import com.example.Estrela.repository.LocalizacaoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/localizacoes")
 public class LocalizacaoController {
 
-    @Autowired
-    private LocalizacaoRepository repository;
+    private final LocalizacaoRepository repository;
+
+    public LocalizacaoController(LocalizacaoRepository repository) {
+        this.repository = repository;
+    }
 
     @PostMapping
     public Localizacao criar(@RequestBody Localizacao localizacao) {

@@ -2,7 +2,6 @@ package com.example.Estrela.Controller;
 
 import com.example.Estrela.Entity.StatusSolicitacao;
 import com.example.Estrela.repository.FatoServicoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +13,11 @@ import java.util.Map;
 @RequestMapping("/relatorio")
 public class RelatorioController {
 
-    @Autowired
-    private FatoServicoRepository repository;
+    private final FatoServicoRepository repository;
+
+    public RelatorioController(FatoServicoRepository repository) {
+        this.repository = repository;
+    }
 
     @GetMapping
     public Map<String, Object> relatorio() {

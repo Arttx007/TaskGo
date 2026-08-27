@@ -3,7 +3,6 @@ package com.example.Estrela.Controller;
 import com.example.Estrela.repository.ClienteRepository;
 import com.example.Estrela.repository.FatoServicoRepository;
 import com.example.Estrela.repository.PrestadorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,14 +14,17 @@ import java.util.Map;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    @Autowired
-    private FatoServicoRepository servicoRepo;
+    private final FatoServicoRepository servicoRepo;
+    private final ClienteRepository clienteRepo;
+    private final PrestadorRepository prestadorRepo;
 
-    @Autowired
-    private ClienteRepository clienteRepo;
-
-    @Autowired
-    private PrestadorRepository prestadorRepo;
+    public DashboardController(FatoServicoRepository servicoRepo,
+                                ClienteRepository clienteRepo,
+                                PrestadorRepository prestadorRepo) {
+        this.servicoRepo = servicoRepo;
+        this.clienteRepo = clienteRepo;
+        this.prestadorRepo = prestadorRepo;
+    }
 
     @GetMapping
     public Map<String, Object> dashboard() {
