@@ -160,8 +160,7 @@ public class FatoServicoService {
      */
     @Transactional
     public FatoServico cancelar(Long id, Long usuarioIdAutenticado, TipoUsuario papelAutenticado) {
-        FatoServico servico = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Solicitação não encontrada"));
+        FatoServico servico = buscarSolicitacao(id);
 
         boolean donoComoCliente = papelAutenticado == TipoUsuario.CLIENTE
                 && servico.getCliente().getIdCliente().equals(usuarioIdAutenticado);
@@ -184,9 +183,20 @@ public class FatoServicoService {
         return repository.save(servico);
     }
 
-    private FatoServico buscarEValidarDonoPrestador(Long id, Long prestadorIdAutenticado) {
-        FatoServico servico = repository.findById(id)
+    /**
+     * Busca a solicitação por id.
+     *
+     * @param id identificador da solicitação
+     * @return a solicitação encontrada
+     * @throws RecursoNaoEncontradoException se não existir solicitação com esse id
+     */
+    private FatoServico buscarSolicitacao(Long id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Solicitação não encontrada"));
+    }
+
+    private FatoServico buscarEValidarDonoPrestador(Long id, Long prestadorIdAutenticado) {
+        FatoServico servico = buscarSolicitacao(id);
         if (!servico.getPrestador().getIdPrestador().equals(prestadorIdAutenticado)) {
             throw new AcessoNegadoException("Esta solicitação pertence a outro prestador");
         }
@@ -194,8 +204,7 @@ public class FatoServicoService {
     }
 
     private FatoServico buscarEValidarDonoCliente(Long id, Long clienteIdAutenticado) {
-        FatoServico servico = repository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Solicitação não encontrada"));
+        FatoServico servico = buscarSolicitacao(id);
         if (!servico.getCliente().getIdCliente().equals(clienteIdAutenticado)) {
             throw new AcessoNegadoException("Esta solicitação pertence a outro cliente");
         }
