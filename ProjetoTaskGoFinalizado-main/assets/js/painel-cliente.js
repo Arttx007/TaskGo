@@ -224,7 +224,7 @@ function ativarEstrelas(element) {
   let atual = element;
   while (atual) {
     atual.classList.add('active');
-    atual = atual.previousElementSibling;
+    atual = atual.nextElementSibling;
   }
 }
 
