@@ -5,6 +5,7 @@ import com.example.Estrela.DTO.LoginResponse;
 import com.example.Estrela.Entity.Administrador;
 import com.example.Estrela.Entity.Cliente;
 import com.example.Estrela.Entity.Prestador;
+import com.example.Estrela.Entity.TipoUsuario;
 import com.example.Estrela.exception.CredenciaisInvalidasException;
 import com.example.Estrela.repository.AdministradorRepository;
 import com.example.Estrela.repository.ClienteRepository;
@@ -12,6 +13,9 @@ import com.example.Estrela.repository.PrestadorRepository;
 import com.example.Estrela.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Autentica Cliente, Prestador ou Administrador a partir de um único endpoint de login,
@@ -47,39 +51,46 @@ public class AuthService {
      */
     public LoginResponse login(LoginRequest request) {
         return switch (request.getTipoUsuario()) {
-            case CLIENTE -> autenticarCliente(request);
-            case PRESTADOR -> autenticarPrestador(request);
-            case ADMIN -> autenticarAdmin(request);
+            case CLIENTE -> autenticar(clienteRepository.findByEmail(request.getEmail()), request.getSenha(),
+                    Cliente::getSenha, Cliente::getIdCliente, Cliente::getNome, TipoUsuario.CLIENTE);
+            case PRESTADOR -> autenticar(prestadorRepository.findByEmail(request.getEmail()), request.getSenha(),
+                    Prestador::getSenha, Prestador::getIdPrestador, Prestador::getNome, TipoUsuario.PRESTADOR);
+            case ADMIN -> autenticar(administradorRepository.findByEmail(request.getEmail()), request.getSenha(),
+                    Administrador::getSenha, Administrador::getId, Administrador::getNome, TipoUsuario.ADMIN);
         };
     }
 
-    private LoginResponse autenticarCliente(LoginRequest request) {
-        Cliente cliente = clienteRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new CredenciaisInvalidasException("E-mail ou senha inválidos"));
-        if (!passwordEncoder.matches(request.getSenha(), cliente.getSenha())) {
-            throw new CredenciaisInvalidasException("E-mail ou senha inválidos");
-        }
-        String token = jwtService.gerarToken(cliente.getIdCliente(), com.example.Estrela.Entity.TipoUsuario.CLIENTE, cliente.getNome());
-        return new LoginResponse(token, com.example.Estrela.Entity.TipoUsuario.CLIENTE, cliente.getIdCliente(), cliente.getNome());
-    }
+    /**
+     * Autentica uma conta já localizada pelo e-mail e emite o token correspondente.
+     *
+     * <p>Os três tipos de conta compartilham exatamente a mesma regra — a diferença entre eles é
+     * apenas de onde vêm os dados —, então parametrizar os extratores evita manter três cópias que
+     * podem divergir em silêncio. A mensagem é sempre a genérica, para não revelar se foi o e-mail
+     * ou a senha que falhou.
+     *
+     * @param conta        conta encontrada para o e-mail informado, ou vazio se não existir
+     * @param senhaEnviada senha em texto puro recebida na requisição
+     * @param senha        extrai do registro a senha armazenada (em hash)
+     * @param id           extrai do registro o identificador
+     * @param nome         extrai do registro o nome
+     * @param tipo         tipo da conta, usado na claim do token e na resposta
+     * @param <T>          tipo da entidade de conta (Cliente, Prestador ou Administrador)
+     * @return o token emitido e os dados básicos da conta
+     * @throws CredenciaisInvalidasException se a conta não existir ou a senha não conferir
+     */
+    private <T> LoginResponse autenticar(Optional<T> conta,
+                                          String senhaEnviada,
+                                          Function<T, String> senha,
+                                          Function<T, Long> id,
+                                          Function<T, String> nome,
+                                          TipoUsuario tipo) {
+        T registro = conta.orElseThrow(() -> new CredenciaisInvalidasException("E-mail ou senha inválidos"));
 
-    private LoginResponse autenticarPrestador(LoginRequest request) {
-        Prestador prestador = prestadorRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new CredenciaisInvalidasException("E-mail ou senha inválidos"));
-        if (prestador.getSenha() == null || !passwordEncoder.matches(request.getSenha(), prestador.getSenha())) {
+        if (!passwordEncoder.matches(senhaEnviada, senha.apply(registro))) {
             throw new CredenciaisInvalidasException("E-mail ou senha inválidos");
         }
-        String token = jwtService.gerarToken(prestador.getIdPrestador(), com.example.Estrela.Entity.TipoUsuario.PRESTADOR, prestador.getNome());
-        return new LoginResponse(token, com.example.Estrela.Entity.TipoUsuario.PRESTADOR, prestador.getIdPrestador(), prestador.getNome());
-    }
 
-    private LoginResponse autenticarAdmin(LoginRequest request) {
-        Administrador admin = administradorRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new CredenciaisInvalidasException("E-mail ou senha inválidos"));
-        if (!passwordEncoder.matches(request.getSenha(), admin.getSenha())) {
-            throw new CredenciaisInvalidasException("E-mail ou senha inválidos");
-        }
-        String token = jwtService.gerarToken(admin.getId(), com.example.Estrela.Entity.TipoUsuario.ADMIN, admin.getNome());
-        return new LoginResponse(token, com.example.Estrela.Entity.TipoUsuario.ADMIN, admin.getId(), admin.getNome());
+        String token = jwtService.gerarToken(id.apply(registro), tipo, nome.apply(registro));
+        return new LoginResponse(token, tipo, id.apply(registro), nome.apply(registro));
     }
 }
