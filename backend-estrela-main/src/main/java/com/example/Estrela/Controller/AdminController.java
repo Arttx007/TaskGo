@@ -3,13 +3,11 @@ package com.example.Estrela.Controller;
 import com.example.Estrela.DTO.ParametroNegocioRequest;
 import com.example.Estrela.DTO.ParametroNegocioResponse;
 import com.example.Estrela.DTO.PrestadorResponse;
-import com.example.Estrela.Entity.Prestador;
 import com.example.Estrela.Service.AdminService;
 import com.example.Estrela.repository.ClienteRepository;
 import com.example.Estrela.repository.FatoServicoRepository;
 import com.example.Estrela.repository.PrestadorRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -26,18 +24,18 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
-    private PrestadorRepository prestadorRepository;
-
-    @Autowired
-    private FatoServicoRepository fatoServicoRepository;
-
+    private final ClienteRepository clienteRepository;
+    private final PrestadorRepository prestadorRepository;
+    private final FatoServicoRepository fatoServicoRepository;
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(ClienteRepository clienteRepository,
+                            PrestadorRepository prestadorRepository,
+                            FatoServicoRepository fatoServicoRepository,
+                            AdminService adminService) {
+        this.clienteRepository = clienteRepository;
+        this.prestadorRepository = prestadorRepository;
+        this.fatoServicoRepository = fatoServicoRepository;
         this.adminService = adminService;
     }
 
@@ -54,17 +52,17 @@ public class AdminController {
 
     @GetMapping("/prestadores/pendentes")
     public List<PrestadorResponse> listarPrestadoresPendentes() {
-        return adminService.listarPrestadoresPendentes().stream().map(this::paraResposta).toList();
+        return adminService.listarPrestadoresPendentes().stream().map(PrestadorResponse::de).toList();
     }
 
     @PutMapping("/prestadores/{id}/kyc/aprovar")
     public PrestadorResponse aprovarKyc(@PathVariable Long id) {
-        return paraResposta(adminService.aprovarKyc(id));
+        return PrestadorResponse.de(adminService.aprovarKyc(id));
     }
 
     @PutMapping("/prestadores/{id}/kyc/rejeitar")
     public PrestadorResponse rejeitarKyc(@PathVariable Long id, @RequestBody(required = false) com.example.Estrela.DTO.KycDecisionRequest request) {
-        return paraResposta(adminService.rejeitarKyc(id));
+        return PrestadorResponse.de(adminService.rejeitarKyc(id));
     }
 
     /**
@@ -96,8 +94,4 @@ public class AdminController {
         return new ParametroNegocioResponse(parametro.getChave(), parametro.getValor(), parametro.getDescricao());
     }
 
-    private PrestadorResponse paraResposta(Prestador prestador) {
-        return new PrestadorResponse(prestador.getIdPrestador(), prestador.getNome(), prestador.getEspecialidade(),
-                prestador.getNota_media(), prestador.getCidade(), prestador.getEmail(), prestador.getStatusKyc());
-    }
 }

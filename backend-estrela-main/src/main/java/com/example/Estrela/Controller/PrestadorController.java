@@ -1,7 +1,6 @@
 package com.example.Estrela.Controller;
 
 import com.example.Estrela.DTO.*;
-import com.example.Estrela.Entity.Prestador;
 import com.example.Estrela.Service.PrestadorService;
 import com.example.Estrela.Service.SaqueService;
 import com.example.Estrela.security.TaskGoUserDetails;
@@ -31,12 +30,12 @@ public class PrestadorController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PrestadorResponse criar(@Valid @RequestBody CadastroPrestadorRequest request) {
-        return paraResposta(prestadorService.criar(request));
+        return PrestadorResponse.de(prestadorService.criar(request));
     }
 
     @GetMapping
     public List<PrestadorResponse> listar() {
-        return prestadorService.listar().stream().map(this::paraResposta).toList();
+        return prestadorService.listar().stream().map(PrestadorResponse::de).toList();
     }
 
     /**
@@ -50,7 +49,7 @@ public class PrestadorController {
                                                @RequestParam("documentoIdentidade") MultipartFile documentoIdentidade,
                                                @RequestParam("comprovantePix") MultipartFile comprovantePix,
                                                @AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return paraResposta(prestadorService.enviarDocumentos(id, usuario.getId(), documentoIdentidade, comprovantePix));
+        return PrestadorResponse.de(prestadorService.enviarDocumentos(id, usuario.getId(), documentoIdentidade, comprovantePix));
     }
 
     /**
@@ -59,7 +58,7 @@ public class PrestadorController {
      */
     @GetMapping("/{id}")
     public PrestadorResponse obterPorId(@PathVariable Long id) {
-        return paraResposta(prestadorService.buscarPorId(id));
+        return PrestadorResponse.de(prestadorService.buscarPorId(id));
     }
 
     @GetMapping("/{id}/saldo")
@@ -83,8 +82,4 @@ public class PrestadorController {
         return new SaqueResponse(saque.getId(), saque.getValor(), saque.getStatus(), saque.getPrestador().getSaldoDisponivel());
     }
 
-    private PrestadorResponse paraResposta(Prestador prestador) {
-        return new PrestadorResponse(prestador.getIdPrestador(), prestador.getNome(), prestador.getEspecialidade(),
-                prestador.getNota_media(), prestador.getCidade(), prestador.getEmail(), prestador.getStatusKyc());
-    }
 }
