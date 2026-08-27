@@ -1,0 +1,75 @@
+schema: spec-driven
+
+context: |
+  TaskGo — marketplace de serviços ("Uber de serviços") que conecta clientes a prestadores autônomos.
+
+  Monorepo com dois subprojetos independentes, sem build system compartilhado:
+  - backend-estrela-main/ — Spring Boot 4, Java 17, pacote com.example.Estrela, PostgreSQL + Flyway.
+  - ProjetoTaskGoFinalizado-main/ — frontend estático HTML/CSS/JS (markup TeleportHQ), sem build tooling.
+
+  Fonte da verdade, leia antes de planejar: CLAUDE.md na raiz e em cada subprojeto (convenções,
+  arquitetura, débitos conhecidos), spec.md (PRD: US-01..US-21 em Gherkin, regras RN01-RN04) e
+  plan.md (decisões de arquitetura e o porquê de cada uma).
+
+  Escreva todos os artefatos em português (pt-BR).
+
+  Estado: o MVP (US-01..US-10) está implementado ponta a ponta. Mudanças agora são refactors,
+  correções e features pontuais — nunca recriação. Fase 2/3 (US-11..US-21) está fora de escopo.
+
+  Regras de negócio que restringem qualquer proposta:
+  - RN01 (taxa): taxa fixa abaixo do limiar, percentual a partir dele. Os valores vivem na tabela
+    parametro_negocio, ajustáveis por admin sem deploy — nunca em application.properties.
+  - RN02 (ciclo): SOLICITADO -> ACEITO -> CONCLUIDO -> AVALIADO, com ramos RECUSADO e CANCELADO.
+    Transições fora dessas não existem. FatoServicoService é o dono dessa máquina de estados.
+  - RN03 (custódia): pagamento fica retido até a conclusão; na conclusão o líquido é creditado no
+    saldo do prestador; cancelar a partir de ACEITO estorna integral, sem taxa. Saque Pix é
+    limitado ao saldo disponível.
+  - RN04 (KYC): prestador sem StatusKyc.APROVADO não publica serviço nem aparece em busca.
+
+  Restrições técnicas que invalidam um plano se ignoradas:
+  - O schema é gerenciado por Flyway com ddl-auto=validate. Toda mudança de entidade exige uma
+    migration nova V{n}__descricao.sql; o Hibernate não cria coluna nenhuma e o boot falha se
+    entidade e schema divergirem.
+  - Backend: fluxo Controller -> Service -> repository; endpoints trafegam DTOs (records em DTO/)
+    com @Valid; injeção por construtor.
+  - Erros de domínio viram HTTP no GlobalExceptionHandler (404/403/409/402/422, cada um com um
+    código estável) e o frontend depende desses códigos. Lance a exceção de domínio adequada em
+    vez de montar um ResponseEntity de erro à mão.
+  - Frontend: nenhum fetch fora de assets/js/api.js; sessão JWT em localStorage; páginas
+    protegidas carregam api.js -> auth-guard.js -> script da página; nav e footer são duplicados
+    inline em cada HTML (editar components/ não tem efeito).
+  - Os testes do backend rodam em H2 e não precisam de Postgres. FluxoCompletoIntegrationTest
+    cobre US-01..US-10 e é o primeiro a quebrar quando um contrato de endpoint muda.
+
+  Convenções: Conventional Commits atômicos e no imperativo, com refactor nunca compartilhando
+  commit com feat; Javadoc no backend (incluindo @throws) e JSDoc no frontend; diagramas em
+  sintaxe Mermaid sob docs/diagrams/.
+
+rules:
+  proposal:
+    - Referencie as user stories (US-xx) e regras (RN-xx) de spec.md que a mudança toca; se não tocar nenhuma, diga isso explicitamente.
+    - Inclua uma seção "Não-objetivos" explícita.
+    - Não proponha recriar o que já existe — o MVP está implementado; descreva a alteração sobre o código atual.
+  specs:
+    - Escreva os critérios de aceite no mesmo estilo Gherkin de spec.md (Dado / Quando / Então).
+    - "Cubra os cenários de exceção além do caminho feliz: KYC pendente, pagamento recusado, saldo insuficiente e acesso por quem não é dono do recurso."
+  design:
+    - Registre o porquê de cada decisão, no estilo de plan.md, não apenas o que será feito.
+    - Se alterar entidade JPA, nomeie a migration Flyway correspondente (V{n}__descricao.sql).
+    - Se alterar contrato de endpoint, declare o status HTTP e o código de erro resultantes, e o impacto em assets/js/api.js.
+  tasks:
+    - Liste os arquivos afetados por tarefa — o projeto exige conhecer os arquivos antes de editar.
+    - Separe tarefas de refactor das de feat; elas não podem cair no mesmo commit.
+    - Inclua tarefa de teste e, para toda feat, uma tarefa de atualização do CHANGELOG.md.
+
+operations:
+  apply:
+    guidance:
+      - Rode `mvn test` a partir de backend-estrela-main/ antes de considerar concluída uma tarefa de backend; FluxoCompletoIntegrationTest é o sinal mais confiável de regressão.
+      - Mudou entidade JPA? A migration Flyway faz parte da mesma tarefa — sem ela a aplicação nem sobe (ddl-auto=validate).
+      - Em tarefa marcada como refactor, não altere comportamento observável nem modifique testes existentes para fazê-los passar.
+      - Código novo de backend leva Javadoc com @throws; código novo de frontend leva JSDoc com @param/@returns e nenhum fetch fora de api.js.
+  archive:
+    guidance:
+      - Confirme que toda feat entregue tem entrada correspondente em CHANGELOG.md (Keep a Changelog, a partir da v1.1.0). O arquivo ainda não existe no repositório — a primeira feat deve criá-lo.
+      - Diagramas produzidos pela mudança devem estar em docs/diagrams/ em sintaxe Mermaid.
