@@ -109,10 +109,10 @@ Arquivos: `pages/profissionais-prximos.html`, `assets/js/profissionais.js`.
 
 Arquivos: `index.html`, `pages/servicos.html`, `pages/profissionais-prximos.html`.
 
-- [ ] 9.1 Ligar os links que têm destino real nas três páginas: Serviços Populares para a busca por categoria, Como Funciona para `pages/como-funciona.html`, Seja um Profissional e Criar Conta Profissional para `pages/cadastro.html`, chamadas principais para `pages/servicos.html`; verificação: cada link ligado abre a página esperada, sem 404
-- [ ] 9.2 Remover os itens sem destino nas três páginas: "Baixar App" (×2), Blog, Sobre Nós, Contato, Termos de Uso, Privacidade, Cookies e os 4 ícones sociais; verificação: `grep -c 'href="#"' index.html pages/servicos.html pages/profissionais-prximos.html` retorna 0 nas três (hoje 22, 19 e 19)
-- [ ] 9.3 Carregar Font Awesome em `pages/profissionais-prximos.html`, que hoje não o carrega apesar de `profissionais.js:201` emitir `<i class="fas fa-user">`; verificação: o ícone de avatar dos cards de resultado passa a renderizar em vez de ficar em branco
-- [ ] 9.4 Confirmar que este commit não carrega nada de `feat`; verificação: `git show --stat` do commit `fix` mostra apenas alterações de `href`, remoção de itens de navegação e a tag do Font Awesome
+- [x] 9.1 Ligar os links que têm destino real nas três páginas: Serviços Populares para a busca por categoria, Como Funciona para `pages/como-funciona.html`, Seja um Profissional e Criar Conta Profissional para `pages/cadastro.html`, chamadas principais para `pages/servicos.html`; verificação: cada link ligado abre a página esperada, sem 404
+- [x] 9.2 Remover os itens sem destino nas três páginas: "Baixar App" (×2), Blog, Sobre Nós, Contato, Termos de Uso, Privacidade, Cookies e os 4 ícones sociais; verificação: `grep -c 'href="#"' index.html pages/servicos.html pages/profissionais-prximos.html` retorna 0 nas três (hoje 22, 19 e 19)
+- [x] 9.3 Carregar Font Awesome em `pages/profissionais-prximos.html`, que hoje não o carrega apesar de `profissionais.js:201` emitir `<i class="fas fa-user">`; verificação: o ícone de avatar dos cards de resultado passa a renderizar em vez de ficar em branco. **Desvio de convenção registrado:** esta tag entrou no commit `feat` da fase 8 junto do CSS/JS do Leaflet, e não num commit `fix` separado
+- [x] 9.4 Confirmar que este commit não carrega nada de `feat`; verificação: `git show --stat` do commit `fix` mostra apenas alterações de `href`, remoção de itens de navegação e a tag do Font Awesome
 
 ## 10. Documentação (`feat`)
 
