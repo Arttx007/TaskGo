@@ -148,6 +148,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
+   * Reduz o texto a letras e dígitos, sem acento nem espaço.
+   *
+   * O prestador digita a categoria livremente, então o card curado "arcondicionado" precisa casar
+   * com "Instalação de Ar condicionado". Sem normalizar, a diferença de um espaço marcaria o card
+   * como indisponível enquanto a oferta existe.
+   *
+   * @param {string} texto categoria ou slug
+   * @returns {string} forma comparável
+   */
+  function normalizar(texto) {
+    return texto
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]/g, '');
+  }
+
+  /**
    * @param {string} slug categoria do card curado
    * @param {Map<string, {categoria: string, totalServicos: number}>} porNome categorias reais
    * @returns {{categoria: string, totalServicos: number}|null} a categoria real correspondente
@@ -155,11 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function casarCategoria(slug, porNome) {
     if (porNome.has(slug)) return porNome.get(slug);
 
-    // Casamento tolerante: o prestador digita livremente, então "Instalação de Tomadas" deve contar
-    // para o card "eletricista" apenas se o nome contiver o slug. Sem isso, quase todo card curado
-    // apareceria como indisponível numa base real.
+    const alvo = normalizar(slug);
     for (const [nome, dados] of porNome) {
-      if (nome.includes(slug) || slug.includes(nome)) return dados;
+      const candidato = normalizar(nome);
+      if (candidato.includes(alvo) || alvo.includes(candidato)) return dados;
     }
     return null;
   }
@@ -170,8 +187,11 @@ document.addEventListener('DOMContentLoaded', () => {
    * @returns {boolean} true se algum card curado já representa essa categoria
    */
   function casaComAlgumSlug(nomeCategoria, slugs) {
-    const nome = nomeCategoria.toLowerCase();
-    return Array.from(slugs).some((slug) => nome.includes(slug) || slug.includes(nome));
+    const nome = normalizar(nomeCategoria);
+    return Array.from(slugs).some((slug) => {
+      const alvo = normalizar(slug);
+      return nome.includes(alvo) || alvo.includes(nome);
+    });
   }
 
   /**

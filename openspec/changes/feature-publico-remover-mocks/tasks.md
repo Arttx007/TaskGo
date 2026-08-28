@@ -125,21 +125,21 @@ Arquivos: `CHANGELOG.md` (novo, raiz), `docs/diagrams/fluxo-descoberta-publica.m
 
 Exige backend no ar e o frontend servido por HTTP. Não há suíte automatizada no frontend — cada item confere contra o que a **API devolve**, não contra a aparência.
 
-- [ ] 11.1 Percorrer o funil completo a partir da home; verificação: escolher categoria e raio, enviar, e chegar à lista de profissionais com a busca já disparada com os dois parâmetros
-- [ ] 11.2 Conferir a faixa de preço exibida; verificação: o valor na home é idêntico ao retorno de `GET /servicos-ofertados/estimativa` para a mesma categoria
-- [ ] 11.3 Conferir o comportamento de amostra insuficiente; verificação: numa categoria com 1 ou 2 serviços ativos, nenhuma faixa é exibida e aparece a mensagem do backend
-- [ ] 11.4 Conferir os depoimentos contra a fonte; verificação: cada depoimento exibido corresponde a uma linha em `AVALIADO` com `comentario_avaliacao` não vazio, e só o primeiro nome do cliente aparece na tela e na resposta da API
-- [ ] 11.5 Conferir o estado vazio das áreas integradas; verificação: sem avaliações com comentário, a seção de depoimentos não é renderizada em nenhuma das duas páginas — nem como moldura vazia
-- [ ] 11.6 Conferir mapa e contador; verificação: quantidade de marcadores e valor do contador coincidem com o tamanho de `resultados`, e busca sem resultado zera o contador
-- [ ] 11.7 Conferir que os filtros filtram no servidor, e não na tela; verificação: escolher nota mínima e faixa de preço produz requisição com `notaMinima`/`precoMin`/`precoMax` na query string, e a resposta da API já vem sem os resultados excluídos — nenhum resultado é apenas ocultado no DOM
-- [ ] 11.8 Conferir que a busca sem filtros preserva o comportamento anterior; verificação: a mesma busca de antes da change, sem nota mínima nem faixa de preço, devolve o mesmo conjunto de resultados na mesma ordem
-- [ ] 11.9 Conferir o efeito do filtro sobre prestador sem avaliação; verificação: com nota mínima informada, prestador sem `notaMedia` não aparece; removendo o filtro, ele volta a aparecer
-- [ ] 11.10 Conferir a vitrine de profissionais novos; verificação: com nota mínima ativa, os prestadores da seção de novos satisfazem categoria, localidade, raio e faixa de preço da busca, e nenhum deles tem nota exibida
-- [ ] 11.11 Conferir que não há prestador duplicado entre as duas listas; verificação: nenhum prestador aparece simultaneamente na lista principal e na vitrine de novos, em nenhuma combinação de filtros
-- [ ] 11.12 Conferir a recusa da combinação contraditória; verificação: uma requisição manual com `apenasSemAvaliacao=true&notaMinima=4` responde 400 com código `VALIDACAO`
-- [ ] 11.13 Conferir que RN04 é preservada nos endpoints novos; verificação: um prestador com KYC `PENDENTE` não influencia categorias, contagem, faixa de preço, depoimentos nem resultados filtrados
-- [ ] 11.14 Conferir que nenhum valor de preço é calculado no navegador; verificação: com a aba Network filtrando XHR, toda faixa exibida tem uma requisição correspondente, e `grep -rc "basePrice\|distanceTax" assets/js/` retorna 0
-- [ ] 11.15 Conferir a navegação; verificação: nenhum link das três páginas leva a `#` ou a 404, e os itens removidos não deixaram lista vazia nem coluna de rodapé órfã
+- [x] 11.1 Percorrer o funil completo a partir da home; **nota de ambiente:** o `npx serve` reescreve `/x.html` para `/x` e descarta a query string, o que quebra `?service=`/`?radius=` — comportamento do servidor de desenvolvimento, anterior a esta change, verificado com a URL sem extensão; verificação: escolher categoria e raio, enviar, e chegar à lista de profissionais com a busca já disparada com os dois parâmetros
+- [x] 11.2 Conferir a faixa de preço exibida; verificação: o valor na home é idêntico ao retorno de `GET /servicos-ofertados/estimativa` para a mesma categoria
+- [x] 11.3 Conferir o comportamento de amostra insuficiente; verificação: numa categoria com 1 ou 2 serviços ativos, nenhuma faixa é exibida e aparece a mensagem do backend
+- [x] 11.4 Conferir os depoimentos contra a fonte; verificação: cada depoimento exibido corresponde a uma linha em `AVALIADO` com `comentario_avaliacao` não vazio, e só o primeiro nome do cliente aparece na tela e na resposta da API
+- [x] 11.5 Conferir o estado vazio das áreas integradas; verificação: sem avaliações com comentário, a seção de depoimentos não é renderizada em nenhuma das duas páginas — nem como moldura vazia
+- [x] 11.6 Conferir mapa e contador; verificação: quantidade de marcadores e valor do contador coincidem com o tamanho de `resultados`, e busca sem resultado zera o contador
+- [x] 11.7 Conferir que os filtros filtram no servidor, e não na tela; verificação: escolher nota mínima e faixa de preço produz requisição com `notaMinima`/`precoMin`/`precoMax` na query string, e a resposta da API já vem sem os resultados excluídos — nenhum resultado é apenas ocultado no DOM
+- [x] 11.8 Conferir que a busca sem filtros preserva o comportamento anterior; verificação: a mesma busca de antes da change, sem nota mínima nem faixa de preço, devolve o mesmo conjunto de resultados na mesma ordem
+- [x] 11.9 Conferir o efeito do filtro sobre prestador sem avaliação; verificação: com nota mínima informada, prestador sem `notaMedia` não aparece; removendo o filtro, ele volta a aparecer
+- [x] 11.10 Conferir a vitrine de profissionais novos; verificação: com nota mínima ativa, os prestadores da seção de novos satisfazem categoria, localidade, raio e faixa de preço da busca, e nenhum deles tem nota exibida
+- [x] 11.11 Conferir que não há prestador duplicado entre as duas listas; verificação: nenhum prestador aparece simultaneamente na lista principal e na vitrine de novos, em nenhuma combinação de filtros
+- [x] 11.12 Conferir a recusa da combinação contraditória; verificação: uma requisição manual com `apenasSemAvaliacao=true&notaMinima=4` responde 400 com código `VALIDACAO`
+- [x] 11.13 Conferir que RN04 é preservada nos endpoints novos; verificação: um prestador com KYC `PENDENTE` não influencia categorias, contagem, faixa de preço, depoimentos nem resultados filtrados
+- [x] 11.14 Conferir que nenhum valor de preço é calculado no navegador; **achado da verificação:** a seção `ia-estimate` ainda tinha uma simulação com preço fabricado ("R$ 450 - R$ 600") e um card sobre "o algoritmo TaskGO" — não casaram com os greps por `IA` e foram substituídos por uma descrição do mecanismo real, sem número inventado; verificação: com a aba Network filtrando XHR, toda faixa exibida tem uma requisição correspondente, e `grep -rc "basePrice\|distanceTax" assets/js/` retorna 0
+- [x] 11.15 Conferir a navegação; verificação: nenhum link das três páginas leva a `#` ou a 404, e os itens removidos não deixaram lista vazia nem coluna de rodapé órfã
 
 ## 12. Fechamento
 
