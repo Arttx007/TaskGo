@@ -61,3 +61,4 @@ desktop.ini
 # skills e comandos compartilhados continuam versionados)
 # ==========================================================
 .claude/settings.local.json
+.claude/*.lock
