@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.FieldError;
@@ -71,6 +72,21 @@ public class GlobalExceptionHandler {
         for (FieldError erro : ex.getBindingResult().getFieldErrors()) {
             fieldErrors.put(erro.getField(), erro.getDefaultMessage());
         }
+        return construir(HttpStatus.BAD_REQUEST, "VALIDACAO", "Dados inválidos", request, fieldErrors);
+    }
+
+    /**
+     * Parâmetro de consulta obrigatório ausente.
+     *
+     * <p>Sem este tratamento a exceção caía no {@code @ExceptionHandler(Exception.class)} abaixo e
+     * virava 500 — o catch-all engolia o 400 que o Spring devolveria por conta própria, fazendo uma
+     * requisição malformada do cliente parecer falha do servidor.
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> tratarParametroObrigatorioAusente(MissingServletRequestParameterException ex,
+                                                                            HttpServletRequest request) {
+        Map<String, String> fieldErrors = new LinkedHashMap<>();
+        fieldErrors.put(ex.getParameterName(), "Parâmetro obrigatório");
         return construir(HttpStatus.BAD_REQUEST, "VALIDACAO", "Dados inválidos", request, fieldErrors);
     }
 
