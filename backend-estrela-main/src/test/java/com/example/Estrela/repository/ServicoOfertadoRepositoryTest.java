@@ -1,5 +1,6 @@
 package com.example.Estrela.repository;
 
+import com.example.Estrela.DTO.CategoriaDisponivelResponse;
 import com.example.Estrela.Entity.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,43 @@ class ServicoOfertadoRepositoryTest {
 
         assertThatThrownBy(() -> prestadorRepository.saveAndFlush(novoPrestador("duplicado@teste.com")))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void agregaCategoriasDisponiveisContandoServicosAtivos() {
+        Prestador prestador = prestadorRepository.save(novoPrestador("agrega1@teste.com"));
+
+        servicoOfertadoRepository.save(novoServico(prestador, "eletricista", StatusServico.ATIVO));
+        servicoOfertadoRepository.save(novoServico(prestador, "eletricista", StatusServico.ATIVO));
+        servicoOfertadoRepository.save(novoServico(prestador, "encanador", StatusServico.ATIVO));
+        servicoOfertadoRepository.save(novoServico(prestador, "eletricista", StatusServico.INATIVO));
+
+        List<CategoriaDisponivelResponse> resultado = servicoOfertadoRepository
+                .agregarCategoriasDisponiveis(StatusServico.ATIVO, StatusKyc.APROVADO);
+
+        assertThat(resultado).hasSize(2);
+        assertThat(resultado.get(0).categoria()).isEqualTo("eletricista");
+        assertThat(resultado.get(0).totalServicos()).isEqualTo(2);
+        assertThat(resultado.get(1).categoria()).isEqualTo("encanador");
+        assertThat(resultado.get(1).totalServicos()).isEqualTo(1);
+    }
+
+    @Test
+    void agregacaoOmiteCategoriaDePrestadorNaoAprovado() {
+        Prestador aprovado = prestadorRepository.save(novoPrestador("aprovado@teste.com"));
+        Prestador pendente = prestadorRepository.save(novoPrestador("pendente@teste.com"));
+        pendente.setStatusKyc(StatusKyc.PENDENTE);
+        prestadorRepository.save(pendente);
+
+        servicoOfertadoRepository.save(novoServico(aprovado, "eletricista", StatusServico.ATIVO));
+        servicoOfertadoRepository.save(novoServico(pendente, "vidraceiro", StatusServico.ATIVO));
+
+        List<CategoriaDisponivelResponse> resultado = servicoOfertadoRepository
+                .agregarCategoriasDisponiveis(StatusServico.ATIVO, StatusKyc.APROVADO);
+
+        assertThat(resultado).extracting(CategoriaDisponivelResponse::categoria)
+                .containsExactly("eletricista")
+                .doesNotContain("vidraceiro");
     }
 
     private Prestador novoPrestador(String email) {

@@ -1,5 +1,7 @@
 package com.example.Estrela.Controller;
 
+import com.example.Estrela.DTO.CategoriaDisponivelResponse;
+import com.example.Estrela.DTO.EstimativaPrecoResponse;
 import com.example.Estrela.DTO.ResultadoBuscaServico;
 import com.example.Estrela.DTO.ServicoOfertadoRequest;
 import com.example.Estrela.DTO.ServicoOfertadoResponse;
@@ -56,6 +58,32 @@ public class ServicoOfertadoController {
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id, @AuthenticationPrincipal TaskGoUserDetails usuario) {
         servicoOfertadoService.excluir(id, usuario.getId());
+    }
+
+    /**
+     * Lista as categorias com serviço disponível ao público, com a contagem de cada uma. Rota
+     * pública: alimenta o catálogo e a vitrine de categorias do site.
+     *
+     * @return categorias ordenadas da mais ofertada para a menos; lista vazia quando não há oferta
+     */
+    @GetMapping("/categorias")
+    public List<CategoriaDisponivelResponse> listarCategorias() {
+        return servicoOfertadoService.listarCategoriasDisponiveis();
+    }
+
+    /**
+     * Faixa de preço praticada numa categoria, apurada sobre os serviços publicados. Rota pública.
+     *
+     * <p>Amostra insuficiente não é erro: responde 200 com os valores nulos e a mensagem explicativa.
+     *
+     * @param categoria categoria a apurar
+     * @return faixa apurada, ou apenas a mensagem quando não há amostra suficiente
+     * @throws org.springframework.web.bind.MissingServletRequestParameterException se {@code categoria}
+     *         não for informada (HTTP 400, código {@code VALIDACAO})
+     */
+    @GetMapping("/estimativa")
+    public EstimativaPrecoResponse estimativa(@RequestParam String categoria) {
+        return servicoOfertadoService.estimarPreco(categoria);
     }
 
     /**

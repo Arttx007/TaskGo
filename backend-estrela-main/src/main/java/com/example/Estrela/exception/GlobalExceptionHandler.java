@@ -90,6 +90,14 @@ public class GlobalExceptionHandler {
         return construir(HttpStatus.BAD_REQUEST, "VALIDACAO", "Dados inválidos", request, fieldErrors);
     }
 
+    /**
+     * Combinação de parâmetros inconsistente, recusada por regra de negócio.
+     */
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity<ErrorResponse> tratarValidacaoDeNegocio(ValidacaoException ex, HttpServletRequest request) {
+        return construir(HttpStatus.BAD_REQUEST, "VALIDACAO", ex.getMessage(), request, null);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> tratarErroGenerico(Exception ex, HttpServletRequest request) {
         return construir(HttpStatus.INTERNAL_SERVER_ERROR, "ERRO_INTERNO", "Ocorreu um erro inesperado", request, null);

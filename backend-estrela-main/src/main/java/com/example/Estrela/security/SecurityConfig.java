@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/clientes").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/prestadores").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/servicos-ofertados/buscar").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/servicos-ofertados/categorias").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/servicos-ofertados/estimativa").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

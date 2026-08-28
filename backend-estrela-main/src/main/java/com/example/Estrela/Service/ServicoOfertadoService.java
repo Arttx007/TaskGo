@@ -1,6 +1,8 @@
 package com.example.Estrela.Service;
 
 import com.example.Estrela.DTO.BuscaServicoResponse;
+import com.example.Estrela.DTO.CategoriaDisponivelResponse;
+import com.example.Estrela.DTO.EstimativaPrecoResponse;
 import com.example.Estrela.DTO.ResultadoBuscaServico;
 import com.example.Estrela.DTO.ServicoOfertadoRequest;
 import com.example.Estrela.Entity.*;
@@ -12,6 +14,8 @@ import com.example.Estrela.repository.PrestadorRepository;
 import com.example.Estrela.repository.ServicoOfertadoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -21,6 +25,12 @@ import java.util.List;
 public class ServicoOfertadoService {
 
     private static final String CHAVE_RAIO_PADRAO_KM = "busca.raio-padrao-km";
+
+    /**
+     * Abaixo deste número de serviços a faixa de preço não é devolvida: com um ou dois serviços, o
+     * "mínimo" e o "máximo" da categoria são o preço de um prestador identificável.
+     */
+    private static final int AMOSTRA_MINIMA_ESTIMATIVA = 3;
 
     private final ServicoOfertadoRepository servicoOfertadoRepository;
     private final PrestadorRepository prestadorRepository;
@@ -103,6 +113,72 @@ public class ServicoOfertadoService {
     public void excluir(Long servicoId, Long prestadorIdAutenticado) {
         ServicoOfertado servico = buscarEValidarDono(servicoId, prestadorIdAutenticado);
         servicoOfertadoRepository.delete(servico);
+    }
+
+    /**
+     * Lista as categorias com ao menos um serviço disponível ao público, com a contagem de cada uma.
+     *
+     * <p>A agregação acontece no banco, via {@code GROUP BY} no repository, e não carregando os
+     * serviços para contar em memória: é uma contagem, e a convenção do backend reserva o
+     * processamento em memória para o que não é portável em SQL — caso do Haversine, não deste.
+     *
+     * @return categorias ordenadas da mais ofertada para a menos; lista vazia quando não há oferta
+     */
+    public List<CategoriaDisponivelResponse> listarCategoriasDisponiveis() {
+        return servicoOfertadoRepository.agregarCategoriasDisponiveis(StatusServico.ATIVO, StatusKyc.APROVADO);
+    }
+
+    /**
+     * Apura a faixa de preço praticada numa categoria, a partir dos serviços efetivamente publicados
+     * (`ATIVO` de prestador `APROVADO`, RN04). Não é predição: são os preços que os prestadores
+     * cobram hoje.
+     *
+     * <p>A mediana é calculada em Java, e não em SQL, pelo mesmo motivo do Haversine em
+     * {@link GeoService}: {@code PERCENTILE_CONT} não é portável entre PostgreSQL (dev) e H2
+     * (testes), e as amostras aqui são pequenas.
+     *
+     * <p>Amostra abaixo de {@value #AMOSTRA_MINIMA_ESTIMATIVA} não devolve faixa, apenas mensagem.
+     * Ausência de dado é resposta bem-sucedida com mensagem, não erro — mesma convenção de
+     * {@link #buscar}.
+     *
+     * @param categoria categoria a apurar; obrigatória
+     * @return faixa apurada, ou apenas a mensagem quando não há amostra suficiente
+     */
+    public EstimativaPrecoResponse estimarPreco(String categoria) {
+        List<BigDecimal> precos = servicoOfertadoRepository
+                .findByStatusAndCategoriaIgnoreCase(StatusServico.ATIVO, categoria).stream()
+                .filter(s -> s.getPrestador() != null && s.getPrestador().getStatusKyc() == StatusKyc.APROVADO)
+                .map(ServicoOfertado::getPreco)
+                .filter(java.util.Objects::nonNull)
+                .sorted()
+                .toList();
+
+        if (precos.isEmpty()) {
+            return new EstimativaPrecoResponse(categoria, null, null, null, 0,
+                    "Ainda não há preços cadastrados nesta categoria");
+        }
+        if (precos.size() < AMOSTRA_MINIMA_ESTIMATIVA) {
+            return new EstimativaPrecoResponse(categoria, null, null, null, precos.size(),
+                    "Ainda não há preços suficientes nesta categoria para calcular uma faixa");
+        }
+
+        return new EstimativaPrecoResponse(categoria, precos.get(0), mediana(precos),
+                precos.get(precos.size() - 1), precos.size(), null);
+    }
+
+    /**
+     * @param precosOrdenados preços já ordenados de forma crescente, com ao menos um elemento
+     * @return o valor central; com quantidade par, a média dos dois centrais
+     */
+    private BigDecimal mediana(List<BigDecimal> precosOrdenados) {
+        int n = precosOrdenados.size();
+        int meio = n / 2;
+
+        if (n % 2 != 0) {
+            return precosOrdenados.get(meio);
+        }
+        return precosOrdenados.get(meio - 1).add(precosOrdenados.get(meio))
+                .divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
     }
 
     /**
