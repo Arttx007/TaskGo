@@ -65,6 +65,12 @@
       rel="stylesheet"
       href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
   <body>
     <link rel="stylesheet" href="../assets/css/style.css" />
@@ -613,19 +619,6 @@
                       id="thq_localizacao_ehOt"
                     />
                   </div>
-                  <div class="busca-rapida__field">
-                    <select name="escala" required="true" id="thq_escala_kAnu">
-                      <option value="true" disabled="true" selected="true">
-                        Escala do servico
-                      </option>
-                      <option value="pequena">
-                        Pequena Escala (Reparos rpidos)
-                      </option>
-                      <option value="grande">
-                        Grande Escala (Reformas/Obras)
-                      </option>
-                    </select>
-                  </div>
                   <button
                     type="submit"
                     id="thq_button_qHZ_"
@@ -662,41 +655,39 @@
             <p class="section-content" style="grid-column: 1 / -1;">Preencha a busca acima para encontrar profissionais.</p>
           </div>
         </section>
-        <section class="mapa-interativo">
+        <section class="lista-profissionais" id="secaoNovos" hidden>
+          <div class="lista-profissionais__header">
+            <h2 class="section-title">Novos na sua região</h2>
+            <p class="section-subtitle">
+              Profissionais verificados que ainda não receberam avaliação, e por isso não aparecem
+              quando você filtra por nota mínima.
+            </p>
+          </div>
+          <div class="lista-profissionais__masonry" id="novosContainer"></div>
+        </section>
+        <section class="mapa-interativo" id="secaoMapa" hidden>
           <div class="mapa-interativo__container">
-            <div
-              class="profissionais-prximos-thq-mapa-interativomain-elm mapa-interativo__main"
-            >
-              <div
-                class="profissionais-prximos-thq-mapa-interativomock-elm mapa-interativo__mock"
-              >
-                <img
-                  src="https://images.pexels.com/photos/15124969/pexels-photo-15124969.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=900"
-                  alt="Map background"
-                  class="profissionais-prximos-thq-mapa-interativobg-elm mapa-interativo__bg"
-                />
-              </div>
+            <div class="mapa-interativo__main">
+              <div id="mapaProfissionais" style="width: 100%; height: 420px; border-radius: var(--border-radius-control);"></div>
             </div>
-            <div
-              class="profissionais-prximos-thq-mapa-interativosidebar-elm mapa-interativo__sidebar"
-            >
-              <h2 class="section-title">Viso do Mapa</h2>
+            <div class="mapa-interativo__sidebar">
+              <h2 class="section-title">Visão do mapa</h2>
               <p class="section-content">
-                Visualize a localizao exata dos profissionais em tempo real e
-                escolha o mais prximo da sua residncia.
+                Posição aproximada dos profissionais devolvidos pela busca. Quem não tem endereço
+                cadastrado não aparece no mapa, mas continua na lista.
               </p>
               <div class="mapa-interativo__controls">
-                <button class="btn btn-lg btn-secondary">
+                <button type="button" id="alternarMapaLista" class="btn btn-lg btn-secondary">
                   Alternar para Lista
                 </button>
                 <div class="mapa-interativo__stats">
                   <div class="stat-item">
-                    <span class="stat-value">12</span>
-                    <span class="stat-label">Profissionais Ativos</span>
+                    <span class="stat-value" id="contadorProfissionais">0</span>
+                    <span class="stat-label">Profissionais encontrados</span>
                   </div>
                   <div class="stat-item">
-                    <span class="stat-value">5 min</span>
-                    <span class="stat-label">Tempo Mdio de Resposta</span>
+                    <span class="stat-value" id="contadorNoMapa">0</span>
+                    <span class="stat-label">Com endereço no mapa</span>
                   </div>
                 </div>
               </div>
@@ -708,8 +699,8 @@
             <div class="filtros-avancados__content">
               <h2 class="section-title">Refine sua Busca</h2>
               <p class="section-content">
-                Utilize nossos filtros inteligentes para encontrar exatamente o
-                que voce precisa, com a precisao da nossa IA.
+                Refine por distância, nota mínima e faixa de preço. Os filtros são
+                aplicados pela plataforma, não apenas na tela.
               </p>
               <div class="filtros-avancados__grid">
                 <div class="filter-feature">
@@ -728,10 +719,10 @@
                       d="M4 4h16v2.172a2 2 0 0 1-.586 1.414L15 12v7l-6 2v-8.5L4.52 7.572A2 2 0 0 1 4 6.227z"
                     ></path>
                   </svg>
-                  <h3>Filtros de Especialidade</h3>
+                  <h3>Filtro por categoria</h3>
                   <p>
-                    Selecione entre mais de 50 categorias de servicos
-                    especializados.
+                    Busque pela categoria que o profissional cadastrou na
+                    plataforma.
                   </p>
                 </div>
                 <div class="filter-feature">
@@ -749,10 +740,10 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M12 6v6l4 2"></path>
                   </svg>
-                  <h3>Disponibilidade Imediata</h3>
+                  <h3>Profissionais verificados</h3>
                   <p>
-                    Encontre profissionais prontos para atender voce agora
-                    mesmo.
+                    Somente profissionais com cadastro aprovado aparecem na
+                    busca.
                   </p>
                 </div>
               </div>
@@ -763,7 +754,7 @@
                 class="filter-panel"
               >
                 <div class="filter-panel__group">
-                  <label>Raio de Distancia (km)</label>
+                  <label>Raio de distância (km)</label>
                   <input
                     type="range"
                     min="1"
@@ -778,36 +769,30 @@
                   </div>
                 </div>
                 <div class="filter-panel__group">
-                  <label>Avaliao Mnima</label>
+                  <label>Nota mínima</label>
                   <div class="star-filters">
-                    <button
-                      type="button"
-                      id="thq_button_SOIb"
-                      name="button"
-                      class="btn-star"
-                    >
-                      4~.+
+                    <button type="button" class="btn-star" data-nota="">
+                      Qualquer
                     </button>
-                    <button
-                      type="button"
-                      id="thq_button_2V-6"
-                      name="button"
-                      class="btn-star"
-                    >
-                      4.5~.+
+                    <button type="button" class="btn-star" data-nota="4">
+                      4 estrelas ou mais
+                    </button>
+                    <button type="button" class="btn-star" data-nota="4.5">
+                      4,5 estrelas ou mais
                     </button>
                   </div>
                 </div>
                 <div class="filter-panel__group">
-                  <label>Faixa de Preco (IA)</label>
+                  <label>Faixa de preço</label>
                   <select
                     id="thq_select_Vxc3"
                     name="select"
                     style="width: 100%; padding: var(--spacing-md) var(--spacing-lg); font-family: var(--font-family-body); font-size: var(--font-size-base); color: var(--color-on-surface); background-color: var(--color-surface-elevated); border: 1px solid var(--color-border); border-radius: var(--border-radius-control); cursor: pointer; outline: none; transition: all 0.2s ease;"
                   >
-                    <option>Ate R$ 200</option>
-                    <option>R$ 200 - R$ 500</option>
-                    <option>Acima de R$ 500</option>
+                    <option value="">Qualquer preço</option>
+                    <option value="0-200">Até R$ 200</option>
+                    <option value="200-500">R$ 200 a R$ 500</option>
+                    <option value="500-">Acima de R$ 500</option>
                   </select>
                 </div>
                 <button
@@ -822,118 +807,11 @@
             </aside>
           </div>
         </section>
-        <section class="destaque-perfil">
-          <div class="destaque-perfil__container">
-            <div class="destaque-perfil__collage">
-              <div class="collage-item collage-item--main">
-                <img
-                  src="https://images.pexels.com/photos/17063686/pexels-photo-17063686.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
-                  alt="Main Portfolio"
-                />
-              </div>
-              <div class="collage-item collage-item--sub">
-                <img
-                  src="https://images.pexels.com/photos/8961699/pexels-photo-8961699.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
-                  alt="Before and After"
-                />
-                <span class="collage-badge">Antes &amp; Depois</span>
-              </div>
-            </div>
-            <div class="destaque-perfil__info">
-              <h2 class="section-title">Portfolio em Destaque</h2>
-              <p class="section-content">
-                Confira o nivel de detalhe e qualidade dos nossos profissionais.
-                No TaskGO, a transparencia e nossa prioridade.
-              </p>
-              <details class="profile-details">
-                <summary><span>Certificacoes e Qualificacoes</span></summary>
-                <ul class="cert-list">
-                  <li><span>NR-10 Eletricista Instalador</span></li>
-                  <li><span>Certificacao Tecnica SENAI</span></li>
-                  <li><span>+10 anos de experiencia</span></li>
-                </ul>
-              </details>
-              <details class="profile-details">
-                <summary><span>Historico de Trabalhos Recentes</span></summary>
-                <div class="recent-jobs">
-                  <div class="job-item">
-                    <strong>Reforma Eletrica Completa</strong>
-                    <span>Junho 2025 ? Avaliacao 5.0</span>
-                  </div>
-                  <div class="job-item">
-                    <strong>Instalacao de Ar Condicionado</strong>
-                    <span>Maio 2025 ? Avaliacao 4.9</span>
-                  </div>
-                </div>
-              </details>
-              <button class="btn btn-lg btn-accent">
-                Solicitar Orcamento Agora
-              </button>
-            </div>
-          </div>
-        </section>
-        <section class="avaliacoes">
+        <section class="avaliacoes" id="secaoDepoimentos" hidden>
           <div class="avaliacoes__header">
-            <h2 class="section-title">O que dizem os clientes locais</h2>
-            <p class="section-subtitle">
-              Confianca construida atraves de resultados reais e feedback
-              transparente.
-            </p>
+            <h2 class="section-title">O que dizem sobre o TaskGO</h2>
           </div>
-          <div class="avaliacoes__masonry">
-            <div class="testimonial-card">
-              <div class="testimonial-card__user">
-                <img
-                  src="https://images.pexels.com/photos/16552856/pexels-photo-16552856.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
-                  alt="User"
-                />
-                <div>
-                  <h4>Juliana Mendes</h4>
-                  <span>Sao Paulo, SP</span>
-                </div>
-              </div>
-              <p>
-                "O Ricardo resolveu meu problema de infiltracao em menos de 2
-                horas. A estimativa da IA foi certeira e o pagamento pelo app
-                facilitou muito!"
-              </p>
-              <div class="testimonial-card__rating"><span>~.~.~.~.~.</span></div>
-            </div>
-            <div class="testimonial-card">
-              <div class="testimonial-card__user">
-                <img
-                  src="https://images.pexels.com/photos/16552844/pexels-photo-16552844.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
-                  alt="User"
-                />
-                <div>
-                  <h4>Carlos Eduardo</h4>
-                  <span>Campinas, SP</span>
-                </div>
-              </div>
-              <p>
-                "Excelente profissional. A Ana foi super pontual e o relatorio
-                de antes e depois me deu muita seguranca no servico realizado."
-              </p>
-              <div class="testimonial-card__rating"><span>~.~.~.~.~.</span></div>
-            </div>
-            <div class="testimonial-card">
-              <div class="testimonial-card__user">
-                <img
-                  src="https://images.pexels.com/photos/16552851/pexels-photo-16552851.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
-                  alt="User"
-                />
-                <div>
-                  <h4>Fernanda Lima</h4>
-                  <span>Curitiba, PR</span>
-                </div>
-              </div>
-              <p>
-                "Sistema de filtros muito eficiente. Encontrei um pintor
-                disponivel para o mesmo dia!"
-              </p>
-              <div class="testimonial-card__rating"><span>~.~.~.~.~?</span></div>
-            </div>
-          </div>
+          <div class="avaliacoes__masonry" id="depoimentosTrack"></div>
         </section>
         <section class="como-funciona">
           <div class="como-funciona__container">
@@ -950,8 +828,8 @@
                     <div>
                       <h3>Busque e Compare</h3>
                       <p>
-                        Escolha o servico e receba estimativas de preco
-                        automaticas via nossa IA exclusiva.
+                        Escolha o servico e veja a faixa de preco que os
+                        profissionais da categoria realmente cobram.
                       </p>
                     </div>
                   </div>
@@ -1008,8 +886,7 @@
                 Pronto para resolver seus problemas?
               </h2>
               <p class="section-content">
-                Junte-se a milhares de clientes satisfeitos que utilizam a
-                inteligencia do TaskGO todos os dias.
+                Encontre um profissional verificado que atende perto de voce.
               </p>
               <div class="cta-final__trust">
                 <svg
@@ -1032,7 +909,7 @@
             <div class="cta-final__feature">
               <div class="cta-card">
                 <h3>Solicite seu orcamento gratuito agora</h3>
-                <p>Nossa IA calculara o melhor preco para voce em segundos.</p>
+                <p>Compare os profissionais que atendem perto de voce.</p>
                 <button class="btn-block btn btn-primary btn-xl">
                   Comecar Agora
                 </button>
@@ -1087,13 +964,12 @@
                             ></path>
                             <path d="m9 12l2 2l4-4"></path>
                           </svg>
-                          <span class="footer-badge-text">IA Verificada</span>
+                          <span class="footer-badge-text">Perfis Verificados</span>
                         </div>
                       </div>
                       <p class="footer-description section-content">
                         Conectando voce aos melhores profissionais locais com
-                        transparencia, seguranca e a inteligencia da IA para
-                        orcamentos precisos.
+                        transparencia, seguranca e preco praticado a vista.
                       </p>
                       <div class="footer-social-links">
                         <a href="#">

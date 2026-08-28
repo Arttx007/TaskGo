@@ -495,11 +495,11 @@
       <header class="services-hero">
         <div class="container text-center">
           <h1 class="hero-title reveal-on-scroll">O que você precisa hoje?</h1>
-          <p class="hero-subtitle reveal-on-scroll">Navegue por nossas categorias e encontre o especialista ideal com preço estimado por IA.</p>
+          <p class="hero-subtitle reveal-on-scroll">Navegue por nossas categorias e veja quantos profissionais atendem cada uma.</p>
           
           <div class="search-bar reveal-on-scroll">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21l-4.34-4.34"></path></svg>
-            <input type="text" placeholder="Buscar serviço (ex: Trocar chuveiro)..." id="searchInput">
+            <input type="text" placeholder="Filtrar categorias ou buscar profissionais (Enter)..." id="searchInput">
           </div>
         </div>
       </header>
@@ -590,6 +590,14 @@
             </a>
 
           </div>
+
+          <div class="outras-categorias reveal-on-scroll" id="outrasCategorias" hidden>
+            <h2 class="section-title">Outras categorias disponíveis</h2>
+            <p class="section-subtitle">
+              Categorias cadastradas por profissionais da plataforma que não estão no catálogo acima.
+            </p>
+            <div class="services-grid" id="outrasCategoriasGrid"></div>
+          </div>
       </section>
 
       <section class="quality-guarantee">
@@ -610,8 +618,8 @@
               <div class="quality-icon icon-ai">
                 <i class="fas fa-robot"></i>
               </div>
-              <h3>Preço Justo com IA</h3>
-              <p>Nossa IA garante que você não pague a mais, analisando o mercado em tempo real.</p>
+              <h3>Preço transparente</h3>
+              <p>Mostramos a faixa de preço que os profissionais da categoria realmente cobram.</p>
             </div>
             
             <div class="quality-item reveal-on-scroll">
@@ -1208,12 +1216,12 @@
                     ></path>
                     <path d="m9 12l2 2l4-4"></path>
                   </svg>
-                  <span class="footer-badge-text">IA Verificada</span>
+                  <span class="footer-badge-text">Perfis Verificados</span>
                 </div>
               </div>
               <p class="footer-description section-content">
                 Conectando voce aos melhores profissionais locais com
-                transparencia, seguranca e a inteligencia da IA para orcamentos
+                transparencia, seguranca e preco praticado a vista para orcamentos
                 precisos.
               </p>
               <div class="footer-social-links">
@@ -1383,7 +1391,7 @@
             <div class="footer-cta-column">
               <h3 class="footer-column-title">Pronto para comecar?</h3>
               <p class="footer-cta-text section-content">
-                Obtenha uma estimativa inteligente para o seu projeto hoje
+                Veja quanto custa o seu projeto e quem atende perto de voce hoje
                 mesmo.
               </p>
               <div class="footer-button-group">
