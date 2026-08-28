@@ -30,11 +30,11 @@ As tarefas 2.1 e 2.2 foram acrescentadas durante o apply: as specs exigem 400 `V
 
 Arquivos: `DTO/AvaliacaoPublicaResponse.java` (novo), `Service/AvaliacaoPublicaService.java` (novo), `Controller/AvaliacaoPublicaController.java` (novo), `repository/FatoServicoRepository.java`, `security/SecurityConfig.java`.
 
-- [ ] 3.1 Criar o record `AvaliacaoPublicaResponse(int nota, String comentario, String clientePrimeiroNome, String categoria, String cidade, LocalDate data)`; verificação: o record não tem campo de id, e-mail ou nome completo de cliente
-- [ ] 3.2 Implementar o service que seleciona solicitações em `AVALIADO` com nota e comentário não vazio, de prestador `APROVADO`, da mais recente para a mais antiga, recortando o nome do cliente ao primeiro nome; verificação: testes cobrem avaliação sem comentário omitida, solicitação não avaliada omitida, prestador não aprovado omitido e ordenação decrescente por data
-- [ ] 3.3 Aplicar padrão e teto de `limite`, truncando em vez de recusar; verificação: `limite` ausente devolve o padrão, `limite` acima do teto devolve no máximo o teto e responde 200 — nunca 400
-- [ ] 3.4 Criar `AvaliacaoPublicaController` com base `/avaliacoes` e Javadoc, e liberar `GET /avaliacoes/recentes` em `SecurityConfig`; verificação: a rota responde 200 sem token, e nenhuma rota sob `/servicos/**` foi liberada no processo
-- [ ] 3.5 Confirmar que nenhum dado de contato vaza; verificação: a resposta de `GET /avaliacoes/recentes` não contém `@`, nem campo de id de cliente, nem nome com sobrenome
+- [x] 3.1 Criar o record `AvaliacaoPublicaResponse(int nota, String comentario, String clientePrimeiroNome, String categoria, String cidade, LocalDate data)`; verificação: o record não tem campo de id, e-mail ou nome completo de cliente
+- [x] 3.2 Implementar o service que seleciona solicitações em `AVALIADO` com nota e comentário não vazio, de prestador `APROVADO`, da mais recente para a mais antiga, recortando o nome do cliente ao primeiro nome; verificação: testes cobrem avaliação sem comentário omitida, solicitação não avaliada omitida, prestador não aprovado omitido e ordenação decrescente por data
+- [x] 3.3 Aplicar padrão e teto de `limite`, truncando em vez de recusar; verificação: `limite` ausente devolve o padrão, `limite` acima do teto devolve no máximo o teto e responde 200 — nunca 400
+- [x] 3.4 Criar `AvaliacaoPublicaController` com base `/avaliacoes` e Javadoc, e liberar `GET /avaliacoes/recentes` em `SecurityConfig`; verificação: a rota responde 200 sem token, e nenhuma rota sob `/servicos/**` foi liberada no processo
+- [x] 3.5 Confirmar que nenhum dado de contato vaza; verificação: a resposta de `GET /avaliacoes/recentes` não contém `@`, nem campo de id de cliente, nem nome com sobrenome
 
 ## 4. Backend — coordenadas e filtros na busca (`feat`)
 
