@@ -118,8 +118,8 @@ Arquivos: `index.html`, `pages/servicos.html`, `pages/profissionais-prximos.html
 
 Arquivos: `CHANGELOG.md` (novo, raiz), `docs/diagrams/fluxo-descoberta-publica.md` (novo).
 
-- [ ] 10.1 Criar `CHANGELOG.md` na raiz seguindo Keep a Changelog, a partir da **v1.1.0**, com as entradas de `Added`, `Changed` e `Removed` desta change; verificação: o arquivo não existia antes (`git log --diff-filter=A -- CHANGELOG.md` mostra este commit) e é a primeira `feat` do repositório, à qual o `config.yaml` atribui essa responsabilidade
-- [ ] 10.2 Criar `docs/diagrams/fluxo-descoberta-publica.md` com diagrama Mermaid do fluxo home → catálogo → profissionais próximos → endpoints consumidos; verificação: o diretório `docs/diagrams/` passa a existir e o diagrama está em sintaxe Mermaid, conforme a convenção do projeto
+- [x] 10.1 Criar `CHANGELOG.md` na raiz seguindo Keep a Changelog, a partir da **v1.1.0**, com as entradas de `Added`, `Changed` e `Removed` desta change; verificação: o arquivo não existia antes (`git log --diff-filter=A -- CHANGELOG.md` mostra este commit) e é a primeira `feat` do repositório, à qual o `config.yaml` atribui essa responsabilidade
+- [x] 10.2 Criar `docs/diagrams/fluxo-descoberta-publica.md` com diagrama Mermaid do fluxo home → catálogo → profissionais próximos → endpoints consumidos; verificação: o diretório `docs/diagrams/` passa a existir e o diagrama está em sintaxe Mermaid, conforme a convenção do projeto
 
 ## 11. Verificação de comportamento ponta a ponta
 
