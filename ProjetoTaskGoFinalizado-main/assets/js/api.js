@@ -233,8 +233,18 @@ const TaskGoAPI = (() => {
   // --- Busca por geolocalização (US-03) ---
 
   /**
-   * @param {{categoria: string, lat?: number, lon?: number, raioKm?: number, cidade?: string}} filtro
-   * @returns {Promise<{resultados: Object[], mensagem: string|null}>}
+   * Busca serviços por categoria, com filtros opcionais aplicados pelo backend.
+   *
+   * Monta a query string a partir das chaves do objeto recebido, descartando valores vazios — por
+   * isso aceita parâmetros novos sem alteração de código.
+   *
+   * @param {{categoria: string, lat?: number, lon?: number, raioKm?: number, cidade?: string,
+   *          notaMinima?: number, precoMin?: number, precoMax?: number, apenasSemAvaliacao?: boolean}} filtro
+   *        `notaMinima` descarta prestador sem nota; `precoMin`/`precoMax` são inclusivos;
+   *        `apenasSemAvaliacao` devolve só prestador ainda não avaliado e **não pode** vir junto de
+   *        `notaMinima` (o backend responde 400 `VALIDACAO`).
+   * @returns {Promise<{resultados: Object[], mensagem: string|null}>} resultados ordenados por
+   *          proximidade, cada um com `latitude`/`longitude` aproximadas quando houver coordenadas
    */
   function buscarServicos(filtro) {
     const params = new URLSearchParams();
@@ -242,6 +252,48 @@ const TaskGoAPI = (() => {
       if (valor !== undefined && valor !== null && valor !== '') params.set(chave, valor);
     });
     return request(`/servicos-ofertados/buscar?${params.toString()}`, { auth: false });
+  }
+
+  /**
+   * Categorias que têm ao menos um serviço disponível ao público, com a contagem de cada uma.
+   *
+   * Como `categoria` é texto livre no backend, esta lista reflete o que os prestadores cadastraram —
+   * é a fonte de verdade sobre disponibilidade, não o grid curado das páginas.
+   *
+   * @returns {Promise<Array<{categoria: string, totalServicos: number}>>} da mais ofertada para a
+   *          menos; lista vazia quando não há oferta alguma
+   */
+  function listarCategorias() {
+    return request('/servicos-ofertados/categorias', { auth: false });
+  }
+
+  /**
+   * Faixa de preço praticada numa categoria, apurada sobre os serviços publicados.
+   *
+   * Não é predição: são os preços que os prestadores cobram. Com amostra menor que três, o backend
+   * devolve os valores nulos e apenas `mensagem` — nesse caso exiba a mensagem, não uma faixa.
+   *
+   * @param {string} categoria categoria a consultar
+   * @returns {Promise<{categoria: string, minimo: number|null, mediana: number|null,
+   *          maximo: number|null, amostra: number, mensagem: string|null}>}
+   */
+  function obterEstimativa(categoria) {
+    return request(`/servicos-ofertados/estimativa?categoria=${encodeURIComponent(categoria)}`, { auth: false });
+  }
+
+  /**
+   * Avaliações reais mais recentes, para a prova social das páginas públicas.
+   *
+   * Identifica quem avaliou apenas pelo primeiro nome. Lista vazia significa que não há depoimento a
+   * exibir — esconda a seção em vez de mostrar moldura vazia.
+   *
+   * @param {number} [limite] quantidade desejada; acima do teto do backend é truncada, nunca recusada
+   * @returns {Promise<Array<{nota: number, comentario: string, clientePrimeiroNome: string,
+   *          categoria: string|null, cidade: string|null, data: string}>>}
+   */
+  function listarAvaliacoesRecentes(limite) {
+    const query = limite ? `?limite=${encodeURIComponent(limite)}` : '';
+    return request(`/avaliacoes/recentes${query}`, { auth: false });
   }
 
   // --- Ciclo de vida da solicitação (US-04, US-05, US-07, US-09, US-10) ---
@@ -420,6 +472,9 @@ const TaskGoAPI = (() => {
     alternarServicoAtivo,
     excluirServico,
     buscarServicos,
+    listarCategorias,
+    obterEstimativa,
+    listarAvaliacoesRecentes,
     criarSolicitacao,
     listarSolicitacoes,
     aceitarSolicitacao,

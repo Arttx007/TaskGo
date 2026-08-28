@@ -58,22 +58,22 @@ As duas alterações são no contrato de `GET /servicos-ofertados/buscar`, que j
 
 Arquivos: `assets/js/api.js`, `index.html`, `pages/servicos.html`.
 
-- [ ] 5.1 Adicionar a `api.js` as funções `listarCategorias()`, `obterEstimativa(categoria)` e `listarAvaliacoesRecentes(limite)`, todas com `auth: false` e JSDoc com `@param`/`@returns`, e exportá-las no objeto de retorno; verificação: `grep -c "fetch(" assets/js/api.js` continua sendo o único ponto de rede do projeto (`grep -rl "fetch(" assets/js | wc -l` retorna 1)
-- [ ] 5.2 Carregar `api.js` antes do script da página em `index.html` e `pages/servicos.html`, que hoje não o carregam; verificação: com a home aberta, `TaskGoAPI` deixa de ser `undefined` no console, e o mesmo em `servicos.html`
-- [ ] 5.3 Confirmar a ordem de execução dos scripts clássicos; verificação: `api.js` aparece antes de `index.js` e de `servicos.js` no HTML, e nenhum `type="module"` foi introduzido
-- [ ] 5.4 Atualizar apenas o JSDoc de `buscarServicos` para documentar `notaMinima`, `precoMin`, `precoMax` e `apenasSemAvaliacao`; verificação: o corpo da função não muda — ela já monta a query string genericamente a partir das chaves do objeto de filtro (`api.js:240-244`), então os parâmetros novos trafegam sem código novo
+- [x] 5.1 Adicionar a `api.js` as funções `listarCategorias()`, `obterEstimativa(categoria)` e `listarAvaliacoesRecentes(limite)`, todas com `auth: false` e JSDoc com `@param`/`@returns`, e exportá-las no objeto de retorno; verificação: `grep -c "fetch(" assets/js/api.js` continua sendo o único ponto de rede do projeto (`grep -rl "fetch(" assets/js | wc -l` retorna 1)
+- [x] 5.2 Carregar `api.js` antes do script da página em `index.html` e `pages/servicos.html`, que hoje não o carregam; verificação: com a home aberta, `TaskGoAPI` deixa de ser `undefined` no console, e o mesmo em `servicos.html`
+- [x] 5.3 Confirmar a ordem de execução dos scripts clássicos; verificação: `api.js` aparece antes de `index.js` e de `servicos.js` no HTML, e nenhum `type="module"` foi introduzido
+- [x] 5.4 Atualizar apenas o JSDoc de `buscarServicos` para documentar `notaMinima`, `precoMin`, `precoMax` e `apenasSemAvaliacao`; verificação: o corpo da função não muda — ela já monta a query string genericamente a partir das chaves do objeto de filtro (`api.js:240-244`), então os parâmetros novos trafegam sem código novo
 
 ## 6. Frontend — home (`feat`)
 
 Arquivos: `index.html`, `assets/js/index.js`.
 
-- [ ] 6.1 Remover o handler de submit e a função `showEstimateResult` de `index.js` (hoje linhas 98-166), deixando o formulário submeter nativamente; verificação: `grep -c "showEstimateResult\|preventDefault" assets/js/index.js` retorna 0 na seção da busca, e enviar o formulário navega para `pages/profissionais-prximos.html?service=...&radius=...`
-- [ ] 6.2 Renomear o rótulo do botão de "Gerar Estimativa IA" para o texto de busca e remover a classe `ai-estimate-card`; verificação: `grep -c "Estimativa IA" index.html` retorna 0
-- [ ] 6.3 Exibir a faixa de preço real ao escolher a categoria, consumindo `obterEstimativa`, e mostrar a mensagem do backend quando a amostra for insuficiente; verificação: a faixa exibida coincide com o retorno de `GET /servicos-ofertados/estimativa` para a mesma categoria, conferido no DevTools
-- [ ] 6.4 Substituir os 4 `pro-card` hardcoded por vitrine de categorias vinda de `listarCategorias`, cada card levando a `pages/profissionais-prximos.html?service=<categoria>`; verificação: `grep -c "Ricardo Santos\|Carla Oliveira\|Marcos Lima\|Juliana Costa" index.html` retorna 0, e nenhum botão "Ver Perfil" resta
-- [ ] 6.5 Garantir que os cards injetados fiquem visíveis, já que o `IntersectionObserver` de `index.js:75-93` roda uma única vez no `DOMContentLoaded` e zera a opacidade dos `.pro-card`; verificação: os cards de categoria aparecem sem precisar de scroll e sem ficar com `opacity: 0`
-- [ ] 6.6 Substituir os 3 depoimentos hardcoded pelo consumo de `listarAvaliacoesRecentes`, escondendo a seção quando a lista vier vazia; verificação: `grep -c "Ana Silva\|Roberto Mendes\|Lucia Ferreira" index.html` retorna 0, e com a tabela de avaliações sem comentários a seção não é renderizada
-- [ ] 6.7 Reescrever a copy de IA da home; verificação: `grep -nc "IA" index.html` retorna 0, incluindo a seção "Previsibilidade Total com IA" e o selo de rodapé "IA Verificada"
+- [x] 6.1 Remover o handler de submit e a função `showEstimateResult` de `index.js` (hoje linhas 98-166), deixando o formulário submeter nativamente; verificação: `grep -c "showEstimateResult\|preventDefault" assets/js/index.js` retorna 0 na seção da busca, e enviar o formulário navega para `pages/profissionais-prximos.html?service=...&radius=...`
+- [x] 6.2 Renomear o rótulo do botão de "Gerar Estimativa IA" para o texto de busca e remover a classe `ai-estimate-card`; verificação: `grep -c "Estimativa IA" index.html` retorna 0
+- [x] 6.3 Exibir a faixa de preço real ao escolher a categoria, consumindo `obterEstimativa`, e mostrar a mensagem do backend quando a amostra for insuficiente; verificação: a faixa exibida coincide com o retorno de `GET /servicos-ofertados/estimativa` para a mesma categoria, conferido no DevTools
+- [x] 6.4 Substituir os 4 `pro-card` hardcoded por vitrine de categorias vinda de `listarCategorias`, cada card levando a `pages/profissionais-prximos.html?service=<categoria>`; verificação: `grep -c "Ricardo Santos\|Carla Oliveira\|Marcos Lima\|Juliana Costa" index.html` retorna 0, e nenhum botão "Ver Perfil" resta
+- [x] 6.5 Garantir que os cards injetados fiquem visíveis, já que o `IntersectionObserver` de `index.js:75-93` roda uma única vez no `DOMContentLoaded` e zera a opacidade dos `.pro-card`; verificação: os cards de categoria aparecem sem precisar de scroll e sem ficar com `opacity: 0`
+- [x] 6.6 Substituir os 3 depoimentos hardcoded pelo consumo de `listarAvaliacoesRecentes`, escondendo a seção quando a lista vier vazia; verificação: `grep -c "Ana Silva\|Roberto Mendes\|Lucia Ferreira" index.html` retorna 0, e com a tabela de avaliações sem comentários a seção não é renderizada
+- [x] 6.7 Reescrever a copy de IA da home; verificação: `grep -nc "IA" index.html` retorna 0, incluindo a seção "Previsibilidade Total com IA" e o selo de rodapé "IA Verificada"
 
 ## 7. Frontend — catálogo de serviços (`feat`)
 

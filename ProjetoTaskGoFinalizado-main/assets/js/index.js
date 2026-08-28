@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // 1. LÓGICA DO CARROSSEL
   // ==========================================
@@ -31,10 +31,8 @@
     });
   };
 
-  // Inicializa o carrossel de profissionais
+  // Inicializa o carrossel de categorias
   initCarousel('pros-carousel');
-  // Se você colocar botões "prev/next" nos depoimentos, é só descomentar a linha abaixo:
-  // initCarousel('test-carousel');
 
   // ==========================================
   // 2. ANIMAÇÕES DA TELA (Timeline, Bento, Cards)
@@ -93,77 +91,210 @@
   }
 
   // ==========================================
-  // 3. ESTIMATIVA IA (Busca Hero)
+  // 3. FAIXA DE PREÇO PRATICADA (busca do hero)
   // ==========================================
-  const searchForm = document.querySelector('.search-form');
+  // O formulário do hero NÃO tem handler de submit, de propósito: o markup já aponta para
+  // pages/profissionais-prximos.html com os campos `service` e `radius`, que a página de
+  // profissionais lê para disparar a busca real. Um `preventDefault()` aqui era exatamente o que
+  // impedia a home de chegar à busca.
+  const seletorServico = document.getElementById('service-type');
+  if (seletorServico) {
+    seletorServico.addEventListener('change', () => exibirFaixaDePreco(seletorServico.value));
+  }
 
-  if (searchForm) {
-    searchForm.addEventListener('submit', (e) => {
-      e.preventDefault(); 
-      const serviceType = document.getElementById('service-type').value;
-      const proximity = document.getElementById('proximity').value;
+  /**
+   * Consulta e exibe a faixa de preço praticada na categoria escolhida.
+   *
+   * Nenhum valor é calculado aqui: quando o backend informa amostra insuficiente, exibe a mensagem
+   * dele em vez de inventar uma faixa.
+   *
+   * @param {string} categoria categoria escolhida no seletor do hero
+   * @returns {Promise<void>}
+   */
+  async function exibirFaixaDePreco(categoria) {
+    const caixa = obterCaixaDeFaixa();
 
-      if (serviceType === 'true' || !serviceType) {
-        alert('Por favor, selecione qual serviço você precisa.');
+    if (!categoria || categoria === 'true') {
+      caixa.hidden = true;
+      return;
+    }
+
+    caixa.hidden = false;
+    caixa.textContent = 'Consultando preços praticados...';
+
+    try {
+      const faixa = await TaskGoAPI.obterEstimativa(categoria);
+
+      if (faixa.mensagem) {
+        caixa.textContent = faixa.mensagem;
         return;
       }
 
-      let basePrice = 0;
-      switch (serviceType) {
-        case 'eletricista': basePrice = 150; break;
-        case 'encanador': basePrice = 120; break;
-        case 'pedreiro': basePrice = 200; break;
-        case 'pintor': basePrice = 100; break;
-        default: basePrice = 100;
+      caixa.innerHTML = [
+        '<span class="faixa-preco__rotulo">Preço praticado em ' + categoria + '</span>',
+        '<strong class="faixa-preco__valor">' + formatarReal(faixa.minimo) + ' a ' + formatarReal(faixa.maximo) + '</strong>',
+        '<span class="faixa-preco__nota">Mediana ' + formatarReal(faixa.mediana) + ', sobre ' + faixa.amostra + ' profissionais.</span>',
+      ].join('');
+    } catch (erro) {
+      caixa.textContent = erro instanceof TaskGoAPI.ApiError
+        ? erro.message
+        : 'Não foi possível consultar os preços agora.';
+    }
+  }
+
+  /** @returns {HTMLElement} a caixa da faixa de preço, criada na primeira chamada */
+  function obterCaixaDeFaixa() {
+    let caixa = document.getElementById('faixaPrecoPraticado');
+    if (!caixa) {
+      caixa = document.createElement('div');
+      caixa.id = 'faixaPrecoPraticado';
+      caixa.className = 'faixa-preco';
+      document.querySelector('.search-bar-wrapper').appendChild(caixa);
+    }
+    return caixa;
+  }
+
+  /**
+   * @param {number|string|null} valor valor em reais devolvido pela API
+   * @returns {string} valor formatado como moeda, ou traço quando ausente
+   */
+  function formatarReal(valor) {
+    if (valor === null || valor === undefined) return '—';
+    return 'R$ ' + Number(valor).toFixed(2).replace('.', ',');
+  }
+
+  // ==========================================
+  // 3b. VITRINE DE CATEGORIAS
+  // ==========================================
+
+  /**
+   * Preenche o carrossel com as categorias que realmente têm serviço disponível, cada uma levando à
+   * busca daquela categoria.
+   *
+   * Não exibe prestador individual: destacar prestador é US-14, fora do escopo atual, e a busca
+   * exige categoria e localidade que o visitante ainda não informou.
+   *
+   * @returns {Promise<void>}
+   */
+  async function carregarCategorias() {
+    const track = document.getElementById('categoriasCarrossel');
+    if (!track) return;
+
+    try {
+      const categorias = await TaskGoAPI.listarCategorias();
+
+      if (!categorias.length) {
+        const secao = track.closest('.nearby-pros');
+        if (secao) secao.hidden = true;
+        return;
       }
 
-      const distanceTax = parseInt(proximity) * 2.5; 
-      const finalAverage = basePrice + distanceTax;
-      const minPrice = Math.floor(finalAverage * 0.85);
-      const maxPrice = Math.ceil(finalAverage * 1.15); 
+      track.innerHTML = '';
+      categorias.forEach((categoria) => track.appendChild(criarCardCategoria(categoria)));
+      revelarImediatamente(track.children);
+    } catch {
+      track.innerHTML = '<p class="section-content">Não foi possível carregar as categorias agora.</p>';
+    }
+  }
 
-      showEstimateResult(minPrice, maxPrice, serviceType);
+  /**
+   * @param {{categoria: string, totalServicos: number}} item categoria devolvida pela API
+   * @returns {HTMLAnchorElement} card que leva à busca real da categoria
+   */
+  function criarCardCategoria(item) {
+    const card = document.createElement('a');
+    card.className = 'pro-card categoria-card';
+    card.href = 'pages/profissionais-prximos.html?service=' + encodeURIComponent(item.categoria);
+
+    const rotulo = item.totalServicos === 1 ? 'profissional' : 'profissionais';
+    card.innerHTML = [
+      '<div class="pro-info">',
+      '  <div class="pro-meta"><span class="pro-category">Categoria</span></div>',
+      '  <h3>' + item.categoria + '</h3>',
+      '  <div class="pro-pricing">',
+      '    <span class="price-label">Disponíveis</span>',
+      '    <span class="price-value">' + item.totalServicos + ' ' + rotulo + '</span>',
+      '  </div>',
+      '  <span class="service-link">Ver profissionais</span>',
+      '</div>',
+    ].join('');
+    return card;
+  }
+
+  // ==========================================
+  // 3c. DEPOIMENTOS REAIS
+  // ==========================================
+
+  /**
+   * Preenche os depoimentos com avaliações reais.
+   *
+   * Sem avaliação com comentário, a seção inteira permanece escondida — moldura vazia seria pior que
+   * ausência, e depoimento de exemplo é o que esta mudança removeu.
+   *
+   * @returns {Promise<void>}
+   */
+  async function carregarDepoimentos() {
+    const secao = document.getElementById('secaoDepoimentos');
+    const track = document.getElementById('depoimentosTrack');
+    if (!secao || !track) return;
+
+    try {
+      const avaliacoes = await TaskGoAPI.listarAvaliacoesRecentes(6);
+      if (!avaliacoes.length) return;
+
+      track.innerHTML = '';
+      avaliacoes.forEach((avaliacao) => track.appendChild(criarCardDepoimento(avaliacao)));
+      secao.hidden = false;
+      revelarImediatamente(track.children);
+    } catch {
+      // Sem prova social a seção simplesmente não aparece.
+    }
+  }
+
+  /**
+   * @param {{nota: number, comentario: string, clientePrimeiroNome: string, categoria: string|null,
+   *          cidade: string|null}} avaliacao avaliação real devolvida pela API
+   * @returns {HTMLElement} card de depoimento
+   */
+  function criarCardDepoimento(avaliacao) {
+    const card = document.createElement('div');
+    card.className = 'test-card';
+
+    const estrelas = '★'.repeat(avaliacao.nota) + '☆'.repeat(5 - avaliacao.nota);
+    const origem = [avaliacao.categoria, avaliacao.cidade].filter(Boolean).join(' · ');
+
+    card.innerHTML = [
+      '<div class="test-rating" aria-label="' + avaliacao.nota + ' de 5">' + estrelas + '</div>',
+      '<p class="test-text">' + avaliacao.comentario + '</p>',
+      '<div class="test-user">',
+      '  <div class="user-info">',
+      '    <strong>' + (avaliacao.clientePrimeiroNome || 'Cliente') + '</strong>',
+      '    <span>' + origem + '</span>',
+      '  </div>',
+      '</div>',
+    ].join('');
+    return card;
+  }
+
+  /**
+   * Torna visíveis elementos injetados depois do `DOMContentLoaded`.
+   *
+   * O `IntersectionObserver` da seção 2 roda uma única vez e zera a opacidade dos `.pro-card` que
+   * existiam naquele instante; card criado depois nunca seria observado e ficaria invisível.
+   *
+   * @param {HTMLCollection} elementos elementos recém-inseridos
+   * @returns {void}
+   */
+  function revelarImediatamente(elementos) {
+    Array.from(elementos).forEach((elemento) => {
+      elemento.style.opacity = '1';
+      elemento.style.transform = 'translateY(0)';
     });
   }
 
-  function showEstimateResult(min, max, service) {
-    let resultContainer = document.getElementById('ai-estimate-result');
+  carregarCategorias();
+  carregarDepoimentos();
 
-    if (!resultContainer) {
-      resultContainer = document.createElement('div');
-      resultContainer.id = 'ai-estimate-result';
-      resultContainer.className = 'animate__animated animate__fadeInUp'; 
-      
-      resultContainer.style.marginTop = '20px';
-      resultContainer.style.padding = '15px';
-      resultContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-      resultContainer.style.borderRadius = '8px';
-      resultContainer.style.borderLeft = '4px solid #4CAF50';
-      resultContainer.style.color = '#333';
-      resultContainer.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-
-      const searchWrapper = document.querySelector('.search-bar-wrapper');
-      searchWrapper.appendChild(resultContainer);
-    }
-
-    const serviceName = service.charAt(0).toUpperCase() + service.slice(1);
-    
-    resultContainer.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 18V5m3 8a4.17 4.17 0 0 1-3-4a4.17 4.17 0 0 1-3 4m8.598-6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"></path>
-          <path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path>
-          <path d="M18 18a4 4 0 0 0 2-7.464"></path>
-          <path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"></path>
-          <path d="M6 18a4 4 0 0 1-2-7.464"></path>
-          <path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path>
-        </svg>
-        <strong style="color: #4CAF50;">Estimativa IA para ${serviceName}</strong>
-      </div>
-      <p style="font-size: 1.5rem; font-weight: 800; margin: 0;">R$ ${min} - R$ ${max}</p>
-      <p style="font-size: 0.85rem; color: #666; margin-top: 4px;">Valor estimado com base na distância e média de mercado local.</p>
-    `;
-  }
   // ==========================================
   // 4. MENU MOBILE (Hambúrguer)
   // ==========================================
