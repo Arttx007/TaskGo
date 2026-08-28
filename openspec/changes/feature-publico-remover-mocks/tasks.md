@@ -143,7 +143,7 @@ Exige backend no ar e o frontend servido por HTTP. Não há suíte automatizada 
 
 ## 12. Fechamento
 
-- [ ] 12.1 Confirmar que nenhuma migration nem entidade foi tocada; verificação: `git diff --name-only main` não inclui nada em `db/migration/` nem em `Entity/`
-- [ ] 12.2 Confirmar que a suíte de backend segue verde; verificação: `mvn test` passa a partir de `backend-estrela-main/`
-- [ ] 12.3 Confirmar a separação de commits exigida pela convenção; verificação: `git log --oneline` mostra commits `feat` e `fix` distintos, nenhum commit misturando os dois escopos, todos no imperativo
-- [ ] 12.4 Confirmar que `CHANGELOG.md` cobre toda `feat` entregue; verificação: cada endpoint novo e cada substituição de mock aparece em `Added`, `Changed` ou `Removed` da v1.1.0
+- [x] 12.1 Confirmar que nenhuma migration nem entidade foi tocada; verificação: `git diff --name-only main` não inclui nada em `db/migration/` nem em `Entity/`
+- [x] 12.2 Confirmar que a suíte de backend segue verde; verificação: `mvn test` passa a partir de `backend-estrela-main/`
+- [x] 12.3 Confirmar a separação de commits exigida pela convenção; **exceção registrada:** a tag do Font Awesome (tarefa 9.3, um `fix`) entrou no commit `feat` da fase 8, junto do CSS/JS do Leaflet, em vez de commit próprio; verificação: `git log --oneline` mostra commits `feat` e `fix` distintos, nenhum commit misturando os dois escopos, todos no imperativo
+- [x] 12.4 Confirmar que `CHANGELOG.md` cobre toda `feat` entregue; verificação: cada endpoint novo e cada substituição de mock aparece em `Added`, `Changed` ou `Removed` da v1.1.0
