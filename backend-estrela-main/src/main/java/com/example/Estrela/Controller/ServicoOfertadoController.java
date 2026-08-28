@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -88,15 +89,30 @@ public class ServicoOfertadoController {
 
     /**
      * Busca serviços ativos por proximidade (US-03). Sem {@code lat}/{@code lon}, cai no fallback
-     * por {@code cidade}.
+     * por {@code cidade}. Rota pública.
+     *
+     * <p>Todos os filtros são opcionais e aditivos: uma busca que não informa nenhum deles se comporta
+     * exatamente como antes de eles existirem.
+     *
+     * @param notaMinima         nota média mínima do prestador; descarta prestador sem nota
+     * @param precoMin           preço mínimo, inclusive
+     * @param precoMax           preço máximo, inclusive
+     * @param apenasSemAvaliacao devolve só prestador ainda não avaliado, para a vitrine de novos
+     * @throws com.example.Estrela.exception.ValidacaoException se {@code apenasSemAvaliacao} vier junto
+     *         de {@code notaMinima} (HTTP 400, código {@code VALIDACAO})
      */
     @GetMapping("/buscar")
     public ResultadoBuscaServico buscar(@RequestParam String categoria,
                                          @RequestParam(required = false) Double lat,
                                          @RequestParam(required = false) Double lon,
                                          @RequestParam(required = false) Double raioKm,
-                                         @RequestParam(required = false) String cidade) {
-        return servicoOfertadoService.buscar(categoria, lat, lon, raioKm, cidade);
+                                         @RequestParam(required = false) String cidade,
+                                         @RequestParam(required = false) BigDecimal notaMinima,
+                                         @RequestParam(required = false) BigDecimal precoMin,
+                                         @RequestParam(required = false) BigDecimal precoMax,
+                                         @RequestParam(required = false) Boolean apenasSemAvaliacao) {
+        return servicoOfertadoService.buscar(categoria, lat, lon, raioKm, cidade,
+                notaMinima, precoMin, precoMax, apenasSemAvaliacao);
     }
 
     private ServicoOfertadoResponse paraResposta(ServicoOfertado servico) {

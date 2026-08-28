@@ -9,6 +9,7 @@ import com.example.Estrela.Entity.*;
 import com.example.Estrela.exception.AcessoNegadoException;
 import com.example.Estrela.exception.KycPendenteException;
 import com.example.Estrela.exception.RecursoNaoEncontradoException;
+import com.example.Estrela.exception.ValidacaoException;
 import com.example.Estrela.repository.LocalizacaoRepository;
 import com.example.Estrela.repository.PrestadorRepository;
 import com.example.Estrela.repository.ServicoOfertadoRepository;
@@ -187,6 +188,44 @@ public class ServicoOfertadoService {
      * manual por endereço").
      */
     public ResultadoBuscaServico buscar(String categoria, Double lat, Double lon, Double raioKm, String cidade) {
+        return buscar(categoria, lat, lon, raioKm, cidade, null, null, null, null);
+    }
+
+    /**
+     * Busca serviços ativos de prestadores aprovados por proximidade (US-03), com filtros opcionais
+     * de nota e de preço.
+     *
+     * <p>Os filtros são aplicados <strong>pelo sistema</strong>, no mesmo passo que já descarta
+     * prestador não aprovado e calcula distância: a resposta nunca contém resultado fora dos limites
+     * pedidos. Aplicá-los aqui, e não numa consulta nova, é deliberado — a busca já materializa a
+     * lista de candidatos para o Haversine, então os predicados não somam carga, e uma consulta com
+     * parâmetros anuláveis teria de reproduzir em JPQL a seleção de três ramos abaixo.
+     *
+     * <p>Nenhum filtro informado produz exatamente o resultado de antes de eles existirem.
+     *
+     * @param categoria          categoria buscada; obrigatória
+     * @param lat                latitude do ponto de busca; com {@code lon}, ativa o filtro por raio
+     * @param lon                longitude do ponto de busca
+     * @param raioKm             raio máximo em km; ausente aplica o parâmetro de negócio vigente
+     * @param cidade             usado como fallback quando não há coordenadas
+     * @param notaMinima         nota média mínima do prestador; prestador sem nota é descartado quando informada
+     * @param precoMin           preço mínimo, inclusive
+     * @param precoMax           preço máximo, inclusive
+     * @param apenasSemAvaliacao quando verdadeiro, devolve só prestador que ainda não tem nota média
+     * @return resultados ordenados do mais próximo ao mais distante
+     * @throws com.example.Estrela.exception.ValidacaoException se {@code apenasSemAvaliacao} vier junto
+     *         de {@code notaMinima} — critérios contraditórios (HTTP 400, código {@code VALIDACAO})
+     */
+    public ResultadoBuscaServico buscar(String categoria, Double lat, Double lon, Double raioKm, String cidade,
+                                         BigDecimal notaMinima, BigDecimal precoMin, BigDecimal precoMax,
+                                         Boolean apenasSemAvaliacao) {
+        boolean somenteSemAvaliacao = Boolean.TRUE.equals(apenasSemAvaliacao);
+
+        if (somenteSemAvaliacao && notaMinima != null) {
+            throw new ValidacaoException(
+                    "Não é possível combinar nota mínima com a busca de profissionais sem avaliação");
+        }
+
         List<ServicoOfertado> candidatos;
         boolean comCoordenadas = lat != null && lon != null;
 
@@ -203,6 +242,8 @@ public class ServicoOfertadoService {
 
         List<BuscaServicoResponse> resultados = candidatos.stream()
                 .filter(s -> s.getPrestador() != null && s.getPrestador().getStatusKyc() == StatusKyc.APROVADO)
+                .filter(s -> atendeCriterioDeNota(s, notaMinima, somenteSemAvaliacao))
+                .filter(s -> atendeFaixaDePreco(s, precoMin, precoMax))
                 .map(s -> paraResposta(s, lat, lon, comCoordenadas))
                 .filter(r -> !comCoordenadas || r.distanciaKm() == null || r.distanciaKm() <= raioEfetivoKm)
                 .sorted((a, b) -> {
@@ -217,11 +258,50 @@ public class ServicoOfertadoService {
         return new ResultadoBuscaServico(resultados, null);
     }
 
+    /**
+     * @param servico             candidato avaliado
+     * @param notaMinima          nota média mínima exigida, ou nulo quando não há exigência
+     * @param somenteSemAvaliacao quando verdadeiro, só passa prestador sem nota média
+     * @return true se o candidato satisfaz o critério de nota
+     */
+    private boolean atendeCriterioDeNota(ServicoOfertado servico, BigDecimal notaMinima, boolean somenteSemAvaliacao) {
+        BigDecimal notaMedia = servico.getPrestador().getNota_media();
+
+        if (somenteSemAvaliacao) {
+            return notaMedia == null;
+        }
+        if (notaMinima == null) {
+            return true;
+        }
+        // Prestador sem nota é descartado: nulo não satisfaz "pelo menos N", e afirmar que satisfaz
+        // seria dizer que ele alcança um mínimo que ninguém mediu.
+        return notaMedia != null && notaMedia.compareTo(notaMinima) >= 0;
+    }
+
+    /**
+     * @param servico  candidato avaliado
+     * @param precoMin limite inferior inclusive, ou nulo para faixa aberta nessa ponta
+     * @param precoMax limite superior inclusive, ou nulo para faixa aberta nessa ponta
+     * @return true se o preço do serviço está dentro da faixa informada
+     */
+    private boolean atendeFaixaDePreco(ServicoOfertado servico, BigDecimal precoMin, BigDecimal precoMax) {
+        BigDecimal preco = servico.getPreco();
+        if (preco == null) {
+            return precoMin == null && precoMax == null;
+        }
+        if (precoMin != null && preco.compareTo(precoMin) < 0) {
+            return false;
+        }
+        return precoMax == null || preco.compareTo(precoMax) <= 0;
+    }
+
     private BuscaServicoResponse paraResposta(ServicoOfertado servico, Double lat, Double lon, boolean comCoordenadas) {
         Double distanciaKm = null;
         Localizacao localizacao = servico.getLocalizacao();
+        boolean temCoordenadas = localizacao != null
+                && localizacao.getLatitude() != null && localizacao.getLongitude() != null;
 
-        if (comCoordenadas && localizacao != null && localizacao.getLatitude() != null && localizacao.getLongitude() != null) {
+        if (comCoordenadas && temCoordenadas) {
             distanciaKm = geoService.distanciaKm(lat, lon, localizacao.getLatitude(), localizacao.getLongitude());
         }
 
@@ -234,8 +314,25 @@ public class ServicoOfertadoService {
                 prestador.getIdPrestador(),
                 prestador.getNome(),
                 prestador.getNota_media(),
-                distanciaKm
+                distanciaKm,
+                temCoordenadas ? arredondarCoordenada(localizacao.getLatitude()) : null,
+                temCoordenadas ? arredondarCoordenada(localizacao.getLongitude()) : null
         );
+    }
+
+    /**
+     * Reduz a precisão da coordenada antes de ela sair da aplicação.
+     *
+     * <p>Três casas decimais equivalem a cerca de 110 m: situa o serviço no bairro e na quadra, o que
+     * o mapa precisa, sem publicar o endereço exato de um autônomo numa rota sem autenticação. A
+     * distância continua sendo calculada com a coordenada cheia, então a ordenação por proximidade
+     * não perde precisão — só a posição exibida é aproximada.
+     *
+     * @param valor coordenada cheia
+     * @return coordenada arredondada para três casas decimais
+     */
+    private double arredondarCoordenada(double valor) {
+        return Math.round(valor * 1000.0) / 1000.0;
     }
 
     private ServicoOfertado buscarEValidarDono(Long servicoId, Long prestadorIdAutenticado) {

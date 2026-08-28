@@ -1,11 +1,14 @@
 package com.example.Estrela.Service;
 
+import com.example.Estrela.DTO.BuscaServicoResponse;
 import com.example.Estrela.DTO.CategoriaDisponivelResponse;
 import com.example.Estrela.DTO.EstimativaPrecoResponse;
+import com.example.Estrela.Entity.Localizacao;
 import com.example.Estrela.Entity.Prestador;
 import com.example.Estrela.Entity.ServicoOfertado;
 import com.example.Estrela.Entity.StatusKyc;
 import com.example.Estrela.Entity.StatusServico;
+import com.example.Estrela.exception.ValidacaoException;
 import com.example.Estrela.repository.LocalizacaoRepository;
 import com.example.Estrela.repository.PrestadorRepository;
 import com.example.Estrela.repository.ServicoOfertadoRepository;
@@ -19,8 +22,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -140,6 +148,198 @@ class ServicoOfertadoServiceTest {
         assertThat(resultado.amostra()).isEqualTo(3);
         assertThat(resultado.maximo()).isEqualByComparingTo("300.00");
         assertThat(resultado.mediana()).isEqualByComparingTo("200.00");
+    }
+
+    // --- Coordenadas na resposta da busca ---
+
+    @Test
+    void resultadoTrazCoordenadaArredondadaEmTresCasas() {
+        ServicoOfertado servico = servicoComLocalizacao("100.00", StatusKyc.APROVADO, -8.1215567, -34.9005432);
+        mockarBusca(servico);
+        when(geoService.distanciaKm(anyDouble(), anyDouble(), anyDouble(), anyDouble())).thenReturn(1.5);
+
+        BuscaServicoResponse r = servicoOfertadoService
+                .buscar("eletricista", -8.12, -34.90, 10.0, null).resultados().get(0);
+
+        assertThat(r.latitude()).isEqualTo(-8.122);
+        assertThat(r.longitude()).isEqualTo(-34.901);
+    }
+
+    @Test
+    void distanciaEhCalculadaComACoordenadaCheiaNaoComAArredondada() {
+        ServicoOfertado servico = servicoComLocalizacao("100.00", StatusKyc.APROVADO, -8.1215567, -34.9005432);
+        mockarBusca(servico);
+        when(geoService.distanciaKm(anyDouble(), anyDouble(), anyDouble(), anyDouble())).thenReturn(1.5);
+
+        servicoOfertadoService.buscar("eletricista", -8.12, -34.90, 10.0, null);
+
+        verify(geoService).distanciaKm(-8.12, -34.90, -8.1215567, -34.9005432);
+    }
+
+    @Test
+    void servicoSemCoordenadasVemSemPosicaoESemDistanciaESemSerDescartado() {
+        mockarBusca(servico("100.00", StatusKyc.APROVADO));
+
+        List<BuscaServicoResponse> r = servicoOfertadoService
+                .buscar("eletricista", -8.12, -34.90, 1.0, null).resultados();
+
+        assertThat(r).hasSize(1);
+        assertThat(r.get(0).latitude()).isNull();
+        assertThat(r.get(0).longitude()).isNull();
+        assertThat(r.get(0).distanciaKm()).isNull();
+    }
+
+    // --- Filtros de nota e preço ---
+
+    @Test
+    void buscaSemFiltrosNaoDescartaNinguemPorNotaOuPreco() {
+        mockarBusca(comNota("100.00", "4.9"), comNota("900.00", "2.0"), servico("50.00", StatusKyc.APROVADO));
+
+        assertThat(servicoOfertadoService.buscar("eletricista", null, null, null, "Recife").resultados()).hasSize(3);
+    }
+
+    @Test
+    void notaMinimaDescartaAbaixoDoPedido() {
+        mockarBusca(comNota("100.00", "4.9"), comNota("100.00", "3.0"));
+
+        List<BuscaServicoResponse> r = servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", new BigDecimal("4.5"), null, null, null)
+                .resultados();
+
+        assertThat(r).hasSize(1);
+        assertThat(r.get(0).notaMediaPrestador()).isEqualByComparingTo("4.9");
+    }
+
+    @Test
+    void notaMinimaNoLimiteExatoEhIncluida() {
+        mockarBusca(comNota("100.00", "4.50"));
+
+        assertThat(servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", new BigDecimal("4.5"), null, null, null)
+                .resultados()).hasSize(1);
+    }
+
+    @Test
+    void prestadorSemNotaEhDescartadoQuandoNotaMinimaEhInformada() {
+        mockarBusca(servico("100.00", StatusKyc.APROVADO));
+
+        assertThat(servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", new BigDecimal("4.0"), null, null, null)
+                .resultados()).isEmpty();
+    }
+
+    @Test
+    void prestadorSemNotaApareceQuandoNotaMinimaEhOmitida() {
+        mockarBusca(servico("100.00", StatusKyc.APROVADO));
+
+        assertThat(servicoOfertadoService.buscar("eletricista", null, null, null, "Recife").resultados()).hasSize(1);
+    }
+
+    @Test
+    void faixaDePrecoFechadaIncluiOsExtremos() {
+        mockarBusca(comNota("199.99", "4.0"), comNota("200.00", "4.0"), comNota("500.00", "4.0"),
+                comNota("500.01", "4.0"));
+
+        List<BuscaServicoResponse> r = servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", null,
+                        new BigDecimal("200.00"), new BigDecimal("500.00"), null)
+                .resultados();
+
+        assertThat(r).extracting(BuscaServicoResponse::preco)
+                .containsExactly(new BigDecimal("200.00"), new BigDecimal("500.00"));
+    }
+
+    @Test
+    void faixaAbertaEmUmaDasPontasNaoLimitaAOutra() {
+        mockarBusca(comNota("100.00", "4.0"), comNota("900.00", "4.0"));
+
+        assertThat(servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", null, null, new BigDecimal("200.00"), null)
+                .resultados()).hasSize(1);
+
+        mockarBusca(comNota("100.00", "4.0"), comNota("900.00", "4.0"));
+
+        assertThat(servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", null, new BigDecimal("200.00"), null, null)
+                .resultados()).hasSize(1);
+    }
+
+    @Test
+    void filtroSemCorrespondenciaDevolveListaVaziaComMensagemNaoErro() {
+        mockarBusca(comNota("100.00", "2.0"));
+
+        var resultado = servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", new BigDecimal("4.9"), null, null, null);
+
+        assertThat(resultado.resultados()).isEmpty();
+        assertThat(resultado.mensagem()).isNotBlank();
+    }
+
+    // --- Vitrine de prestadores sem avaliação ---
+
+    @Test
+    void apenasSemAvaliacaoDevolveSoQuemNaoTemNota() {
+        mockarBusca(comNota("100.00", "4.9"), servico("150.00", StatusKyc.APROVADO));
+
+        List<BuscaServicoResponse> r = servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", null, null, null, true)
+                .resultados();
+
+        assertThat(r).hasSize(1);
+        assertThat(r.get(0).notaMediaPrestador()).isNull();
+    }
+
+    @Test
+    void apenasSemAvaliacaoCompoeComFaixaDePreco() {
+        mockarBusca(servico("100.00", StatusKyc.APROVADO), servico("900.00", StatusKyc.APROVADO));
+
+        assertThat(servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", null, null, new BigDecimal("200.00"), true)
+                .resultados()).hasSize(1);
+    }
+
+    @Test
+    void apenasSemAvaliacaoFalsoNaoAlteraABusca() {
+        mockarBusca(comNota("100.00", "4.9"), servico("150.00", StatusKyc.APROVADO));
+
+        assertThat(servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", null, null, null, false)
+                .resultados()).hasSize(2);
+    }
+
+    @Test
+    void combinarApenasSemAvaliacaoComNotaMinimaEhRecusado() {
+        assertThatThrownBy(() -> servicoOfertadoService
+                .buscar("eletricista", null, null, null, "Recife", new BigDecimal("4.0"), null, null, true))
+                .isInstanceOf(ValidacaoException.class);
+
+        verifyNoInteractions(servicoOfertadoRepository);
+    }
+
+    private void mockarBusca(ServicoOfertado... servicos) {
+        org.mockito.Mockito.reset(servicoOfertadoRepository);
+        lenient().when(servicoOfertadoRepository
+                .findByStatusAndCategoriaIgnoreCaseAndLocalizacao_CidadeIgnoreCase(any(), anyString(), anyString()))
+                .thenReturn(List.of(servicos));
+        lenient().when(servicoOfertadoRepository.findByStatusAndCategoriaIgnoreCase(any(), anyString()))
+                .thenReturn(List.of(servicos));
+        lenient().when(parametroNegocioService.valor("busca.raio-padrao-km")).thenReturn(new BigDecimal("10"));
+    }
+
+    private ServicoOfertado comNota(String preco, String notaMedia) {
+        ServicoOfertado s = servico(preco, StatusKyc.APROVADO);
+        s.getPrestador().setNota_media(new BigDecimal(notaMedia));
+        return s;
+    }
+
+    private ServicoOfertado servicoComLocalizacao(String preco, StatusKyc kyc, double lat, double lon) {
+        ServicoOfertado s = servico(preco, kyc);
+        Localizacao l = new Localizacao();
+        l.setCidade("Recife");
+        l.setLatitude(lat);
+        l.setLongitude(lon);
+        s.setLocalizacao(l);
+        return s;
     }
 
     private void mockarServicos(String... precos) {
