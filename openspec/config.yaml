@@ -71,5 +71,5 @@ operations:
       - Código novo de backend leva Javadoc com @throws; código novo de frontend leva JSDoc com @param/@returns e nenhum fetch fora de api.js.
   archive:
     guidance:
-      - Confirme que toda feat entregue tem entrada correspondente em CHANGELOG.md (Keep a Changelog, a partir da v1.1.0). O arquivo ainda não existe no repositório — a primeira feat deve criá-lo.
+      - Confirme que toda feat entregue tem entrada correspondente em CHANGELOG.md (Keep a Changelog, a partir da v1.1.0), na seção "Não publicado" ou na versão que a inclui.
       - Diagramas produzidos pela mudança devem estar em docs/diagrams/ em sintaxe Mermaid.
