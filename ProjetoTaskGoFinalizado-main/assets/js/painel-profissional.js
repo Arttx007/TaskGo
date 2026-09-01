@@ -189,7 +189,8 @@ async function recusarServico(botao, solicitacaoId) {
 }
 
 const ROTULOS_STATUS = {
-  ACEITO: { texto: 'Em Andamento', classe: 'pill-progress' },
+  ACEITO: { texto: 'Aguardando início', classe: 'pill-progress' },
+  EM_ANDAMENTO: { texto: 'Em Andamento', classe: 'pill-progress' },
   CONCLUIDO: { texto: 'Concluído', classe: 'pill-success' },
   AVALIADO: { texto: 'Concluído', classe: 'pill-success' },
   CANCELADO: { texto: 'Cancelado', classe: 'pill-danger' },
@@ -209,19 +210,99 @@ function renderizarHistorico(lista) {
     const rotulo = ROTULOS_STATUS[solicitacao.status] || { texto: solicitacao.status, classe: '' };
     const linha = document.createElement('tr');
 
-    const acao = solicitacao.status === 'ACEITO'
-      ? `<button class="btn-primary btn-concluir" style="padding: 6px 12px; font-size: 12px;">Concluir Atendimento</button>`
+    let acao = '';
+    if (solicitacao.status === 'ACEITO') {
+      acao = `<button class="btn-primary btn-iniciar" style="padding: 6px 12px; font-size: 12px;">Iniciar Atendimento</button>`;
+    } else if (solicitacao.status === 'EM_ANDAMENTO') {
+      acao = `<button class="btn-primary btn-concluir" style="padding: 6px 12px; font-size: 12px;">Concluir Atendimento</button>`;
+    }
+
+    const chat = solicitacao.status === 'ACEITO' || solicitacao.status === 'EM_ANDAMENTO'
+      ? `<button class="btn-outline btn-chat" style="padding: 6px 10px; font-size: 12px;" title="Conversar com o cliente"><i class="fas fa-comment-dots"></i></button>`
       : '';
 
-    linha.innerHTML = `<td>${solicitacao.categoria || 'Serviço'}</td><td>${solicitacao.clienteNome}</td><td>—</td><td><strong>${formatarMoeda(solicitacao.valor)}</strong></td><td><span class="status-pill ${rotulo.classe}">${rotulo.texto}</span> ${acao}</td>`;
+    linha.innerHTML = `<td>${solicitacao.categoria || 'Serviço'}</td><td>${solicitacao.clienteNome}</td><td>—</td><td><strong>${formatarMoeda(solicitacao.valor)}</strong></td><td><span class="status-pill ${rotulo.classe}">${rotulo.texto}</span> ${acao} ${chat}</td>`;
+
+    const btnIniciar = linha.querySelector('.btn-iniciar');
+    if (btnIniciar) {
+      btnIniciar.addEventListener('click', () => abrirModalIniciarAtendimento(solicitacao));
+    }
 
     const btnConcluir = linha.querySelector('.btn-concluir');
     if (btnConcluir) {
       btnConcluir.addEventListener('click', () => concluirAtendimento(btnConcluir, solicitacao.id));
     }
 
+    const btnChat = linha.querySelector('.btn-chat');
+    if (btnChat) {
+      btnChat.addEventListener('click', () => abrirChatDoServico(solicitacao));
+    }
+
     corpo.appendChild(linha);
   });
+}
+
+/**
+ * Abre a conversa da solicitação com o cliente. A implementação é compartilhada com o painel do
+ * cliente (ver `assets/js/chat-servico.js`).
+ *
+ * @param {Object} solicitacao `SolicitacaoResponse` da solicitação
+ * @returns {void}
+ */
+function abrirChatDoServico(solicitacao) {
+  ChatServico.abrir(solicitacao);
+}
+
+/** @type {number|null} solicitação cujo atendimento está sendo iniciado */
+let solicitacaoIniciandoId = null;
+
+/**
+ * Abre o pedido do código de confirmação. O código está com o cliente presente — o prestador nunca o
+ * recebe pela API, então digitá-lo é a prova de que ele chegou ao local.
+ *
+ * @param {Object} solicitacao `SolicitacaoResponse`
+ * @returns {void}
+ */
+function abrirModalIniciarAtendimento(solicitacao) {
+  solicitacaoIniciandoId = solicitacao.id;
+  document.getElementById('iniciarCliente').textContent = solicitacao.clienteNome;
+  const campo = document.getElementById('iniciarPin');
+  campo.value = '';
+  document.getElementById('modalIniciarAtendimento').style.display = 'flex';
+  campo.focus();
+}
+
+/**
+ * Envia o código informado pelo cliente. Código errado é recusado com 403 e nada muda — nem o estado
+ * da solicitação, nem o código armazenado.
+ *
+ * @param {SubmitEvent} evento submit do formulário do código
+ * @returns {Promise<void>}
+ */
+async function iniciarAtendimento(evento) {
+  evento.preventDefault();
+  if (!solicitacaoIniciandoId) return;
+
+  const pin = document.getElementById('iniciarPin').value.trim();
+  if (!pin) {
+    showToast('Informe o código de quatro dígitos que o cliente exibe no painel.', 'error');
+    return;
+  }
+
+  const botao = document.getElementById('btnIniciarAtendimento');
+  botao.disabled = true;
+
+  try {
+    await TaskGoAPI.iniciarAtendimento(solicitacaoIniciandoId, pin);
+    closeModal('modalIniciarAtendimento');
+    showToast('Atendimento iniciado.', 'success');
+    solicitacaoIniciandoId = null;
+    await carregarSolicitacoes();
+  } catch (erro) {
+    showToast(mensagemDeErro(erro), 'error');
+  } finally {
+    botao.disabled = false;
+  }
 }
 
 async function concluirAtendimento(botao, solicitacaoId) {

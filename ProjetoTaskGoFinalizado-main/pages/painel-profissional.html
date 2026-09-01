@@ -871,6 +871,26 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalIniciarAtendimento">
+        <div class="modal-content" style="max-width: 420px;">
+            <h3 style="color: white; font-size: 18px; font-weight: 800; margin-bottom: 8px;"><i class="fas fa-shield-alt" style="color: var(--primary-blue);"></i> Iniciar Atendimento</h3>
+            <p style="color: var(--text-gray); font-size: 13px; line-height: 1.6; margin-bottom: 20px;">Peça a <strong id="iniciarCliente" style="color: white;">o cliente</strong> o código de quatro dígitos que aparece no painel dele. Ele confirma que você está no local.</p>
+
+            <form id="formIniciarAtendimento" onsubmit="iniciarAtendimento(event)">
+                <div class="form-group">
+                    <label for="iniciarPin">Código de confirmação</label>
+                    <input type="text" id="iniciarPin" inputmode="numeric" maxlength="4" placeholder="0000"
+                           style="width: 100%; text-align: center; letter-spacing: 12px; font-size: 24px; font-weight: 800;">
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button type="button" class="btn-outline" style="flex: 1;" onclick="closeModal('modalIniciarAtendimento')">Voltar</button>
+                    <button type="submit" class="btn-primary" style="flex: 1;" id="btnIniciarAtendimento">Iniciar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modalChatIA">
         <div class="modal-content" style="padding: 0; max-width: 400px; overflow: hidden; display: flex; flex-direction: column; height: 500px;">
             
@@ -905,6 +925,7 @@
 
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth-guard.js"></script>
+    <script src="../assets/js/chat-servico.js"></script>
     <script src="../assets/js/painel-profissional.js"></script>
 </body>
 </html>
