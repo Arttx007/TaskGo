@@ -4,6 +4,7 @@ import com.example.Estrela.DTO.*;
 import com.example.Estrela.Entity.FatoServico;
 import com.example.Estrela.Entity.Pagamento;
 import com.example.Estrela.Service.FatoServicoService;
+import com.example.Estrela.Service.MensagemService;
 import com.example.Estrela.Service.PagamentoService;
 import com.example.Estrela.security.TaskGoUserDetails;
 import jakarta.validation.Valid;
@@ -23,10 +24,63 @@ public class FatoServicoController {
 
     private final FatoServicoService service;
     private final PagamentoService pagamentoService;
+    private final MensagemService mensagemService;
 
-    public FatoServicoController(FatoServicoService service, PagamentoService pagamentoService) {
+    public FatoServicoController(FatoServicoService service,
+                                 PagamentoService pagamentoService,
+                                 MensagemService mensagemService) {
         this.service = service;
         this.pagamentoService = pagamentoService;
+        this.mensagemService = mensagemService;
+    }
+
+    /**
+     * Conversa de uma solicitação, da mensagem mais antiga para a mais recente.
+     *
+     * @param id      solicitação consultada
+     * @param usuario conta autenticada, resolvida do token
+     * @return mensagens em ordem cronológica, lista vazia quando ninguém escreveu ainda
+     * @throws com.example.Estrela.exception.RecursoNaoEncontradoException se a solicitação não existir (HTTP 404)
+     * @throws com.example.Estrela.exception.AcessoNegadoException         se quem consulta não participa dela (HTTP 403)
+     */
+    @GetMapping("/{id}/mensagens")
+    public List<MensagemResponse> listarMensagens(@PathVariable Long id,
+                                                  @AuthenticationPrincipal TaskGoUserDetails usuario) {
+        return mensagemService.listar(id, usuario.getId(), usuario.getRole());
+    }
+
+    /**
+     * Envia uma mensagem na conversa de uma solicitação ativa.
+     *
+     * @param id      solicitação
+     * @param request conteúdo da mensagem
+     * @param usuario conta autenticada, resolvida do token
+     * @return a mensagem registrada
+     * @throws com.example.Estrela.exception.RecursoNaoEncontradoException se a solicitação não existir (HTTP 404)
+     * @throws com.example.Estrela.exception.AcessoNegadoException         se quem escreve não participa dela (HTTP 403)
+     * @throws com.example.Estrela.exception.EstadoInvalidoException       se a solicitação estiver encerrada (HTTP 409)
+     */
+    @PostMapping("/{id}/mensagens")
+    @ResponseStatus(HttpStatus.CREATED)
+    public MensagemResponse enviarMensagem(@PathVariable Long id,
+                                           @Valid @RequestBody MensagemRequest request,
+                                           @AuthenticationPrincipal TaskGoUserDetails usuario) {
+        return mensagemService.enviar(id, usuario.getId(), usuario.getRole(), request);
+    }
+
+    /**
+     * Marca como lidas as mensagens que a outra parte escreveu nesta solicitação.
+     *
+     * @param id      solicitação
+     * @param usuario conta autenticada, resolvida do token
+     * @throws com.example.Estrela.exception.RecursoNaoEncontradoException se a solicitação não existir (HTTP 404)
+     * @throws com.example.Estrela.exception.AcessoNegadoException         se quem marca não participa dela (HTTP 403)
+     */
+    @PutMapping("/{id}/mensagens/lidas")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void marcarMensagensLidas(@PathVariable Long id,
+                                     @AuthenticationPrincipal TaskGoUserDetails usuario) {
+        mensagemService.marcarLidas(id, usuario.getId(), usuario.getRole());
     }
 
     /**
