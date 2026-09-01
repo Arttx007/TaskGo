@@ -232,4 +232,4 @@ Arquivos: `CHANGELOG.md`, `docs/diagrams/fluxo-painel-cliente.md` (novo), `opens
 - [x] 19.1 Confirmar que as convenções de commit foram respeitadas; verificação: `git log --oneline` mostra as fases 2 a 15 e 18 como `feat`, a fase 16 como `fix`, e nenhum commit misturando os dois tipos
 - [x] 19.2 Validar os artefatos da change; verificação: `openspec validate --all --strict` passa
 - [x] 19.3 Confirmar que os delta specs cobrem o que foi implementado, em especial a remoção do requisito de superfícies decorativas do painel do cliente; verificação: nenhum requisito em `openspec/specs/` continua exigindo que o checkout, o chat, o recibo ou o simulador do cliente sejam falsos
-- [ ] 19.4 Sincronizar os deltas nas capabilities principais e arquivar; verificação: `/opsx:archive` conclui e `openspec/specs/` descreve o sistema tal como ficou
+- [x] 19.4 Sincronizar os deltas nas capabilities principais e arquivar; verificação: `/opsx:archive` conclui e `openspec/specs/` descreve o sistema tal como ficou
