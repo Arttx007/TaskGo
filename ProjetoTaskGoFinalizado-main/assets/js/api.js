@@ -108,10 +108,11 @@ const TaskGoAPI = (() => {
    *
    * @param {string} path caminho relativo
    * @param {FormData} formData dados do formulário, incluindo arquivos
+   * @param {string} [method] verbo HTTP; `POST` por padrão
    * @returns {Promise<any>} corpo da resposta já convertido de JSON
    * @throws {ApiError} quando a resposta não é 2xx
    */
-  async function requestMultipart(path, formData) {
+  async function requestMultipart(path, formData, method = 'POST') {
     const headers = {};
     const sessao = getSessaoAtual();
     if (sessao && sessao.token) {
@@ -119,7 +120,7 @@ const TaskGoAPI = (() => {
     }
 
     const resposta = await fetch(BASE_URL + path, {
-      method: 'POST',
+      method,
       headers,
       body: formData,
     });
@@ -300,10 +301,16 @@ const TaskGoAPI = (() => {
 
   /**
    * @param {number} servicoOfertadoId
+   * @param {number} [enderecoClienteId] endereço do cliente onde o atendimento ocorrerá; quando
+   *        omitido a solicitação nasce sem endereço e a tela de acompanhamento não exibe mapa
    * @returns {Promise<Object>} SolicitacaoResponse (status=SOLICITADO)
    */
-  function criarSolicitacao(servicoOfertadoId) {
-    return request('/servicos', { method: 'POST', body: { servicoOfertadoId } });
+  function criarSolicitacao(servicoOfertadoId, enderecoClienteId) {
+    const body = { servicoOfertadoId };
+    if (enderecoClienteId !== undefined && enderecoClienteId !== null) {
+      body.enderecoClienteId = enderecoClienteId;
+    }
+    return request('/servicos', { method: 'POST', body });
   }
 
   /** @returns {Promise<Object[]>} lista de SolicitacaoResponse do usuário autenticado (cliente ou prestador) */
@@ -370,6 +377,236 @@ const TaskGoAPI = (() => {
    */
   function solicitarSaque(prestadorId, valor) {
     return request(`/prestadores/${prestadorId}/saques`, { method: 'POST', body: { valor } });
+  }
+
+  // --- Conta e endereços do cliente ---
+
+  /**
+   * Perfil do cliente autenticado. A rota se resolve pelo token, não por id na URL — o cliente só
+   * alcança a própria conta.
+   *
+   * @returns {Promise<{idCliente: number, nome: string, email: string, telefone: string|null,
+   *          idade: number|null, cidade: string|null, tipoCliente: string|null, fotoUrl: string|null}>}
+   * @throws {ApiError} 401 sem token válido
+   */
+  function obterMeuPerfilCliente() {
+    return request('/clientes/me');
+  }
+
+  /**
+   * @param {{nome: string, email: string, telefone?: string, idade?: number, cidade?: string}} dados
+   *        campos do perfil; `nome` e `email` são obrigatórios
+   * @returns {Promise<Object>} ClientePerfilResponse já atualizado
+   * @throws {ApiError} 400 `VALIDACAO` com `fieldErrors`, ou 409 quando o e-mail já pertence a outra conta
+   */
+  function atualizarMeuPerfilCliente(dados) {
+    return request('/clientes/me', { method: 'PUT', body: dados });
+  }
+
+  /**
+   * Substitui a foto de perfil do cliente. Enviar uma segunda foto descarta a referência à primeira.
+   *
+   * @param {File} foto imagem nos tipos aceitos pelo backend (mesma validação do KYC)
+   * @returns {Promise<Object>} ClientePerfilResponse com `fotoUrl` novo
+   * @throws {ApiError} 400 `ARQUIVO_INVALIDO` para tipo ou tamanho recusado
+   */
+  function atualizarMinhaFotoCliente(foto) {
+    const formData = new FormData();
+    formData.append('foto', foto);
+    return requestMultipart('/clientes/me/foto', formData, 'PUT');
+  }
+
+  /**
+   * Desativa a própria conta (exclusão lógica — o histórico é preservado). Depois disto o login
+   * passa a ser recusado com 401.
+   *
+   * @returns {Promise<void>}
+   * @throws {ApiError} 409 `ESTADO_INVALIDO` com solicitação em SOLICITADO, ACEITO ou EM_ANDAMENTO
+   */
+  function desativarMinhaConta() {
+    return request('/clientes/me', { method: 'DELETE' });
+  }
+
+  /**
+   * @returns {Promise<Array<{id: number, apelido: string, cep: string, rua: string, numero: string,
+   *          complemento: string|null, bairro: string|null, cidade: string, uf: string,
+   *          latitude: number|null, longitude: number|null, padrao: boolean}>>} endereços ativos do
+   *          cliente; exatamente um tem `padrao: true` quando a lista não está vazia
+   */
+  function listarMeusEnderecos() {
+    return request('/clientes/me/enderecos');
+  }
+
+  /**
+   * @param {{apelido: string, cep: string, rua: string, numero: string, complemento?: string,
+   *          bairro?: string, cidade: string, uf: string, latitude?: number, longitude?: number,
+   *          padrao?: boolean}} dados o primeiro endereço do cliente nasce padrão mesmo sem `padrao`
+   * @returns {Promise<Object>} EnderecoClienteResponse
+   * @throws {ApiError} 400 `VALIDACAO` (CEP e UF são validados por formato)
+   */
+  function criarMeuEndereco(dados) {
+    return request('/clientes/me/enderecos', { method: 'POST', body: dados });
+  }
+
+  /**
+   * @param {number} enderecoId
+   * @param {Object} dados mesmos campos de `criarMeuEndereco`; marcar `padrao: true` desmarca o anterior
+   * @returns {Promise<Object>} EnderecoClienteResponse atualizado
+   * @throws {ApiError} 403 `ACESSO_NEGADO` para endereço de outra conta, 404 se não existir
+   */
+  function atualizarMeuEndereco(enderecoId, dados) {
+    return request(`/clientes/me/enderecos/${enderecoId}`, { method: 'PUT', body: dados });
+  }
+
+  /**
+   * Remoção lógica: o endereço sai da lista, mas as solicitações que já o referenciam continuam
+   * resolvendo por ele.
+   *
+   * @param {number} enderecoId
+   * @returns {Promise<void>}
+   * @throws {ApiError} 403 `ACESSO_NEGADO` para endereço de outra conta, 404 se não existir
+   */
+  function removerMeuEndereco(enderecoId) {
+    return request(`/clientes/me/enderecos/${enderecoId}`, { method: 'DELETE' });
+  }
+
+  // --- Extrato, favoritos, catálogo de um prestador e avisos do cliente ---
+
+  /**
+   * Extrato de pagamentos do cliente autenticado, do mais recente para o mais antigo.
+   *
+   * `valorTaxa` é a taxa **apurada no momento do pagamento**, não recalculada — alterar
+   * `taxa.fixa` em `/admin/parametros` não muda lançamento já existente. `valorEstornado` e
+   * `valorTaxaCancelamento` vêm preenchidos apenas em estorno parcial (`ESTORNADO_PARCIAL`).
+   *
+   * @returns {Promise<Array<{solicitacaoId: number, categoria: string, prestadorNome: string,
+   *          valorBruto: number, valorTaxa: number, status: string, metodoPagamento: string,
+   *          criadoEm: string, valorEstornado: number|null, valorTaxaCancelamento: number|null}>>}
+   */
+  function listarMeuExtrato() {
+    return request('/clientes/me/pagamentos');
+  }
+
+  /**
+   * Prestadores favoritados pelo cliente. Prestador que perdeu a aprovação **continua na lista**,
+   * com `disponivel: false` e `servicosAtivos: 0` — a tela o sinaliza em vez de escondê-lo.
+   *
+   * @returns {Promise<Array<{prestadorId: number, nome: string, especialidade: string|null,
+   *          cidade: string|null, notaMedia: number|null, servicosAtivos: number,
+   *          disponivel: boolean, favoritadoEm: string}>>}
+   */
+  function listarMeusFavoritos() {
+    return request('/clientes/me/favoritos');
+  }
+
+  /**
+   * @param {number} prestadorId
+   * @returns {Promise<Object>} FavoritoResponse do favorito criado
+   * @throws {ApiError} 409 `ESTADO_INVALIDO` se já era favorito, 404 se o prestador não existe
+   */
+  function marcarFavorito(prestadorId) {
+    return request('/clientes/me/favoritos', { method: 'POST', body: { prestadorId } });
+  }
+
+  /**
+   * @param {number} prestadorId
+   * @returns {Promise<void>}
+   * @throws {ApiError} 404 `RECURSO_NAO_ENCONTRADO` se o prestador não estava favoritado
+   */
+  function removerFavorito(prestadorId) {
+    return request(`/clientes/me/favoritos/${prestadorId}`, { method: 'DELETE' });
+  }
+
+  /**
+   * Serviços ativos de um prestador. Rota **autenticada** (ao contrário de `/buscar`).
+   *
+   * Devolve lista vazia quando o prestador não está `APROVADO` — RN04 preserva o estado de
+   * verificação, então "vazio" não distingue prestador sem oferta de prestador não aprovado.
+   *
+   * @param {number} prestadorId
+   * @returns {Promise<Object[]>} lista de ServicoOfertadoResponse; nunca traz contato do prestador
+   * @throws {ApiError} 401 sem token
+   */
+  function listarServicosDoPrestador(prestadorId) {
+    return request(`/prestadores/${prestadorId}/servicos-ofertados`);
+  }
+
+  /**
+   * Avisos de atividade do cliente, apurados do estado atual (não há tabela nem marcação de
+   * leitura): solicitação aceita e não paga, pagamento retido, concluído sem avaliação, recusada ou
+   * cancelada, e mensagens não lidas. O aviso desaparece quando o fato que o originou é resolvido.
+   *
+   * @returns {Promise<Array<{tipo: string, texto: string, solicitacaoId: number|null, momento: string}>>}
+   *          do mais recente para o mais antigo; lista vazia quando não há pendência
+   */
+  function listarMinhasNotificacoes() {
+    return request('/clientes/me/notificacoes');
+  }
+
+  // --- Detalhe, início de atendimento e mensagens da solicitação ---
+
+  /**
+   * Detalhe de uma solicitação, restrito às duas partes envolvidas.
+   *
+   * `pinConfirmacao` vem preenchido **apenas para o cliente** — é o código que ele informa ao
+   * prestador presente. Os quatro momentos (`criadoEm`, `aceitoEm`, `iniciadoEm`, `concluidoEm`)
+   * vêm nulos enquanto a etapa não ocorreu. `taxaCancelamentoPrevista` diz quanto seria retido se o
+   * cliente cancelasse agora (zero dentro da carência).
+   *
+   * @param {number} solicitacaoId
+   * @returns {Promise<Object>} SolicitacaoResponse completo
+   * @throws {ApiError} 403 `ACESSO_NEGADO` para quem não participa, 404 se não existir
+   */
+  function obterSolicitacao(solicitacaoId) {
+    return request(`/servicos/${solicitacaoId}`);
+  }
+
+  /**
+   * Inicia o atendimento (ACEITO → EM_ANDAMENTO). Só o prestador chama, com o pagamento já retido
+   * em custódia e o código informado pelo cliente presente. Código errado não altera nada.
+   *
+   * @param {number} solicitacaoId
+   * @param {string} pin código de quatro dígitos exibido ao cliente
+   * @returns {Promise<Object>} SolicitacaoResponse (status=EM_ANDAMENTO)
+   * @throws {ApiError} 403 `ACESSO_NEGADO` para código errado, 409 `ESTADO_INVALIDO` sem pagamento
+   *         retido ou fora de `ACEITO`
+   */
+  function iniciarAtendimento(solicitacaoId, pin) {
+    return request(`/servicos/${solicitacaoId}/iniciar`, { method: 'PUT', body: { pin } });
+  }
+
+  /**
+   * Conversa de uma solicitação, da mensagem mais antiga para a mais recente.
+   *
+   * @param {number} solicitacaoId
+   * @returns {Promise<Array<{id: number, conteudo: string, remetenteTipo: string,
+   *          remetenteNome: string, criadoEm: string, lida: boolean}>>}
+   * @throws {ApiError} 403 `ACESSO_NEGADO` para quem não é o cliente nem o prestador da solicitação
+   */
+  function listarMensagens(solicitacaoId) {
+    return request(`/servicos/${solicitacaoId}/mensagens`);
+  }
+
+  /**
+   * @param {number} solicitacaoId
+   * @param {string} conteudo texto não vazio, dentro do limite do backend
+   * @returns {Promise<Object>} MensagemResponse da mensagem criada (nasce não lida)
+   * @throws {ApiError} 400 `VALIDACAO` para conteúdo vazio ou acima do limite, 409
+   *         `ESTADO_INVALIDO` em solicitação já encerrada (RECUSADO, CANCELADO ou AVALIADO)
+   */
+  function enviarMensagem(solicitacaoId, conteudo) {
+    return request(`/servicos/${solicitacaoId}/mensagens`, { method: 'POST', body: { conteudo } });
+  }
+
+  /**
+   * Marca como lidas as mensagens escritas pela **outra** parte — as próprias permanecem como estão.
+   *
+   * @param {number} solicitacaoId
+   * @returns {Promise<void>}
+   * @throws {ApiError} 403 `ACESSO_NEGADO` para quem não participa da solicitação
+   */
+  function marcarMensagensLidas(solicitacaoId) {
+    return request(`/servicos/${solicitacaoId}/mensagens/lidas`, { method: 'PUT' });
   }
 
   // --- Painel administrativo (RN01, RN04) ---
@@ -483,6 +720,25 @@ const TaskGoAPI = (() => {
     concluirSolicitacao,
     enviarAvaliacao,
     criarPagamento,
+    obterMeuPerfilCliente,
+    atualizarMeuPerfilCliente,
+    atualizarMinhaFotoCliente,
+    desativarMinhaConta,
+    listarMeusEnderecos,
+    criarMeuEndereco,
+    atualizarMeuEndereco,
+    removerMeuEndereco,
+    listarMeuExtrato,
+    listarMeusFavoritos,
+    marcarFavorito,
+    removerFavorito,
+    listarServicosDoPrestador,
+    listarMinhasNotificacoes,
+    obterSolicitacao,
+    iniciarAtendimento,
+    listarMensagens,
+    enviarMensagem,
+    marcarMensagensLidas,
     obterSaldoPrestador,
     solicitarSaque,
     obterDashboard,
