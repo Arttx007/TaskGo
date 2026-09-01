@@ -8,5 +8,6 @@ public enum StatusPagamento {
     RETIDO,
     LIBERADO,
     ESTORNADO,
+    ESTORNADO_PARCIAL,
     RECUSADO
 }

@@ -22,5 +22,13 @@ public class Cliente {
     private String tipo_cliente;
     private String email;
     private String senha;
-    
+
+    /** Telefone de contato informado pelo cliente no próprio perfil. */
+    private String telefone;
+
+    /** Caminho relativo da foto de perfil, ou {@code null} quando nunca foi enviada. */
+    private String fotoUrl;
+
+    /** Conta ativa. Desativação lógica preserva solicitações, pagamentos e avaliações. */
+    private Boolean ativo = true;
 }

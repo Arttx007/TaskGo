@@ -5,6 +5,7 @@ import lombok.Data;
 import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "fato_servicos")
@@ -43,4 +44,23 @@ public class FatoServico {
 
     private Integer avaliacao;
     private String comentarioAvaliacao;
+
+    /**
+     * Endereço de atendimento escolhido pelo cliente na abertura, ou {@code null}
+     * quando a solicitação foi aberta sem informar endereço.
+     */
+    @ManyToOne
+    @JoinColumn(name = "id_endereco_cliente")
+    private EnderecoCliente enderecoCliente;
+
+    /**
+     * Código de quatro dígitos gerado no aceite, entregue apenas ao cliente dono e
+     * exigido do prestador para iniciar o atendimento (RN02).
+     */
+    private String pinConfirmacao;
+
+    private LocalDateTime criadoEm;
+    private LocalDateTime aceitoEm;
+    private LocalDateTime iniciadoEm;
+    private LocalDateTime concluidoEm;
 }
