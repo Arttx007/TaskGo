@@ -696,6 +696,9 @@
         }
         .profile-pill:hover { border-color: var(--primary-blue); background: rgba(29, 161, 242, 0.05); }
         .profile-pill img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+        .st-avatar-iniciais { width: 100%; height: 100%; border-radius: 50%; background: var(--primary-blue); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; }
+        .notif-badge-icon.bg-red { background: var(--danger-red); }
+        .profile-pill-initials { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-blue); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
         .profile-pill-info { display: flex; flex-direction: column; }
         .profile-pill-info strong { color: white; font-size: 13px; font-weight: 800; }
         .profile-pill-info span { color: var(--text-gray); font-size: 11px; font-weight: 600; }
@@ -913,7 +916,7 @@
                     <h1 class="greeting">Olá, <span class="gradient-name" id="nomeClienteHeader">Cliente!</span> <span class="wave-emoji">👋</span></h1>
                     <div class="subtitle">
                         <div class="header-location">
-                            <i class="fas fa-map-marker-alt" style="color: var(--primary-blue);"></i> São Paulo, SP
+                            <i class="fas fa-map-marker-alt" style="color: var(--primary-blue);"></i> <span id="localidadeHeader">Localização não informada</span>
                         </div>
                         Encontre os melhores profissionais para o que você precisa hoje.
                     </div>
@@ -929,13 +932,14 @@
                     
                     <div class="btn-icon-pro" onclick="abrirNotificacoes()">
                         <i class="fas fa-bell"></i>
-                        <span class="badge-pulse">2</span>
+                        <span class="badge-pulse" id="avisosBadge" style="display: none;">0</span>
                     </div>
                     
                     <div class="profile-pill" onclick="mudarAba(event, 'aba-configuracoes')">
-                        <img src="https://i.pravatar.cc/150?img=47" alt="Marina Silva">
+                        <img id="perfilPillFoto" alt="Foto de perfil" style="display: none;">
+                        <span id="perfilPillIniciais" class="profile-pill-initials"></span>
                         <div class="profile-pill-info">
-                            <strong>Marina Silva</strong>
+                            <strong id="perfilPillNome">Minha conta</strong>
                             <span>Ver Conta</span>
                         </div>
                         <i class="fas fa-chevron-down"></i>
@@ -947,77 +951,22 @@
             <div id="aba-home" class="conteudo-aba active">
                 <div class="client-hero-box">
                     <h2>Qual serviço você precisa agora?</h2>
-                    <p>Milhares de profissionais verificados prontos para te atender.</p>
+                    <p>Profissionais verificados na sua região, prontos para atender.</p>
                     <div class="client-search-bar">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Ex: Consertar geladeira, Diarista, Pintar parede...">
-                        <button class="btn-search" onclick="showToast('Buscando profissionais na sua região...', 'success')">Encontrar</button>
+                        <input type="text" id="buscaTermo" placeholder="Ex: Elétrica, Limpeza, Montagem...">
+                        <button class="btn-search" id="btnBuscar">Encontrar</button>
                     </div>
-                    <div class="quick-tags">
-                        <button class="quick-tag"><i class="fas fa-bolt" style="color: var(--warning-yellow);"></i> Elétrica</button>
-                        <button class="quick-tag"><i class="fas fa-broom" style="color: var(--success-green);"></i> Limpeza</button>
-                        <button class="quick-tag"><i class="fas fa-snowflake" style="color: var(--primary-blue);"></i> Climatização</button>
-                        <button class="quick-tag"><i class="fas fa-hammer" style="color: var(--text-gray);"></i> Montagem</button>
-                    </div>
+                    <div class="quick-tags" id="buscaCategorias"></div>
                 </div>
 
-                <div class="section-header"><h2><i class="fas fa-medal" style="color: var(--warning-yellow);"></i> Profissionais em Destaque na sua região</h2></div>
+                <div class="section-header">
+                    <h2><i class="fas fa-user-check" style="color: var(--primary-blue);"></i> Resultados da busca</h2>
+                    <span class="section-content" id="buscaContador" style="display: none;"></span>
+                </div>
 
-                <div class="client-pro-grid">
-                    <div class="client-pro-card">
-                        <span class="client-pro-badge badge-top-pro">TOP PRO</span>
-                        <img src="https://i.pravatar.cc/150?img=11" class="client-pro-avatar">
-                        <div class="pro-name-verified">Roberto Almeida <i class="fas fa-check-circle" title="Verificado"></i></div>
-                        <span class="client-pro-tag">Ar Condicionado</span>
-                        <div class="client-pro-stats-complex">
-                            <div class="stat-complex-item"><span>Avaliação</span><strong><i class="fas fa-star" style="color: var(--warning-yellow);"></i> 4.9</strong></div>
-                            <div class="stat-complex-item"><span>A partir de</span><strong>R$ 150</strong></div>
-                            <div class="stat-complex-item"><span>Serviços</span><strong>128</strong></div>
-                            <div class="stat-complex-item"><span>Resposta</span><strong style="color: var(--success-green);">~ 5 min</strong></div>
-                        </div>
-                        <button class="btn-full-width" onclick="abrirCheckout('Roberto Almeida', 'Ar Condicionado', 'R$ 150,00', 'https://i.pravatar.cc/150?img=11')"><i class="fas fa-handshake"></i> Contratar Agora</button>
-                    </div>
-
-                    <div class="client-pro-card">
-                        <span class="client-pro-badge badge-fast"><i class="fas fa-bolt"></i> RÁPIDO</span>
-                        <img src="https://i.pravatar.cc/150?img=33" class="client-pro-avatar avatar-yellow">
-                        <div class="pro-name-verified">Carlos Mendes <i class="fas fa-check-circle" title="Verificado"></i></div>
-                        <span class="client-pro-tag">Eletricista</span>
-                        <div class="client-pro-stats-complex">
-                            <div class="stat-complex-item"><span>Avaliação</span><strong><i class="fas fa-star" style="color: var(--warning-yellow);"></i> 5.0</strong></div>
-                            <div class="stat-complex-item"><span>A partir de</span><strong>R$ 120</strong></div>
-                            <div class="stat-complex-item"><span>Serviços</span><strong>342</strong></div>
-                            <div class="stat-complex-item"><span>Resposta</span><strong style="color: var(--success-green);">Imediata</strong></div>
-                        </div>
-                        <button class="btn-full-width" onclick="abrirCheckout('Carlos Mendes', 'Eletricista', 'R$ 120,00', 'https://i.pravatar.cc/150?img=33')"><i class="fas fa-handshake"></i> Contratar Agora</button>
-                    </div>
-
-                    <div class="client-pro-card">
-                        <img src="https://i.pravatar.cc/150?img=5" class="client-pro-avatar avatar-green">
-                        <div class="pro-name-verified">Ana Paula Souza <i class="fas fa-check-circle" title="Verificado"></i></div>
-                        <span class="client-pro-tag">Diarista e Limpeza</span>
-                        <div class="client-pro-stats-complex">
-                            <div class="stat-complex-item"><span>Avaliação</span><strong><i class="fas fa-star" style="color: var(--warning-yellow);"></i> 4.8</strong></div>
-                            <div class="stat-complex-item"><span>A partir de</span><strong>R$ 200</strong></div>
-                            <div class="stat-complex-item"><span>Serviços</span><strong>94</strong></div>
-                            <div class="stat-complex-item"><span>Resposta</span><strong style="color: var(--warning-yellow);">~ 2 horas</strong></div>
-                        </div>
-                        <button class="btn-full-width" onclick="abrirCheckout('Ana Paula Souza', 'Diarista e Limpeza', 'R$ 200,00', 'https://i.pravatar.cc/150?img=5')"><i class="fas fa-handshake"></i> Contratar Agora</button>
-                    </div>
-
-                    <div class="client-pro-card">
-                        <span class="client-pro-badge badge-top-pro">TOP PRO</span>
-                        <img src="https://i.pravatar.cc/150?img=8" class="client-pro-avatar">
-                        <div class="pro-name-verified">Fernando Costa <i class="fas fa-check-circle" title="Verificado"></i></div>
-                        <span class="client-pro-tag">Montador de Móveis</span>
-                        <div class="client-pro-stats-complex">
-                            <div class="stat-complex-item"><span>Avaliação</span><strong><i class="fas fa-star" style="color: var(--warning-yellow);"></i> 4.7</strong></div>
-                            <div class="stat-complex-item"><span>A partir de</span><strong>R$ 90</strong></div>
-                            <div class="stat-complex-item"><span>Serviços</span><strong>512</strong></div>
-                            <div class="stat-complex-item"><span>Resposta</span><strong style="color: var(--success-green);">~ 15 min</strong></div>
-                        </div>
-                        <button class="btn-full-width" onclick="abrirCheckout('Fernando Costa', 'Montador de Móveis', 'R$ 90,00', 'https://i.pravatar.cc/150?img=8')"><i class="fas fa-handshake"></i> Contratar Agora</button>
-                    </div>
+                <div class="client-pro-grid" id="buscaResultados">
+                    <p class="section-content" style="grid-column: 1 / -1;">Escolha uma categoria acima ou digite o serviço que você precisa para ver os profissionais disponíveis.</p>
                 </div>
             </div>
 
@@ -1032,43 +981,9 @@
             </div>
 
             <div id="aba-pagamentos" class="conteudo-aba">
-                
+
                 <div class="section-header">
-                    <h2><i class="fas fa-wallet" style="color: var(--success-green);"></i> Carteira e Formas de Pagamento</h2>
-                    <button class="btn-outline" style="font-size: 12px; padding: 10px 16px;"><i class="fas fa-receipt"></i> Dados de Faturamento</button>
-                </div>
-
-                <div class="cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
-                    
-                    <div class="wallet-card">
-                        <div>
-                            <div class="wallet-balance-label"><i class="fas fa-shield-alt"></i> Saldo TaskGO Pay</div>
-                            <div class="wallet-balance-value">R$ 240,00</div>
-                        </div>
-                        <button class="wallet-action" onclick="showToast('Abrindo área de recarga via PIX...', 'success')"><i class="fas fa-plus"></i> Adicionar Saldo</button>
-                    </div>
-
-                    <div class="credit-card-ui" style="background: linear-gradient(135deg, #111, #222);">
-                        <div class="cc-type"><i class="fab fa-cc-mastercard"></i><i class="fas fa-wifi" style="transform: rotate(90deg); opacity: 0.5; font-size: 20px;"></i></div>
-                        <div class="cc-number" id="previewNumber">**** **** **** 4242</div>
-                        <div class="cc-footer">
-                            <div><span>Titular</span><strong id="previewName">MARINA R SILVA</strong></div>
-                            <div style="text-align: right;"><span>Validade</span><strong id="previewExpiry">12/28</strong></div>
-                        </div>
-                    </div>
-
-                    <div class="add-card-btn" onclick="openModal('modalNovoCartao')">
-                        <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--card-bg); display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-sm);">
-                            <i class="fas fa-plus" style="font-size: 24px; color: var(--primary-blue);"></i>
-                        </div>
-                        <span style="font-weight: 800; color: white;">Adicionar Cartão</span>
-                        <p style="font-size: 11px; text-align: center; padding: 0 20px;">Cartões de crédito e débito...</p>
-                    </div>
-                </div>
-
-                <div class="section-header" style="margin-top: 50px;">
-                    <h2><i class="fas fa-file-invoice-dollar" style="color: var(--text-gray);"></i> Histórico de Transações</h2>
-                    <button class="btn-outline" style="font-size: 12px; padding: 8px 16px; border: none;"><i class="fas fa-filter"></i> Últimos 30 dias</button>
+                    <h2><i class="fas fa-file-invoice-dollar" style="color: var(--success-green);"></i> Histórico de Transações</h2>
                 </div>
 
                 <div class="transaction-table-wrapper">
@@ -1077,397 +992,164 @@
                             <tr>
                                 <th>Detalhes do Serviço</th>
                                 <th>Data e Método</th>
-                                <th>Status</th>
+                                <th>Situação</th>
                                 <th style="text-align: right;">Valor</th>
                                 <th style="text-align: center;">Comprovante</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            
-                            <tr>
-                                <td>
-                                    <div class="tx-info">
-                                        <div class="tx-icon" style="color: var(--primary-blue);"><i class="fas fa-bolt"></i></div>
-                                        <div class="tx-details">
-                                            <h4>Instalação de Chuveiro 220v</h4>
-                                            <p><img src="https://i.pravatar.cc/150?img=11" style="width:16px; height:16px; border-radius:50%;"> Carlos Mendes</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span style="display:block; color: white; font-weight: 700; font-size: 13px; margin-bottom: 4px;">Ontem, 14:30</span>
-                                    <span style="color: var(--text-gray); font-size: 11px; font-weight: 600;"><i class="fab fa-cc-mastercard" style="color: #ff9f43;"></i> Cartão ****4242</span>
-                                </td>
-                                <td><span class="badge-tx paid">Concluído</span></td>
-                                <td style="text-align: right;">
-                                    <div class="tx-amount">R$ 120,00</div>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button class="btn-outline" style="padding: 8px; border: none; color: var(--text-gray);" onclick="abrirRecibo('Instalação de Chuveiro 220v', 'Carlos Mendes', 'R$ 120,00', 'Ontem, 14:30')" title="Ver Recibo"><i class="fas fa-file-invoice"></i></button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <div class="tx-info">
-                                        <div class="tx-icon" style="color: var(--warning-yellow);"><i class="fas fa-hammer"></i></div>
-                                        <div class="tx-details">
-                                            <h4>Montagem de Guarda-Roupa</h4>
-                                            <p><i class="fas fa-times-circle" style="color: var(--danger-red);"></i> Serviço Cancelado</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span style="display:block; color: white; font-weight: 700; font-size: 13px; margin-bottom: 4px;">12 Mar 2026, 09:15</span>
-                                    <span style="color: var(--text-gray); font-size: 11px; font-weight: 600;"><i class="fab fa-cc-mastercard" style="color: #ff9f43;"></i> Cartão ****4242</span>
-                                </td>
-                                <td><span class="badge-tx refund">Estornado</span></td>
-                                <td style="text-align: right;">
-                                    <div class="tx-amount" style="color: var(--text-gray); text-decoration: line-through;">R$ 180,00</div>
-                                </td>
-                                <td style="text-align: center;">
-                                    <span style="color: var(--text-muted); font-size: 12px;">-</span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <div class="tx-info">
-                                        <div class="tx-icon" style="color: var(--success-green);"><i class="fas fa-broom"></i></div>
-                                        <div class="tx-details">
-                                            <h4>Limpeza Residencial (Diária)</h4>
-                                            <p><img src="https://i.pravatar.cc/150?img=5" style="width:16px; height:16px; border-radius:50%;"> Ana Paula Souza</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span style="display:block; color: white; font-weight: 700; font-size: 13px; margin-bottom: 4px;">02 Mar 2026, 17:00</span>
-                                    <span style="color: var(--success-green); font-size: 11px; font-weight: 800;"><i class="fas fa-wallet"></i> Saldo TaskGO Pay</span>
-                                </td>
-                                <td><span class="badge-tx paid">Concluído</span></td>
-                                <td style="text-align: right;">
-                                    <div class="tx-amount">R$ 200,00</div>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button class="btn-outline" style="padding: 8px; border: none; color: var(--text-gray);" onclick="abrirRecibo('Limpeza Residencial', 'Ana Paula Souza', 'R$ 200,00', '02 Mar 2026')" title="Ver Recibo"><i class="fas fa-file-invoice"></i></button>
-                                </td>
-                            </tr>
-
+                        <tbody id="extratoCorpo">
+                            <tr><td colspan="5" class="section-content">Carregando transações...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
             <div id="aba-favoritos" class="conteudo-aba">
-                
+
                 <div class="section-header" style="margin-bottom: 8px;">
                     <h2><i class="fas fa-heart" style="color: var(--danger-red);"></i> Meus Profissionais Favoritos</h2>
                 </div>
-                <p style="color: var(--text-gray); margin-bottom: 30px; font-size: 14px;">Acesso rápido aos profissionais que você já contratou e confia.</p>
+                <p style="color: var(--text-gray); margin-bottom: 30px; font-size: 14px;">Acesso rápido aos profissionais que você marcou na busca.</p>
 
-                <div class="fav-grid-premium">
-                    
-                    <div class="fav-card-pro">
-                        <button class="fav-heart-btn" title="Remover dos Favoritos" onclick="this.closest('.fav-card-pro').remove(); showToast('Carlos Mendes removido dos favoritos.', 'success');"><i class="fas fa-heart"></i></button>
-                        
-                        <div class="fav-profile-area">
-                            <div class="fav-avatar-wrapper">
-                                <img src="https://i.pravatar.cc/150?img=33" alt="Carlos Mendes">
-                                <div class="status-dot" title="Online Agora"></div>
-                            </div>
-                            <div class="fav-info">
-                                <h3>Carlos Mendes</h3>
-                                <span>Eletricista</span>
-                            </div>
-                        </div>
-
-                        <div class="fav-stats-box">
-                            <div class="fav-stat">
-                                <span>Avaliação</span>
-                                <strong><i class="fas fa-star" style="color: var(--warning-yellow);"></i> 5.0</strong>
-                            </div>
-                            <div class="fav-stat">
-                                <span>Contratos</span>
-                                <strong>3 vezes</strong>
-                            </div>
-                            <div class="fav-stat">
-                                <span>Valor Ref.</span>
-                                <strong>R$ 120</strong>
-                            </div>
-                        </div>
-
-                        <div class="fav-actions">
-                            <button class="btn-primary" onclick="abrirCheckout('Carlos Mendes', 'Eletricista', 'R$ 120,00', 'https://i.pravatar.cc/150?img=33')"><i class="fas fa-handshake"></i> Contratar</button>
-                            <button class="btn-outline" title="Conversar no Chat" onclick="abrirChat('Carlos Mendes', 'https://i.pravatar.cc/150?img=33')"><i class="fas fa-comment-dots"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="fav-card-pro">
-                        <button class="fav-heart-btn" title="Remover dos Favoritos" onclick="this.closest('.fav-card-pro').remove(); showToast('Ana Paula removida dos favoritos.', 'success');"><i class="fas fa-heart"></i></button>
-                        
-                        <div class="fav-profile-area">
-                            <div class="fav-avatar-wrapper">
-                                <img src="https://i.pravatar.cc/150?img=5" alt="Ana Paula">
-                                <div class="status-dot" style="background: var(--text-muted);" title="Offline"></div>
-                            </div>
-                            <div class="fav-info">
-                                <h3>Ana Paula Souza</h3>
-                                <span>Diarista</span>
-                            </div>
-                        </div>
-
-                        <div class="fav-stats-box">
-                            <div class="fav-stat">
-                                <span>Avaliação</span>
-                                <strong><i class="fas fa-star" style="color: var(--warning-yellow);"></i> 4.8</strong>
-                            </div>
-                            <div class="fav-stat">
-                                <span>Contratos</span>
-                                <strong>1 vez</strong>
-                            </div>
-                            <div class="fav-stat">
-                                <span>Valor Ref.</span>
-                                <strong>R$ 200</strong>
-                            </div>
-                        </div>
-
-                        <div class="fav-actions">
-                            <button class="btn-primary" onclick="abrirCheckout('Ana Paula Souza', 'Diarista', 'R$ 200,00', 'https://i.pravatar.cc/150?img=5')"><i class="fas fa-handshake"></i> Contratar</button>
-                            <button class="btn-outline" title="Conversar no Chat" onclick="abrirChat('Ana Paula Souza', 'https://i.pravatar.cc/150?img=5')"><i class="fas fa-comment-dots"></i></button>
-                        </div>
-                    </div>
-
+                <div class="fav-grid-premium" id="favoritosContainer">
+                    <p class="section-content" style="grid-column: 1 / -1;">Carregando favoritos...</p>
                 </div>
             </div>
 
             <div id="aba-configuracoes" class="conteudo-aba">
-                
+
                 <div class="section-header" style="margin-bottom: 10px;">
                     <h2><i class="fas fa-cog" style="color: var(--text-gray);"></i> Configurações da Conta</h2>
                 </div>
-                <p style="color: var(--text-gray); margin-bottom: 30px;">Gerencie suas informações pessoais, endereços de atendimento e preferências de segurança.</p>
+                <p style="color: var(--text-gray); margin-bottom: 30px;">Gerencie seus dados pessoais e os endereços onde você recebe atendimento.</p>
 
                 <div class="settings-grid-pro">
-                    
+
                     <div>
-                        <div class="st-card">
+                        <form class="st-card" id="formPerfilCliente" novalidate>
                             <div class="st-card-header">
                                 <h3><i class="fas fa-user-circle" style="color: var(--primary-blue);"></i> Dados do Perfil</h3>
                             </div>
-                            
+
                             <div class="st-profile-upload">
                                 <div class="st-avatar-wrapper">
-                                    <img src="https://i.pravatar.cc/150?img=47" alt="Avatar">
-                                    <div class="st-avatar-edit" onclick="showToast('Abrindo galeria...', 'success')"><i class="fas fa-camera"></i></div>
+                                    <img id="perfilFoto" alt="Foto de perfil" style="display: none;">
+                                    <div id="perfilSemFoto" class="st-avatar-iniciais"></div>
+                                    <div class="st-avatar-edit" id="btnTrocarFoto" title="Enviar foto"><i class="fas fa-camera"></i></div>
                                 </div>
                                 <div>
                                     <h4 style="font-size: 15px; color: white; margin-bottom: 4px;">Foto de Perfil</h4>
-                                    <p style="font-size: 12px; color: var(--text-gray); margin-bottom: 10px;">JPG ou PNG. Tamanho máximo de 5MB.</p>
-                                    <button class="btn-outline" style="padding: 6px 12px; font-size: 11px;"><i class="fas fa-trash-alt"></i> Remover</button>
+                                    <p style="font-size: 12px; color: var(--text-gray); margin-bottom: 10px;">JPG ou PNG. Enviar uma nova substitui a anterior.</p>
+                                    <input type="file" id="inputFotoPerfil" accept="image/png,image/jpeg" style="display: none;">
                                 </div>
                             </div>
 
                             <div class="st-input-group">
-                                <label>Nome Completo</label>
-                                <input type="text" class="st-input" value="Marina Ribeiro Silva">
+                                <label for="perfilNome">Nome Completo</label>
+                                <input type="text" class="st-input" id="perfilNome" name="nome" required>
                             </div>
-                            
+
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                                 <div class="st-input-group">
-                                    <label>E-mail de Contato</label>
-                                    <input type="email" class="st-input" value="marina.silva@email.com">
+                                    <label for="perfilEmail">E-mail de Contato</label>
+                                    <input type="email" class="st-input" id="perfilEmail" name="email" required>
                                 </div>
                                 <div class="st-input-group">
-                                    <label>Celular / WhatsApp</label>
-                                    <input type="text" class="st-input" value="(11) 98765-4321">
+                                    <label for="perfilTelefone">Celular / WhatsApp</label>
+                                    <input type="text" class="st-input" id="perfilTelefone" name="telefone" placeholder="(11) 98765-4321">
                                 </div>
                             </div>
 
-                            <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="showToast('Perfil atualizado!', 'success')">Salvar Alterações</button>
-                        </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div class="st-input-group">
+                                    <label for="perfilCidade">Cidade</label>
+                                    <input type="text" class="st-input" id="perfilCidade" name="cidade">
+                                </div>
+                                <div class="st-input-group">
+                                    <label for="perfilIdade">Idade</label>
+                                    <input type="number" class="st-input" id="perfilIdade" name="idade" min="18" max="120">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;" id="btnSalvarPerfil">Salvar Alterações</button>
+                        </form>
 
                         <div class="st-card">
                             <div class="st-card-header">
                                 <h3><i class="fas fa-map-marked-alt" style="color: var(--primary-blue);"></i> Meus Endereços</h3>
-                                <button class="btn-outline" style="padding: 6px 12px; font-size: 12px; border: none; background: rgba(255,255,255,0.05);"><i class="fas fa-plus"></i> Novo</button>
-                            </div>
-                            
-                            <div class="st-address-item default">
-                                <div style="display: flex;">
-                                    <div class="st-address-icon"><i class="fas fa-home"></i></div>
-                                    <div>
-                                        <h4 style="font-size: 15px; color: white; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">Minha Casa <span style="background: var(--primary-blue); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800;">PADRÃO</span></h4>
-                                        <p style="color: var(--text-gray); font-size: 13px; line-height: 1.4;">Rua das Flores, 123 - Apto 42<br>Bela Vista, São Paulo - SP</p>
-                                    </div>
-                                </div>
-                                <button class="btn-outline" style="padding: 8px; border: none; color: var(--text-muted);"><i class="fas fa-pen"></i></button>
+                                <button class="btn-outline" id="btnNovoEndereco" style="padding: 6px 12px; font-size: 12px; border: none; background: rgba(255,255,255,0.05);"><i class="fas fa-plus"></i> Novo</button>
                             </div>
 
-                            <div class="st-address-item">
-                                <div style="display: flex;">
-                                    <div class="st-address-icon"><i class="fas fa-building"></i></div>
-                                    <div>
-                                        <h4 style="font-size: 15px; color: white; margin-bottom: 4px;">Escritório</h4>
-                                        <p style="color: var(--text-gray); font-size: 13px; line-height: 1.4;">Av. Paulista, 1000 - Sala 501<br>Cerqueira César, São Paulo - SP</p>
-                                    </div>
-                                </div>
-                                <button class="btn-outline" style="padding: 8px; border: none; color: var(--text-muted);"><i class="fas fa-pen"></i></button>
+                            <div id="enderecosContainer">
+                                <p class="section-content">Carregando endereços...</p>
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <div class="st-card">
-                            <div class="st-card-header">
-                                <h3><i class="fas fa-bell" style="color: var(--primary-blue);"></i> Preferências</h3>
-                            </div>
-                            
-                            <div class="st-toggle-row">
-                                <div class="st-toggle-info">
-                                    <h4>Avisos via WhatsApp</h4>
-                                    <p>Receber status do profissional em tempo real.</p>
-                                </div>
-                                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-                            </div>
-                            <div class="st-toggle-row">
-                                <div class="st-toggle-info">
-                                    <h4>Promoções por E-mail</h4>
-                                    <p>Receba cupons e ofertas especiais da TaskGO.</p>
-                                </div>
-                                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-                            </div>
-                        </div>
-
-                        <div class="st-card">
-                            <div class="st-card-header">
-                                <h3><i class="fas fa-shield-alt" style="color: var(--primary-blue);"></i> Segurança</h3>
-                            </div>
-                            
-                            <div class="st-toggle-row" style="padding-top: 0; margin-bottom: 16px;">
-                                <div class="st-toggle-info">
-                                    <h4>Autenticação 2 Fatores (2FA)</h4>
-                                    <p>Proteja sua conta com código via SMS.</p>
-                                </div>
-                                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-                            </div>
-                            <button class="btn-outline" style="width: 100%; margin-bottom: 24px;"><i class="fas fa-key"></i> Alterar Senha</button>
-
-                            <h4 style="font-size: 11px; color: var(--text-gray); text-transform: uppercase; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px;">Sessões Ativas</h4>
-                            
-                            <div class="st-session-item">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <i class="fas fa-desktop st-session-icon"></i>
-                                    <div>
-                                        <h4 style="font-size: 14px; color: white; margin-bottom: 2px;">Windows PC <span class="st-badge-current">Sessão Atual</span></h4>
-                                        <p style="font-size: 11px; color: var(--text-muted);">São Paulo, BR • Chrome • Ativo agora</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="st-session-item">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <i class="fas fa-mobile-alt st-session-icon"></i>
-                                    <div>
-                                        <h4 style="font-size: 14px; color: white; margin-bottom: 2px;">iPhone 13 Pro</h4>
-                                        <p style="font-size: 11px; color: var(--text-muted);">App iOS • Há 2 horas</p>
-                                    </div>
-                                </div>
-                                <button class="btn-outline" style="padding: 6px 12px; font-size: 11px; color: var(--danger-red); border-color: rgba(231, 76, 60, 0.3);" onclick="this.closest('.st-session-item').remove(); showToast('Sessão encerrada', 'success')">Sair</button>
-                            </div>
-                        </div>
-
                         <div class="st-card st-danger-zone">
                             <div class="st-card-header">
                                 <h3><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</h3>
                             </div>
-                            <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 16px; line-height: 1.5;">Ao excluir sua conta, todo o histórico de serviços, endereços e recibos será apagado. Essa ação é irreversível.</p>
-                            <button class="btn-danger-outline" style="width: 100%; border-color: rgba(231, 76, 60, 0.2);"><i class="fas fa-user-times"></i> Excluir Minha Conta</button>
+                            <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 16px; line-height: 1.5;">Ao excluir sua conta você deixa de conseguir entrar na plataforma. O histórico dos serviços já realizados é preservado, porque o profissional também depende dele. Não é possível excluir a conta com um atendimento em curso.</p>
+                            <button class="btn-danger-outline" id="btnExcluirConta" style="width: 100%; border-color: rgba(231, 76, 60, 0.2);"><i class="fas fa-user-times"></i> Excluir Minha Conta</button>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
             <div id="aba-rastreamento" class="conteudo-aba">
-                
+
                 <div class="section-header-pro">
                     <div>
-                        <h2><i class="fas fa-satellite-dish" style="color: var(--primary-blue);"></i> Acompanhamento ao Vivo</h2>
-                        <p>Acompanhe o deslocamento do profissional em tempo real com segurança.</p>
+                        <h2><i class="fas fa-satellite-dish" style="color: var(--primary-blue);"></i> Acompanhamento</h2>
+                        <p>Situação do atendimento e o código que o profissional pede ao chegar.</p>
                     </div>
-                    <button class="btn-outline" onclick="mudarAba(event, 'aba-home')"><i class="fas fa-arrow-left"></i> Voltar para Home</button>
+                    <button class="btn-outline" onclick="mudarAba(event, 'aba-pedidos')"><i class="fas fa-arrow-left"></i> Meus Pedidos</button>
                 </div>
 
-                <div class="tracking-grid-premium">
-                    <div class="map-section-premium">
-                        <div class="floating-eta-premium">
-                            <div class="eta-dot"></div>
-                            <strong>10 min</strong>
-                            <span>(2.4 km)</span>
-                        </div>
+                <p class="section-content" id="acompanhamentoVazio" style="display: none;">Você não tem atendimento em curso. Uma solicitação aceita ou em andamento aparece aqui.</p>
+
+                <div class="tracking-grid-premium" id="acompanhamentoConteudo" style="display: none;">
+                    <div class="map-section-premium" id="acompanhamentoMapaSecao">
                         <div id="map-real"></div>
                     </div>
 
                     <div class="tracking-info-panel">
                         <div class="t-pro-card">
-                            <img src="https://i.pravatar.cc/150?img=33" alt="Carlos Mendes" class="t-pro-avatar">
+                            <div class="t-pro-avatar" style="display: flex; align-items: center; justify-content: center; background: var(--card-bg); color: var(--text-gray); font-size: 22px;"><i class="fas fa-user"></i></div>
                             <div class="t-pro-details">
-                                <h4>Carlos Mendes</h4>
+                                <h4 id="acompPrestador">—</h4>
                                 <div class="t-pro-meta">
-                                    <span class="t-rating"><i class="fas fa-star"></i> 5.0</span>
-                                    <span class="t-jobs">342 serviços</span>
+                                    <span class="t-jobs" id="acompCategoria">—</span>
                                 </div>
                             </div>
                             <div class="t-vehicle">
-                                <span>Moto</span>
-                                <strong>ABC-1234</strong>
+                                <span>Valor</span>
+                                <strong id="acompValor">—</strong>
                             </div>
                         </div>
 
                         <div class="t-actions">
-                            <button class="btn-t-primary" onclick="abrirChat('Carlos Mendes', 'https://i.pravatar.cc/150?img=33')">
+                            <button class="btn-t-primary" id="btnAbrirChatServico">
                                 <i class="fas fa-comment-dots"></i> Enviar Mensagem
-                            </button>
-                            <button class="btn-t-secondary" onclick="showToast('Iniciando chamada segura...', 'success')">
-                                <i class="fas fa-phone-alt"></i> Ligar
                             </button>
                         </div>
 
-                        <div class="t-security-pin">
+                        <div class="t-security-pin" id="acompPinBloco">
                             <div class="pin-header"><i class="fas fa-shield-alt"></i> Código de Segurança</div>
-                            <div class="pin-code">5923</div>
+                            <div class="pin-code" id="acompPin">----</div>
                             <div class="pin-footer">Informe apenas quando o profissional chegar</div>
                         </div>
 
                         <div class="t-timeline-container">
                             <h4 class="t-timeline-title">Status da Solicitação</h4>
-                            <div class="t-timeline">
-                                <div class="t-step completed">
-                                    <div class="t-step-icon"><i class="fas fa-check"></i></div>
-                                    <div class="t-step-content">
-                                        <h5>Pedido Confirmado</h5>
-                                        <p>14:05 • O profissional aceitou sua solicitação.</p>
-                                    </div>
-                                </div>
-                                <div class="t-step current">
-                                    <div class="t-step-icon"><div class="pulse-dot"></div></div>
-                                    <div class="t-step-content">
-                                        <h5>A Caminho do Local</h5>
-                                        <p>Chegada estimada às 14:35 no local informado.</p>
-                                    </div>
-                                </div>
-                                <div class="t-step">
-                                    <div class="t-step-icon"></div>
-                                    <div class="t-step-content">
-                                        <h5>Serviço Iniciado</h5>
-                                        <p>Aguardando validação do código de segurança.</p>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="t-timeline" id="acompTimeline"></div>
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
 
             <div id="aba-ajuda" class="conteudo-aba">
                 
@@ -1482,8 +1164,8 @@
                     <h3>Como podemos ajudar você hoje?</h3>
                     <div class="help-search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Busque por pagamentos, segurança, serviços...">
-                        <button class="btn-primary" onclick="showToast('Buscando artigos...', 'success')">Buscar</button>
+                        <input type="text" id="ajudaBusca" placeholder="Busque por pagamentos, segurança, serviços...">
+                        <button class="btn-primary" id="btnBuscarAjuda">Buscar</button>
                     </div>
                 </div>
 
@@ -1491,7 +1173,7 @@
                     <div class="help-cat-card">
                         <div class="help-cat-icon" style="color: var(--success-green);"><i class="fas fa-credit-card"></i></div>
                         <h4>Pagamentos e Recibos</h4>
-                        <p>Dúvidas sobre cartão, TaskGO Pay, estornos e notas fiscais.</p>
+                        <p>Dúvidas sobre pagamento, custódia do valor e estornos.</p>
                     </div>
                     <div class="help-cat-card">
                         <div class="help-cat-icon" style="color: var(--warning-yellow);"><i class="fas fa-star"></i></div>
@@ -1500,8 +1182,8 @@
                     </div>
                     <div class="help-cat-card">
                         <div class="help-cat-icon" style="color: var(--tech-purple);"><i class="fas fa-shield-alt"></i></div>
-                        <h4>Segurança da Conta</h4>
-                        <p>Troca de senha, autenticação 2FA e dispositivos conectados.</p>
+                        <h4>Minha Conta</h4>
+                        <p>Dados do perfil, endereços de atendimento e exclusão de conta.</p>
                     </div>
                     <div class="help-cat-card">
                         <div class="help-cat-icon" style="color: var(--primary-blue);"><i class="fas fa-map-marked-alt"></i></div>
@@ -1513,6 +1195,7 @@
                 <div class="faq-section">
                     <h3><i class="fas fa-question-circle" style="color: var(--text-gray);"></i> Perguntas Frequentes</h3>
                     
+                    <p class="section-content" id="ajudaSemResultado" style="display: none;">Nenhuma dúvida encontrada para esse termo.</p>
                     <div class="faq-container">
                         <div class="faq-item">
                             <div class="faq-question" onclick="toggleFaq(this)">
@@ -1520,7 +1203,7 @@
                                 <i class="fas fa-chevron-down faq-icon"></i>
                             </div>
                             <div class="faq-answer">
-                                Se o profissional não comparecer ao local no horário agendado, o valor bloqueado no seu cartão de crédito ou saldo TaskGO Pay será <strong>estornado integralmente e automaticamente</strong> para sua conta. Você também poderá avaliar o profissional negativamente para manter a qualidade da plataforma.
+                                Enquanto o atendimento não começa, o valor pago fica retido em custódia pela plataforma — o profissional não recebe nada. Se o profissional não comparecer, cancele a solicitação: o valor é <strong>estornado integralmente</strong> para você. Depois de o atendimento começar, cancelar pode retê-lo em parte como taxa de cancelamento, e o painel avisa quanto antes de você confirmar.
                             </div>
                         </div>
 
@@ -1546,48 +1229,103 @@
                     </div>
                 </div>
 
-                <div class="support-banner">
-                    <div class="support-info">
-                        <h3>Ainda precisa de ajuda?</h3>
-                        <p>Nossa equipe de suporte premium está disponível 24/7 para clientes ativos.</p>
-                    </div>
-                    <button class="btn-white-pro" onclick="abrirChatIA()">
-                        <i class="fas fa-robot"></i> Falar com Assistente
-                    </button>
-                </div>
             </div>
 
         </main>
     </div>
 
-    <div class="modal-overlay" id="modalChat">
-        <div class="chat-container-pro">
-            <div class="chat-header-pro">
-                <div class="chat-pro-info">
-                    <img src="" id="chatProImg2" class="chat-pro-img">
-                    <div>
-                        <h3 id="chatProNome2" style="color: white; font-weight: 800; font-size: 16px; margin: 0;">Profissional</h3>
-                        <span class="chat-status-text"><i class="fas fa-circle" style="font-size: 8px;"></i> Online agora</span>
+    <div class="modal-overlay" id="modalCatalogoPrestador">
+        <div class="modal-content" style="max-width: 480px;">
+            <button class="close-modal" onclick="closeModal('modalCatalogoPrestador')"><i class="fas fa-times"></i></button>
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 6px; color: white;" id="catalogoTitulo">Serviços do profissional</h2>
+            <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Escolha o serviço que você quer contratar.</p>
+            <div id="catalogoLista" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalConfirmar">
+        <div class="modal-content" style="max-width: 440px;">
+            <h2 style="font-size: 19px; font-weight: 800; margin-bottom: 12px; color: white;" id="confirmarTitulo">Confirmar</h2>
+            <p style="color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 20px;" id="confirmarTexto"></p>
+            <div id="confirmarDetalhes" style="display: none; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px;"></div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn-outline" id="confirmarCancelar" style="flex: 1; padding: 14px;">Voltar</button>
+                <button class="btn-primary" id="confirmarOk" style="flex: 1; padding: 14px;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalEndereco">
+        <div class="modal-content" style="max-width: 520px;">
+            <button class="close-modal" onclick="closeModal('modalEndereco')"><i class="fas fa-times"></i></button>
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px; color: white;" id="tituloModalEndereco">Novo Endereço</h2>
+
+            <form id="formEndereco" novalidate>
+                <div class="st-input-group">
+                    <label for="endApelido">Apelido</label>
+                    <input type="text" class="st-input" id="endApelido" name="apelido" placeholder="Minha casa" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 16px;">
+                    <div class="st-input-group">
+                        <label for="endCep">CEP</label>
+                        <input type="text" class="st-input" id="endCep" name="cep" placeholder="01310-100" required>
+                    </div>
+                    <div class="st-input-group">
+                        <label for="endRua">Rua</label>
+                        <input type="text" class="st-input" id="endRua" name="rua" required>
                     </div>
                 </div>
-                <button class="close-modal" style="position: static;" onclick="closeModal('modalChat')"><i class="fas fa-times"></i></button>
-            </div>
-            
-            <div class="chat-body-pro" id="chatHistory">
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <span style="font-size: 10px; color: var(--text-gray); font-weight: 800; text-transform: uppercase; background: var(--card-bg); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border-color);">Hoje</span>
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 16px;">
+                    <div class="st-input-group">
+                        <label for="endNumero">Número</label>
+                        <input type="text" class="st-input" id="endNumero" name="numero" required>
+                    </div>
+                    <div class="st-input-group">
+                        <label for="endComplemento">Complemento</label>
+                        <input type="text" class="st-input" id="endComplemento" name="complemento" placeholder="Apto 42">
+                    </div>
                 </div>
-                
-                <div class="chat-msg-wrapper pro">
-                    <div class="chat-bubble pro">Olá Marina! Vi seu pedido, posso chegar em 10 minutos se for melhor pra você.</div>
-                    <span class="chat-time">14:32</span>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="st-input-group">
+                        <label for="endBairro">Bairro</label>
+                        <input type="text" class="st-input" id="endBairro" name="bairro">
+                    </div>
+                    <div class="st-input-group">
+                        <label for="endCidade">Cidade</label>
+                        <input type="text" class="st-input" id="endCidade" name="cidade" required>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="chat-footer-pro">
-                <input type="text" id="chatInput" class="chat-input-pro" placeholder="Escreva sua mensagem..." onkeypress="if(event.key === 'Enter') enviarMensagemChat()">
-                <button class="chat-send-btn" onclick="enviarMensagemChat()"><i class="fas fa-paper-plane"></i></button>
-            </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                    <div class="st-input-group">
+                        <label for="endUf">UF</label>
+                        <input type="text" class="st-input" id="endUf" name="uf" maxlength="2" placeholder="SP" required>
+                    </div>
+                    <div class="st-input-group">
+                        <label for="endLatitude">Latitude</label>
+                        <input type="number" step="any" class="st-input" id="endLatitude" name="latitude">
+                    </div>
+                    <div class="st-input-group">
+                        <label for="endLongitude">Longitude</label>
+                        <input type="number" step="any" class="st-input" id="endLongitude" name="longitude">
+                    </div>
+                </div>
+
+                <label class="st-toggle-row" style="cursor: pointer;">
+                    <div class="st-toggle-info">
+                        <h4>Usar como endereço padrão</h4>
+                        <p>É o endereço enviado nas solicitações e usado na busca quando a localização é negada.</p>
+                    </div>
+                    <span class="switch"><input type="checkbox" id="endPadrao" name="padrao"><span class="slider"></span></span>
+                </label>
+
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 16px; margin-top: 12px;" id="btnSalvarEndereco">
+                    <i class="fas fa-check"></i> Salvar Endereço
+                </button>
+            </form>
         </div>
     </div>
 
@@ -1595,35 +1333,33 @@
         <div class="receipt-container">
             <div class="receipt-header">
                 <button class="close-modal" onclick="closeModal('modalRecibo')" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-gray); font-size: 18px; cursor: pointer;"><i class="fas fa-times"></i></button>
-                <h2>TaskGO Pay</h2>
-                <p>Recibo Eletrônico #<span id="reciboID">9982</span></p>
-                <div class="paid-stamp">PAGO</div>
+                <h2>Comprovante</h2>
+                <p>Solicitação #<span id="reciboSolicitacao">-</span></p>
+                <div class="paid-stamp" id="reciboSelo">PAGO</div>
             </div>
-            
+
             <div class="receipt-body">
-                <div class="receipt-row"><span>Data/Hora</span><span id="reciboData" style="font-weight: 500;">Hoje, 14:30</span></div>
-                <div class="receipt-row"><span>Profissional</span><span id="reciboPro">Nome do Pro</span></div>
-                <div class="receipt-row"><span>Serviço Prestado</span><span id="reciboServico">Nome do Serviço</span></div>
-                <div class="receipt-row"><span>Forma de Pagamento</span><span><i class="fab fa-cc-mastercard" style="color: #ff9f43;"></i> Final 4242</span></div>
-                
+                <div class="receipt-row"><span>Data/Hora</span><span id="reciboData" style="font-weight: 500;">-</span></div>
+                <div class="receipt-row"><span>Profissional</span><span id="reciboPro">-</span></div>
+                <div class="receipt-row"><span>Serviço Prestado</span><span id="reciboServico">-</span></div>
+                <div class="receipt-row"><span>Forma de Pagamento</span><span id="reciboMetodo">-</span></div>
+
                 <div style="border-top: 1px dashed var(--border-color); margin: 16px 0; padding-top: 16px;">
-                    <div class="receipt-row"><span>Subtotal do Serviço</span><span id="reciboSubtotal">R$ 0,00</span></div>
-                    <div class="receipt-row"><span>Taxa TaskGO (Seguro)</span><span>R$ 4,50</span></div>
+                    <div class="receipt-row"><span>Valor do Serviço</span><span id="reciboValorBruto">-</span></div>
+                    <div class="receipt-row"><span>Taxa TaskGO (descontada do prestador)</span><span id="reciboTaxa">-</span></div>
+                    <div class="receipt-row" id="reciboLinhaDevolvido" style="display: none;"><span>Valor devolvido a você</span><span id="reciboValorEstornado">-</span></div>
+                    <div class="receipt-row" id="reciboLinhaRetido" style="display: none;"><span>Taxa de cancelamento retida</span><span id="reciboTaxaCancelamento">-</span></div>
                 </div>
-                
+
                 <div class="receipt-total">
-                    <span>Total Pago</span>
-                    <strong id="reciboValorTotal">R$ 0,00</strong>
+                    <span id="reciboTotalRotulo">Total Pago</span>
+                    <strong id="reciboValorTotal">-</strong>
                 </div>
-                
-                <button class="btn-primary" style="width: 100%; padding: 16px; font-size: 14px;" onclick="showToast('Comprovante salvo em PDF!', 'success')">
-                    <i class="fas fa-download"></i> Baixar Comprovante PDF
-                </button>
             </div>
-            
+
             <div class="receipt-footer">
                 <div class="barcode"></div>
-                <span style="font-size: 10px; color: var(--text-muted); font-family: monospace; letter-spacing: 1px;">Autenticação: 8F9A.2B4C.7D1E.99XX</span>
+                <span style="font-size: 10px; color: var(--text-muted); font-family: monospace; letter-spacing: 1px;" id="reciboSituacao"></span>
             </div>
         </div>
     </div>
@@ -1634,7 +1370,7 @@
             <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 20px; color: white;">Revisar Pedido</h2>
             
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border-light);">
-                <img id="checkoutImg" src="" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary-blue); padding: 2px; object-fit: cover;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary-blue); display: flex; align-items: center; justify-content: center; color: var(--text-gray); font-size: 24px;"><i class="fas fa-user"></i></div>
                 <div>
                     <h4 id="checkoutNome" style="color: white; margin-bottom: 4px; font-size: 18px;">Nome</h4>
                     <span id="checkoutEsp" style="color: var(--primary-blue); font-size: 12px; font-weight: 700; text-transform: uppercase; background: rgba(29, 161, 242, 0.1); padding: 4px 8px; border-radius: 6px;">Especialidade</span>
@@ -1650,7 +1386,7 @@
                 </div>
             </div>
 
-            <button class="btn-primary" style="width: 100%; padding: 16px; font-size: 16px;" id="btnConfirmarPagamento" onclick="processarPagamento()">
+            <button class="btn-primary" style="width: 100%; padding: 16px; font-size: 16px;" id="btnConfirmarPagamento">
                 <i class="fas fa-lock"></i> Pagar e Contratar
             </button>
         </div>
@@ -1660,7 +1396,7 @@
         <div class="eval-container-pro">
             <button class="close-modal" onclick="closeModal('modalAvaliar')"><i class="fas fa-times"></i></button>
             
-            <img src="" id="evalProImg" class="eval-avatar">
+            <div class="eval-avatar" style="display: flex; align-items: center; justify-content: center; color: var(--text-gray); font-size: 28px;"><i class="fas fa-user"></i></div>
             <h2 style="font-size: 20px; font-weight: 800; color: white; margin-bottom: 8px;">Como foi o serviço?</h2>
             <p style="color: var(--text-gray); font-size: 14px;">Avalie o atendimento de <strong id="evalProNome" style="color: white;">Profissional</strong>.</p>
             
@@ -1686,68 +1422,13 @@
             <div class="notif-header-pro">
                 <div>
                     <h2>Atividades</h2>
-                    <p>Acompanhe seus serviços e transações recentes.</p>
+                    <p>Pendências apuradas dos seus serviços — elas saem daqui quando você as resolve.</p>
                 </div>
-                <div style="display: flex; gap: 12px;">
-                    <button class="btn-notif-secondary" onclick="marcarTodasLidas()" title="Marcar como lidas" style="padding: 10px 14px;"><i class="fas fa-check-double"></i></button>
-                    <button class="btn-notif-secondary" onclick="closeModal('modalNotificacoes')" style="padding: 10px 14px;"><i class="fas fa-times"></i></button>
-                </div>
+                <button class="btn-notif-secondary" onclick="closeModal('modalNotificacoes')" style="padding: 10px 14px;"><i class="fas fa-times"></i></button>
             </div>
 
-            <div class="notif-body">
-
-                <div class="notif-group-title">Hoje</div>
-
-                <div class="notif-card-pro unread">
-                    <div class="unread-indicator"></div>
-                    <div class="notif-avatar-container">
-                        <img src="https://i.pravatar.cc/150?img=33" alt="Carlos Mendes">
-                        <div class="notif-badge-icon bg-green"><i class="fas fa-receipt"></i></div>
-                    </div>
-                    <div class="notif-content-pro">
-                        <h4>Pagamento de R$ 120 Confirmado <span class="notif-time-pro">10:15</span></h4>
-                        <p>O recibo digital do serviço de encanador com <strong>Carlos Mendes</strong> foi gerado e está na sua carteira.</p>
-                        <div class="notif-actions-pro">
-                            <button class="btn-notif-primary"><i class="fas fa-file-invoice-dollar"></i> Ver Recibo Digital</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="notif-card-pro unread">
-                    <div class="unread-indicator"></div>
-                    <div class="notif-avatar-container">
-                        <img src="https://i.pravatar.cc/150?img=5" alt="Ana Paula Souza">
-                        <div class="notif-badge-icon bg-yellow"><i class="fas fa-star"></i></div>
-                    </div>
-                    <div class="notif-content-pro">
-                        <h4>Sua opinião importa! <span class="notif-time-pro">Ontem, 18:30</span></h4>
-                        <p>A limpeza residencial diária com <strong>Ana Paula</strong> foi concluída. Como foi a sua experiência?</p>
-                        <div class="notif-actions-pro">
-                            <button class="btn-notif-primary" style="background: var(--warning-yellow); color: black;"><i class="fas fa-star"></i> Avaliar Serviço</button>
-                            <button class="btn-notif-secondary">Agora não</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="notif-group-title">Esta Semana</div>
-
-                <div class="notif-card-pro">
-                    <div class="notif-avatar-container">
-                        <div style="width: 100%; height: 100%; border-radius: 50%; background: var(--bg-dark); border: 2px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--text-gray);">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="notif-badge-icon bg-blue"><i class="fas fa-lock"></i></div>
-                    </div>
-                    <div class="notif-content-pro">
-                        <h4>Novo Dispositivo Detectado <span class="notif-time-pro">12 Mar</span></h4>
-                        <p>Um novo login foi feito na sua conta usando um dispositivo na região de São Paulo, SP.</p>
-                        <div class="notif-actions-pro">
-                            <button class="btn-notif-secondary">Sim, fui eu</button>
-                            <button class="btn-notif-secondary" style="color: var(--danger-red); border-color: rgba(231,76,60,0.3);"><i class="fas fa-ban"></i> Não fui eu</button>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="notif-body" id="avisosCorpo">
+                <p class="section-content">Carregando atividades...</p>
             </div>
 
         </div>
@@ -1756,111 +1437,44 @@
     <div class="modal-overlay" id="modalSimulacao">
         <div class="modal-content" style="max-width: 450px;">
             <button class="close-modal" onclick="closeModal('modalSimulacao')"><i class="fas fa-times"></i></button>
-            <h2 style="color: white; margin-bottom: 24px; font-weight: 900;"><i class="fas fa-magic" style="color: var(--primary-blue);"></i> O que você precisa hoje?</h2>
-            
+            <h2 style="color: white; margin-bottom: 8px; font-weight: 900;"><i class="fas fa-magic" style="color: var(--primary-blue);"></i> Quanto custa hoje?</h2>
+            <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 24px;">A faixa abaixo é apurada sobre os preços que os profissionais realmente publicaram — não é uma previsão.</p>
+
             <div class="st-input-group">
-                <label>Selecione a Categoria</label>
+                <label for="simServico">Selecione a Categoria</label>
                 <select class="st-input" id="simServico" style="cursor: pointer;">
-                    <option value="Montagem de Móveis">Montagem de Móveis</option>
-                    <option value="Eletricista">Manutenção Elétrica (Eletricista)</option>
-                    <option value="Limpeza Residencial">Limpeza Residencial (Diária)</option>
-                    <option value="Encanador">Reparo Hidráulico (Encanador)</option>
+                    <option value="">Carregando categorias...</option>
                 </select>
             </div>
 
-            <div class="st-input-group">
-                <label>Local de Atendimento</label>
-                <div style="display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; color: var(--text-gray);">
-                    <i class="fas fa-map-marker-alt" style="margin-right: 10px; color: var(--success-green);"></i> São Paulo, SP (Local Atual)
-                </div>
-            </div>
-
             <div id="simResultado" style="display: none; background: rgba(29, 161, 242, 0.05); border: 1px dashed var(--primary-blue); padding: 20px; border-radius: 16px; margin-bottom: 24px; text-align: center; animation: slideUpFade 0.4s ease;">
-                <p style="color: var(--text-gray); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Média na sua Região</p>
-                <h3 style="color: white; font-size: 32px; font-weight: 900; margin: 0; letter-spacing: -1px;" id="simPreco">R$ 0,00</h3>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px;">
-                    <div style="display: flex;">
-                        <img src="https://i.pravatar.cc/150?img=11" style="width:24px; height:24px; border-radius:50%; border:2px solid var(--bg-dark); margin-right:-8px;">
-                        <img src="https://i.pravatar.cc/150?img=33" style="width:24px; height:24px; border-radius:50%; border:2px solid var(--bg-dark); margin-right:-8px;">
-                        <img src="https://i.pravatar.cc/150?img=5" style="width:24px; height:24px; border-radius:50%; border:2px solid var(--bg-dark);">
+                <div id="simFaixa" style="display: none;">
+                    <p style="color: var(--text-gray); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Valor mediano praticado</p>
+                    <h3 style="color: white; font-size: 32px; font-weight: 900; margin: 0; letter-spacing: -1px;" id="simPreco">R$ 0,00</h3>
+                    <div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; font-size: 13px; color: var(--text-gray);">
+                        <span>Mínimo: <strong style="color: white;" id="simMinimo">R$ 0,00</strong></span>
+                        <span>Máximo: <strong style="color: white;" id="simMaximo">R$ 0,00</strong></span>
                     </div>
-                    <span style="color: var(--primary-blue); font-size: 13px; font-weight: 700;">3 disponíveis perto de você</span>
+                    <p style="color: var(--primary-blue); font-size: 12px; font-weight: 700; margin-top: 12px;" id="simAmostra"></p>
                 </div>
+                <p id="simAviso" style="display: none; color: var(--text-gray); font-size: 13px; line-height: 1.6; margin: 0;"></p>
             </div>
 
-            <button class="btn-primary" id="btnSimular" style="width: 100%; padding: 18px; font-size: 16px;" onclick="calcularSimulacao()">
-                <i class="fas fa-search"></i> Buscar Profissionais
-            </button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modalNovoCartao">
-        <div class="modal-content" style="max-width: 450px;">
-            <button class="close-modal" onclick="closeModal('modalNovoCartao')"><i class="fas fa-times"></i></button>
-            <h2 style="font-size: 22px; font-weight: 800; color: white; margin-bottom: 24px;">Adicionar Novo Cartão</h2>
-            
-            <div class="st-input-group">
-                <label>Número do Cartão</label>
-                <input type="text" class="st-input" id="inputCardNumber" placeholder="0000 0000 0000 0000" oninput="updateCardPreview()">
-            </div>
-
-            <div class="st-input-group">
-                <label>Nome do Titular</label>
-                <input type="text" class="st-input" id="inputCardName" placeholder="Como impresso no cartão" oninput="updateCardPreview()">
-            </div>
-
-            <div class="form-row-2">
-                <div class="st-input-group">
-                    <label>Validade</label>
-                    <input type="text" class="st-input" id="inputCardExpiry" placeholder="MM/AA" oninput="updateCardPreview()">
-                </div>
-                <div class="st-input-group">
-                    <label>CVV</label>
-                    <input type="password" class="st-input" placeholder="•••" maxlength="3">
-                </div>
-            </div>
-
-            <button class="btn-primary" id="btnSalvarCartao" style="width: 100%; padding: 16px;" onclick="salvarCartaoAnimacao()">
-                Salvar Cartão
-            </button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modalChatIA">
-        <div class="modal-content" style="padding: 0; max-width: 400px; overflow: hidden; display: flex; flex-direction: column; height: 500px;">
-            
-            <div style="background: var(--primary-blue); padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-blue); font-size: 20px;">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div>
-                        <h3 style="color: white; font-size: 16px; margin: 0; font-weight: 800;">Assistente Virtual</h3>
-                        <span style="color: rgba(255,255,255,0.8); font-size: 11px;">Inteligência Artificial</span>
-                    </div>
-                </div>
-                <button class="close-modal" style="position: static; color: white;" onclick="closeModal('modalChatIA')"><i class="fas fa-times"></i></button>
-            </div>
-            
-            <div id="chatHistoryIA" style="flex: 1; padding: 20px; overflow-y: auto; background: var(--bg-dark); display: flex; flex-direction: column; gap: 16px;">
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <span style="font-size: 10px; color: var(--text-gray); font-weight: 800; text-transform: uppercase; background: var(--card-bg); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border-color);">Hoje</span>
-                </div>
-                <div style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 0 12px 12px 12px; max-width: 85%; font-size: 13px; line-height: 1.5; color: var(--text-white);">
-                    Olá Marina! Sou o assistente virtual do TaskGO. Como posso te ajudar com sua conta hoje?
-                </div>
-            </div>
-
-            <div style="padding: 16px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; gap: 10px;">
-                <input type="text" id="inputChatIA" placeholder="Digite sua dúvida..." style="flex: 1; background: var(--bg-dark); border: 1px solid var(--border-color); color: white; padding: 12px 16px; border-radius: 20px; outline: none; font-size: 13px;" onkeypress="if(event.key === 'Enter') enviarMensagemIA()">
-                <button onclick="enviarMensagemIA()" style="background: var(--primary-blue); color: white; border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;"><i class="fas fa-paper-plane"></i></button>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn-primary" id="btnSimular" style="flex: 1; padding: 18px; font-size: 15px;" onclick="calcularSimulacao()">
+                    <i class="fas fa-calculator"></i> Consultar faixa
+                </button>
+                <button class="btn-outline" style="flex: 1; padding: 18px; font-size: 15px;" onclick="buscarCategoriaDoSimulador()">
+                    <i class="fas fa-search"></i> Ver profissionais
+                </button>
             </div>
         </div>
     </div>
-
 
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth-guard.js"></script>
+    <script src="../assets/js/validacao.js"></script>
+    <script src="../assets/js/chat-servico.js"></script>
     <script src="../assets/js/painel-cliente.js"></script>
 </body>
 </html>
