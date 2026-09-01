@@ -21,6 +21,15 @@ O MVP (US-01..US-10) está implementado ponta a ponta; Fase 2/3 (US-11..US-21) e
 
 Esses três documentos são o PRD **original** e não são reescritos a cada mudança: eles descrevem o MVP como foi planejado. O que o sistema faz *hoje* está em `openspec/specs/` (ver abaixo) — quando os dois divergirem, `openspec/specs/` é a descrição atual e `spec.md` é a intenção original.
 
+### RN02 e RN03 hoje divergem de `spec.md`
+
+Duas das quatro regras de negócio mudaram depois do PRD. A forma vigente é a que está aqui e em `openspec/config.yaml`; a de `spec.md` é a intenção original.
+
+- **RN02 (ciclo)**: `SOLICITADO -> ACEITO -> EM_ANDAMENTO -> CONCLUIDO -> AVALIADO`, com ramos `RECUSADO` e `CANCELADO`. `ACEITO -> CONCLUIDO` **não existe**: iniciar o atendimento (`PUT /servicos/{id}/iniciar`) exige o código de confirmação de quatro dígitos, gerado no aceite e devolvido **apenas ao cliente**, mais o pagamento já retido em custódia. `FatoServicoService` é o dono da máquina de estados e o único ponto que preenche o código condicionalmente pelo papel de quem consulta.
+- **RN03 (custódia)**: o pagamento fica retido até a conclusão, quando o líquido é creditado no saldo do prestador. Cancelar, **de qualquer estado de onde se possa cancelar**, nunca deixa pagamento em `RETIDO`. O estorno é integral, exceto quando **o cliente** cancela em `EM_ANDAMENTO` depois de passada a carência: nesse caso parte do valor é retida como taxa de cancelamento e **creditada ao prestador** (`ESTORNADO_PARCIAL`, com `valorEstornado` e `valorTaxaCancelamento` persistidos). Percentual, carência, limiar de distância e teto vivem em `parametro_negocio` sob as chaves `cancelamento.*`; distância não apurável aplica o percentual **menor**, e a taxa nunca excede o valor pago. Saque Pix segue limitado ao saldo disponível.
+
+Alterou uma dessas duas regras? Atualize os dois lugares (aqui e `openspec/config.yaml`) no mesmo commit.
+
 ## OpenSpec: como o trabalho anda neste repositório
 
 Mudanças passam pelo OpenSpec (CLI `openspec`, schema `spec-driven`), com os skills `/opsx:propose`, `/opsx:apply`, `/opsx:archive`, `/opsx:sync`, `/opsx:update` e `/opsx:explore`.

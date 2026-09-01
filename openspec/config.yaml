@@ -19,11 +19,19 @@ context: |
   Regras de negócio que restringem qualquer proposta:
   - RN01 (taxa): taxa fixa abaixo do limiar, percentual a partir dele. Os valores vivem na tabela
     parametro_negocio, ajustáveis por admin sem deploy — nunca em application.properties.
-  - RN02 (ciclo): SOLICITADO -> ACEITO -> CONCLUIDO -> AVALIADO, com ramos RECUSADO e CANCELADO.
-    Transições fora dessas não existem. FatoServicoService é o dono dessa máquina de estados.
+  - RN02 (ciclo): SOLICITADO -> ACEITO -> EM_ANDAMENTO -> CONCLUIDO -> AVALIADO, com ramos RECUSADO
+    e CANCELADO. Transições fora dessas não existem. ACEITO -> CONCLUIDO **não** existe: iniciar o
+    atendimento exige o código de confirmação de quatro dígitos, gerado no aceite e devolvido apenas
+    ao cliente, mais o pagamento já retido em custódia. FatoServicoService é o dono dessa máquina de
+    estados e o único ponto que preenche o código condicionalmente pelo papel de quem consulta.
   - RN03 (custódia): pagamento fica retido até a conclusão; na conclusão o líquido é creditado no
-    saldo do prestador; cancelar a partir de ACEITO estorna integral, sem taxa. Saque Pix é
-    limitado ao saldo disponível.
+    saldo do prestador. Cancelar, de qualquer estado de onde se possa cancelar, nunca deixa pagamento
+    em RETIDO. O estorno é integral, exceto quando **o cliente** cancela em EM_ANDAMENTO depois de
+    passada a carência: nesse caso parte do valor é retida como taxa de cancelamento e creditada ao
+    prestador (ESTORNADO_PARCIAL, com valorEstornado e valorTaxaCancelamento persistidos). O
+    percentual, a carência, o limiar de distância e o teto vivem em parametro_negocio (chaves
+    cancelamento.*); distância não apurável aplica o percentual menor, e a taxa nunca excede o valor
+    pago. Saque Pix é limitado ao saldo disponível.
   - RN04 (KYC): prestador sem StatusKyc.APROVADO não publica serviço nem aparece em busca.
 
   Restrições técnicas que invalidam um plano se ignoradas:
