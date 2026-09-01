@@ -47,11 +47,18 @@ public class AuthService {
      *
      * @param request e-mail, senha e tipo de conta (CLIENTE/PRESTADOR/ADMIN)
      * @return o token emitido e os dados básicos do usuário
-     * @throws CredenciaisInvalidasException se o e-mail não existir para o tipo informado ou a senha não confere
+     * <p>Conta de cliente desativada é tratada como inexistente: a mesma mensagem genérica é
+     * devolvida, para não revelar a terceiros que aquele e-mail já teve conta na plataforma.
+     *
+     * @throws CredenciaisInvalidasException se o e-mail não existir para o tipo informado, a conta
+     *                                       estiver desativada, ou a senha não conferir
      */
     public LoginResponse login(LoginRequest request) {
         return switch (request.getTipoUsuario()) {
-            case CLIENTE -> autenticar(clienteRepository.findByEmail(request.getEmail()), request.getSenha(),
+            case CLIENTE -> autenticar(
+                    clienteRepository.findByEmail(request.getEmail())
+                            .filter(c -> !Boolean.FALSE.equals(c.getAtivo())),
+                    request.getSenha(),
                     Cliente::getSenha, Cliente::getIdCliente, Cliente::getNome, TipoUsuario.CLIENTE);
             case PRESTADOR -> autenticar(prestadorRepository.findByEmail(request.getEmail()), request.getSenha(),
                     Prestador::getSenha, Prestador::getIdPrestador, Prestador::getNome, TipoUsuario.PRESTADOR);

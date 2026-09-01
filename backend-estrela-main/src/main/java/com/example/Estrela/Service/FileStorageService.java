@@ -21,6 +21,12 @@ public class FileStorageService {
 
     private static final Set<String> TIPOS_ACEITOS = Set.of("image/png", "image/jpeg", "application/pdf");
 
+    /**
+     * Foto de perfil aceita apenas imagem. PDF serve como documento de verificação, mas
+     * não como retrato de pessoa numa lista.
+     */
+    private static final Set<String> TIPOS_IMAGEM = Set.of("image/png", "image/jpeg");
+
     private final Path diretorioBase;
 
     public FileStorageService(@Value("${taskgo.storage.kyc-dir}") String diretorioBase) {
@@ -59,6 +65,24 @@ public class FileStorageService {
         } catch (IOException e) {
             throw new ArquivoInvalidoException("Falha ao salvar o arquivo enviado");
         }
+    }
+
+    /**
+     * Valida e persiste uma imagem enviada, recusando qualquer outro tipo.
+     *
+     * @param file   arquivo enviado via multipart
+     * @param subdir subdiretório de destino
+     * @return caminho relativo do arquivo salvo
+     * @throws ArquivoInvalidoException se o arquivo não for PNG ou JPEG (HTTP 400)
+     */
+    public String storeImagem(MultipartFile file, String subdir) {
+        if (file == null || file.isEmpty()) {
+            throw new ArquivoInvalidoException("Arquivo não enviado");
+        }
+        if (!TIPOS_IMAGEM.contains(file.getContentType())) {
+            throw new ArquivoInvalidoException("Formato de imagem não aceito. Envie PNG ou JPEG");
+        }
+        return store(file, subdir);
     }
 
     /**

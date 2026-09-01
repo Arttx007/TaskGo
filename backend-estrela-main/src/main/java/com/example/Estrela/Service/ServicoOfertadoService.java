@@ -39,6 +39,28 @@ public class ServicoOfertadoService {
     private final GeoService geoService;
     private final ParametroNegocioService parametroNegocioService;
 
+    /**
+     * Serviços ativos de um prestador, para que o cliente escolha o que contratar.
+     *
+     * <p>Devolve <b>lista vazia</b>, e não erro, quando o prestador não está com verificação
+     * aprovada: RN04 remove da oferta sem revelar a terceiros o estado de verificação de
+     * ninguém — o mesmo critério que a busca pública já aplica.
+     *
+     * @param prestadorId prestador cujo catálogo se quer ver
+     * @return serviços ativos, lista vazia se o prestador não estiver aprovado ou não tiver nenhum
+     * @throws RecursoNaoEncontradoException se o prestador não existir (HTTP 404)
+     */
+    public List<ServicoOfertado> listarAtivosDoPrestador(Long prestadorId) {
+        Prestador prestador = prestadorRepository.findById(prestadorId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Prestador não encontrado"));
+
+        if (prestador.getStatusKyc() != StatusKyc.APROVADO) {
+            return List.of();
+        }
+        return servicoOfertadoRepository.findByPrestador_IdPrestadorAndStatus(
+                prestadorId, StatusServico.ATIVO);
+    }
+
     public ServicoOfertadoService(ServicoOfertadoRepository servicoOfertadoRepository,
                                    PrestadorRepository prestadorRepository,
                                    LocalizacaoRepository localizacaoRepository,

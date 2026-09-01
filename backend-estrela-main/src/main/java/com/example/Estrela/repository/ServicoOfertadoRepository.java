@@ -16,6 +16,9 @@ public interface ServicoOfertadoRepository extends JpaRepository<ServicoOfertado
 
     List<ServicoOfertado> findByPrestador_IdPrestador(Long idPrestador);
 
+    /** Serviços de um prestador em determinada situação, para o catálogo público dele. */
+    List<ServicoOfertado> findByPrestador_IdPrestadorAndStatus(Long idPrestador, StatusServico status);
+
     List<ServicoOfertado> findByStatusAndCategoriaIgnoreCase(StatusServico status, String categoria);
 
     List<ServicoOfertado> findByStatusAndCategoriaIgnoreCaseAndLocalizacao_CidadeIgnoreCase(

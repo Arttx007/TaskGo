@@ -8,6 +8,7 @@ import com.example.Estrela.Entity.Prestador;
 import com.example.Estrela.Entity.ServicoOfertado;
 import com.example.Estrela.Entity.StatusKyc;
 import com.example.Estrela.Entity.StatusServico;
+import com.example.Estrela.exception.RecursoNaoEncontradoException;
 import com.example.Estrela.exception.ValidacaoException;
 import com.example.Estrela.repository.LocalizacaoRepository;
 import com.example.Estrela.repository.PrestadorRepository;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -361,5 +363,47 @@ class ServicoOfertadoServiceTest {
         servico.setPreco(new BigDecimal(preco));
         servico.setStatus(StatusServico.ATIVO);
         return servico;
+    }
+    @Test
+    void catalogoDoPrestadorTrazApenasOsAtivos() {
+        Prestador aprovado = new Prestador();
+        aprovado.setIdPrestador(10L);
+        aprovado.setStatusKyc(StatusKyc.APROVADO);
+        when(prestadorRepository.findById(10L)).thenReturn(Optional.of(aprovado));
+        when(servicoOfertadoRepository.findByPrestador_IdPrestadorAndStatus(10L, StatusServico.ATIVO))
+                .thenReturn(List.of(new ServicoOfertado(), new ServicoOfertado()));
+
+        assertThat(servicoOfertadoService.listarAtivosDoPrestador(10L)).hasSize(2);
+    }
+
+    @Test
+    void catalogoDePrestadorNaoAprovadoVemVazioEmVezDeErro() {
+        // RN04: remove da oferta sem revelar a terceiros o estado de verificação de ninguém.
+        Prestador pendente = new Prestador();
+        pendente.setIdPrestador(11L);
+        pendente.setStatusKyc(StatusKyc.PENDENTE);
+        when(prestadorRepository.findById(11L)).thenReturn(Optional.of(pendente));
+
+        assertThat(servicoOfertadoService.listarAtivosDoPrestador(11L)).isEmpty();
+        verify(servicoOfertadoRepository, org.mockito.Mockito.never())
+                .findByPrestador_IdPrestadorAndStatus(any(), any());
+    }
+
+    @Test
+    void catalogoDePrestadorRejeitadoTambemVemVazio() {
+        Prestador rejeitado = new Prestador();
+        rejeitado.setIdPrestador(12L);
+        rejeitado.setStatusKyc(StatusKyc.REJEITADO);
+        when(prestadorRepository.findById(12L)).thenReturn(Optional.of(rejeitado));
+
+        assertThat(servicoOfertadoService.listarAtivosDoPrestador(12L)).isEmpty();
+    }
+
+    @Test
+    void catalogoDePrestadorInexistenteE404() {
+        when(prestadorRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> servicoOfertadoService.listarAtivosDoPrestador(99L))
+                .isInstanceOf(RecursoNaoEncontradoException.class);
     }
 }
