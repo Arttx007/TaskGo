@@ -1,6 +1,7 @@
 package com.example.Estrela.Service;
 
 import com.example.Estrela.DTO.AvaliacaoRequest;
+import com.example.Estrela.DTO.IniciarAtendimentoRequest;
 import com.example.Estrela.DTO.SolicitacaoRequest;
 import com.example.Estrela.Entity.*;
 import com.example.Estrela.exception.AcessoNegadoException;
@@ -36,6 +37,8 @@ class FatoServicoServiceTest {
     @Mock private ServicoOfertadoRepository servicoOfertadoRepo;
     @Mock private TempoRepository tempoRepo;
     @Mock private PagamentoService pagamentoService;
+    @Mock private EnderecoClienteService enderecoClienteService;
+    @Mock private TaxaCancelamentoService taxaCancelamentoService;
 
     @InjectMocks
     private FatoServicoService service;
@@ -78,7 +81,7 @@ class FatoServicoServiceTest {
         when(repository.findByCliente_IdCliente(1L)).thenReturn(List.of());
         when(tempoRepo.findByData(any(LocalDate.class))).thenReturn(Optional.of(new Tempo()));
 
-        FatoServico criado = service.solicitar(1L, new SolicitacaoRequest(100L));
+        FatoServico criado = service.solicitar(1L, new SolicitacaoRequest(100L, null));
 
         assertThat(criado.getStatus()).isEqualTo(StatusSolicitacao.SOLICITADO);
         assertThat(criado.getValor()).isEqualByComparingTo("80.00");
@@ -94,7 +97,7 @@ class FatoServicoServiceTest {
         when(servicoOfertadoRepo.findById(100L)).thenReturn(Optional.of(servicoOfertado));
         when(repository.findByCliente_IdCliente(1L)).thenReturn(List.of(existente));
 
-        assertThatThrownBy(() -> service.solicitar(1L, new SolicitacaoRequest(100L)))
+        assertThatThrownBy(() -> service.solicitar(1L, new SolicitacaoRequest(100L, null)))
                 .isInstanceOf(EstadoInvalidoException.class);
     }
 
@@ -104,7 +107,7 @@ class FatoServicoServiceTest {
         when(clienteRepo.findById(1L)).thenReturn(Optional.of(cliente));
         when(servicoOfertadoRepo.findById(100L)).thenReturn(Optional.of(servicoOfertado));
 
-        assertThatThrownBy(() -> service.solicitar(1L, new SolicitacaoRequest(100L)))
+        assertThatThrownBy(() -> service.solicitar(1L, new SolicitacaoRequest(100L, null)))
                 .isInstanceOf(RecursoIndisponivelException.class);
     }
 
@@ -138,7 +141,7 @@ class FatoServicoServiceTest {
 
     @Test
     void concluirExigePagamentoRetidoEDelegaLiberacao() {
-        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setStatus(StatusSolicitacao.EM_ANDAMENTO);
         when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
 
         FatoServico resultado = service.concluir(1000L, 10L);
@@ -149,7 +152,7 @@ class FatoServicoServiceTest {
 
     @Test
     void concluirRejeitaClienteTentandoConcluir() {
-        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setStatus(StatusSolicitacao.EM_ANDAMENTO);
         when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
 
         assertThatThrownBy(() -> service.concluir(1000L, 1L))
@@ -214,5 +217,205 @@ class FatoServicoServiceTest {
 
         assertThatThrownBy(() -> service.cancelar(1000L, 999L, TipoUsuario.CLIENTE))
                 .isInstanceOf(AcessoNegadoException.class);
+    }
+    // ---------------------------------------------------------------------
+    // RN02: codigo de confirmacao e EM_ANDAMENTO
+    // ---------------------------------------------------------------------
+
+    @Test
+    void aceitarGeraCodigoDeQuatroDigitosERegistraOMomento() {
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+
+        FatoServico aceita = service.aceitar(1000L, 10L);
+
+        assertThat(aceita.getPinConfirmacao()).hasSize(4).containsOnlyDigits();
+        assertThat(aceita.getAceitoEm()).isNotNull();
+    }
+
+    @Test
+    void iniciarComCodigoCorretoLevaAEmAndamento() {
+        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setPinConfirmacao("1234");
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+        when(pagamentoService.possuiPagamentoRetido(solicitacao)).thenReturn(true);
+
+        FatoServico resultado = service.iniciar(1000L, 10L, new IniciarAtendimentoRequest("1234"));
+
+        assertThat(resultado.getStatus()).isEqualTo(StatusSolicitacao.EM_ANDAMENTO);
+        assertThat(resultado.getIniciadoEm()).isNotNull();
+    }
+
+    @Test
+    void iniciarComCodigoErradoRecusaENaoAlteraOCodigo() {
+        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setPinConfirmacao("1234");
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+        when(pagamentoService.possuiPagamentoRetido(solicitacao)).thenReturn(true);
+
+        assertThatThrownBy(() -> service.iniciar(1000L, 10L, new IniciarAtendimentoRequest("9999")))
+                .isInstanceOf(AcessoNegadoException.class);
+        assertThatThrownBy(() -> service.iniciar(1000L, 10L, new IniciarAtendimentoRequest("0000")))
+                .isInstanceOf(AcessoNegadoException.class);
+
+        assertThat(solicitacao.getStatus()).isEqualTo(StatusSolicitacao.ACEITO);
+        assertThat(solicitacao.getPinConfirmacao()).isEqualTo("1234");
+
+        assertThat(service.iniciar(1000L, 10L, new IniciarAtendimentoRequest("1234")).getStatus())
+                .isEqualTo(StatusSolicitacao.EM_ANDAMENTO);
+    }
+
+    @Test
+    void iniciarSemPagamentoRetidoERecusado() {
+        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setPinConfirmacao("1234");
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+        when(pagamentoService.possuiPagamentoRetido(solicitacao)).thenReturn(false);
+
+        assertThatThrownBy(() -> service.iniciar(1000L, 10L, new IniciarAtendimentoRequest("1234")))
+                .isInstanceOf(EstadoInvalidoException.class);
+
+        assertThat(solicitacao.getStatus()).isEqualTo(StatusSolicitacao.ACEITO);
+    }
+
+    @Test
+    void iniciarAPartirDeEstadoQueNaoPermiteERecusado() {
+        solicitacao.setStatus(StatusSolicitacao.SOLICITADO);
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+
+        assertThatThrownBy(() -> service.iniciar(1000L, 10L, new IniciarAtendimentoRequest("1234")))
+                .isInstanceOf(EstadoInvalidoException.class);
+    }
+
+    @Test
+    void iniciarPorPrestadorQueNaoEODonoERecusado() {
+        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setPinConfirmacao("1234");
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+
+        assertThatThrownBy(() -> service.iniciar(1000L, 999L, new IniciarAtendimentoRequest("1234")))
+                .isInstanceOf(AcessoNegadoException.class);
+
+        assertThat(solicitacao.getStatus()).isEqualTo(StatusSolicitacao.ACEITO);
+    }
+
+    @Test
+    void concluirAPartirDeAceitoERecusadoESemCreditarSaldo() {
+        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+
+        assertThatThrownBy(() -> service.concluir(1000L, 10L))
+                .isInstanceOf(EstadoInvalidoException.class);
+
+        assertThat(solicitacao.getStatus()).isEqualTo(StatusSolicitacao.ACEITO);
+        verify(pagamentoService, never()).liberar(solicitacao);
+    }
+
+    @Test
+    void concluirRegistraOMomentoDaConclusao() {
+        solicitacao.setStatus(StatusSolicitacao.EM_ANDAMENTO);
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+
+        assertThat(service.concluir(1000L, 10L).getConcluidoEm()).isNotNull();
+    }
+
+    @Test
+    void solicitacaoDuplicadaConsideraEmAndamento() {
+        FatoServico emAndamento = new FatoServico();
+        emAndamento.setPrestador(prestador);
+        emAndamento.setStatus(StatusSolicitacao.EM_ANDAMENTO);
+
+        when(clienteRepo.findById(1L)).thenReturn(Optional.of(cliente));
+        when(servicoOfertadoRepo.findById(100L)).thenReturn(Optional.of(servicoOfertado));
+        when(repository.findByCliente_IdCliente(1L)).thenReturn(List.of(emAndamento));
+
+        assertThatThrownBy(() -> service.solicitar(1L, new SolicitacaoRequest(100L, null)))
+                .isInstanceOf(EstadoInvalidoException.class);
+    }
+
+    // ---------------------------------------------------------------------
+    // RN03: estorno no cancelamento, com e sem taxa
+    // ---------------------------------------------------------------------
+
+    @Test
+    void clienteCancelandoDentroDaCarenciaEstornaIntegral() {
+        solicitacao.setStatus(StatusSolicitacao.EM_ANDAMENTO);
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+        when(taxaCancelamentoService.carenciaVencida(solicitacao)).thenReturn(false);
+
+        service.cancelar(1000L, 1L, TipoUsuario.CLIENTE);
+
+        verify(pagamentoService).estornarSeRetido(solicitacao);
+        verify(pagamentoService, never()).estornarComTaxa(any(), any());
+    }
+
+    @Test
+    void clienteCancelandoDepoisDaCarenciaRetemTaxaParaOPrestador() {
+        solicitacao.setStatus(StatusSolicitacao.EM_ANDAMENTO);
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+        when(taxaCancelamentoService.carenciaVencida(solicitacao)).thenReturn(true);
+        when(taxaCancelamentoService.calcular(solicitacao)).thenReturn(new BigDecimal("16.00"));
+
+        FatoServico resultado = service.cancelar(1000L, 1L, TipoUsuario.CLIENTE);
+
+        verify(pagamentoService).estornarComTaxa(solicitacao, new BigDecimal("16.00"));
+        verify(pagamentoService, never()).estornarSeRetido(solicitacao);
+        assertThat(resultado.getStatus()).isEqualTo(StatusSolicitacao.CANCELADO);
+    }
+
+    @Test
+    void prestadorCancelandoDepoisDaCarenciaEstornaIntegral() {
+        solicitacao.setStatus(StatusSolicitacao.EM_ANDAMENTO);
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+
+        service.cancelar(1000L, 10L, TipoUsuario.PRESTADOR);
+
+        verify(pagamentoService).estornarSeRetido(solicitacao);
+        verify(pagamentoService, never()).estornarComTaxa(any(), any());
+    }
+
+    @Test
+    void cancelarDeSolicitadoSemPagamentoNaoEstoura() {
+        solicitacao.setStatus(StatusSolicitacao.SOLICITADO);
+        when(repository.findById(1000L)).thenReturn(Optional.of(solicitacao));
+
+        assertThat(service.cancelar(1000L, 1L, TipoUsuario.CLIENTE).getStatus())
+                .isEqualTo(StatusSolicitacao.CANCELADO);
+        verify(pagamentoService).estornarSeRetido(solicitacao);
+    }
+
+    // ---------------------------------------------------------------------
+    // O codigo nao vaza para o prestador
+    // ---------------------------------------------------------------------
+
+    @Test
+    void codigoDeConfirmacaoVemApenasParaOClienteDono() {
+        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setPinConfirmacao("4321");
+
+        assertThat(service.paraResposta(solicitacao, TipoUsuario.CLIENTE).pinConfirmacao())
+                .isEqualTo("4321");
+        assertThat(service.paraResposta(solicitacao, TipoUsuario.PRESTADOR).pinConfirmacao())
+                .isNull();
+    }
+
+    @Test
+    void solicitacaoAindaNaoAceitaNaoTemCodigo() {
+        solicitacao.setStatus(StatusSolicitacao.SOLICITADO);
+
+        assertThat(service.paraResposta(solicitacao, TipoUsuario.CLIENTE).pinConfirmacao()).isNull();
+    }
+
+    @Test
+    void respostaTrazOsMomentosJaOcorridosENulosOsDemais() {
+        solicitacao.setStatus(StatusSolicitacao.ACEITO);
+        solicitacao.setCriadoEm(java.time.LocalDateTime.now().minusHours(3));
+        solicitacao.setAceitoEm(java.time.LocalDateTime.now().minusHours(2));
+
+        var resposta = service.paraResposta(solicitacao, TipoUsuario.CLIENTE);
+
+        assertThat(resposta.criadoEm()).isNotNull();
+        assertThat(resposta.aceitoEm()).isNotNull();
+        assertThat(resposta.iniciadoEm()).isNull();
+        assertThat(resposta.concluidoEm()).isNull();
     }
 }

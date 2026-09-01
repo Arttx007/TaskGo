@@ -32,6 +32,14 @@ public class RelatorioController {
         dados.put("cancelados", repository.countByStatus(StatusSolicitacao.CANCELADO));
         dados.put("concluidos", repository.countByStatus(StatusSolicitacao.CONCLUIDO));
 
+        // Estados que existiam antes de EM_ANDAMENTO entrar na RN02 e não eram contados por
+        // bucket algum. Sem eles a soma dos buckets não fecha com totalServicos, e uma
+        // solicitação em atendimento simplesmente desaparecia do relatório.
+        dados.put("emAndamento", repository.countByStatus(StatusSolicitacao.EM_ANDAMENTO));
+        dados.put("solicitados", repository.countByStatus(StatusSolicitacao.SOLICITADO));
+        dados.put("recusados", repository.countByStatus(StatusSolicitacao.RECUSADO));
+        dados.put("avaliados", repository.countByStatus(StatusSolicitacao.AVALIADO));
+
         return dados;
     }
 }

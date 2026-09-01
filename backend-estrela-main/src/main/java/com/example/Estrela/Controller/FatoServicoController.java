@@ -91,22 +91,24 @@ public class FatoServicoController {
     @ResponseStatus(HttpStatus.CREATED)
     public SolicitacaoResponse solicitar(@Valid @RequestBody SolicitacaoRequest request,
                                           @AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return paraResposta(service.solicitar(usuario.getId(), request));
+        return service.paraResposta(service.solicitar(usuario.getId(), request), usuario.getRole());
     }
 
     @GetMapping("/minhas")
     public List<SolicitacaoResponse> listarMinhas(@AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return service.listarMinhas(usuario.getId(), usuario.getRole()).stream().map(this::paraResposta).toList();
+        return service.listarMinhas(usuario.getId(), usuario.getRole()).stream()
+                .map(s -> service.paraResposta(s, usuario.getRole()))
+                .toList();
     }
 
     @PutMapping("/{id}/aceitar")
     public SolicitacaoResponse aceitar(@PathVariable Long id, @AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return paraResposta(service.aceitar(id, usuario.getId()));
+        return service.paraResposta(service.aceitar(id, usuario.getId()), usuario.getRole());
     }
 
     @PutMapping("/{id}/recusar")
     public SolicitacaoResponse recusar(@PathVariable Long id, @AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return paraResposta(service.recusar(id, usuario.getId()));
+        return service.paraResposta(service.recusar(id, usuario.getId()), usuario.getRole());
     }
 
     /**
@@ -125,34 +127,50 @@ public class FatoServicoController {
      */
     @PutMapping("/{id}/concluir")
     public SolicitacaoResponse concluir(@PathVariable Long id, @AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return paraResposta(service.concluir(id, usuario.getId()));
+        return service.paraResposta(service.concluir(id, usuario.getId()), usuario.getRole());
     }
 
     @PutMapping("/{id}/avaliar")
     public SolicitacaoResponse avaliar(@PathVariable Long id, @Valid @RequestBody AvaliacaoRequest request,
                                         @AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return paraResposta(service.avaliar(id, usuario.getId(), request));
+        return service.paraResposta(service.avaliar(id, usuario.getId(), request), usuario.getRole());
     }
 
     @PutMapping("/{id}/cancelar")
     public SolicitacaoResponse cancelar(@PathVariable Long id, @AuthenticationPrincipal TaskGoUserDetails usuario) {
-        return paraResposta(service.cancelar(id, usuario.getId(), usuario.getRole()));
+        return service.paraResposta(service.cancelar(id, usuario.getId(), usuario.getRole()), usuario.getRole());
     }
 
-    private SolicitacaoResponse paraResposta(FatoServico servico) {
-        return new SolicitacaoResponse(
-                servico.getId_servico(),
-                servico.getStatus(),
-                servico.getCliente().getIdCliente(),
-                servico.getCliente().getNome(),
-                servico.getPrestador().getIdPrestador(),
-                servico.getPrestador().getNome(),
-                servico.getServicoOfertado() != null ? servico.getServicoOfertado().getId() : null,
-                servico.getServicoOfertado() != null ? servico.getServicoOfertado().getCategoria() : null,
-                servico.getValor(),
-                servico.getAvaliacao(),
-                servico.getComentarioAvaliacao(),
-                pagamentoService.obterStatus(servico)
-        );
+    /**
+     * Detalhe de uma solicitacao, restrito ao cliente dono e ao prestador dono.
+     *
+     * @param id      identificador da solicitacao
+     * @param usuario conta autenticada, resolvida do token
+     * @return a solicitacao, com os momentos ja ocorridos do atendimento
+     * @throws com.example.Estrela.exception.RecursoNaoEncontradoException se nao existir (HTTP 404)
+     * @throws com.example.Estrela.exception.AcessoNegadoException         se quem consulta nao participa dela (HTTP 403)
+     */
+    @GetMapping("/{id}")
+    public SolicitacaoResponse detalhar(@PathVariable Long id,
+                                        @AuthenticationPrincipal TaskGoUserDetails usuario) {
+        return service.paraResposta(
+                service.buscarEValidarParte(id, usuario.getId(), usuario.getRole()), usuario.getRole());
+    }
+
+    /**
+     * Inicia o atendimento com o codigo de confirmacao que o cliente passou ao prestador.
+     *
+     * @param id      identificador da solicitacao
+     * @param request codigo informado
+     * @param usuario prestador autenticado, resolvido do token
+     * @return a solicitacao em EM_ANDAMENTO
+     * @throws com.example.Estrela.exception.AcessoNegadoException   se nao for o prestador dono, ou o codigo estiver errado (HTTP 403)
+     * @throws com.example.Estrela.exception.EstadoInvalidoException se nao estiver em ACEITO, ou sem pagamento retido (HTTP 409)
+     */
+    @PutMapping("/{id}/iniciar")
+    public SolicitacaoResponse iniciar(@PathVariable Long id,
+                                       @Valid @RequestBody IniciarAtendimentoRequest request,
+                                       @AuthenticationPrincipal TaskGoUserDetails usuario) {
+        return service.paraResposta(service.iniciar(id, usuario.getId(), request), usuario.getRole());
     }
 }
