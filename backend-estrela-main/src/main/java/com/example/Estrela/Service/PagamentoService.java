@@ -1,5 +1,6 @@
 package com.example.Estrela.Service;
 
+import com.example.Estrela.DTO.PagamentoExtratoResponse;
 import com.example.Estrela.DTO.PagamentoRequest;
 import com.example.Estrela.Entity.FatoServico;
 import com.example.Estrela.Entity.Pagamento;
@@ -12,7 +13,9 @@ import com.example.Estrela.repository.PrestadorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Orquestra custódia de pagamento (RN03): cálculo de taxa (RN01), cobrança via {@link PagamentoGateway}
@@ -103,9 +106,51 @@ public class PagamentoService {
         buscarPorServicoOpcional(servico).ifPresent(pagamento -> {
             if (pagamento.getStatus() == StatusPagamento.RETIDO) {
                 pagamento.setStatus(StatusPagamento.ESTORNADO);
+                pagamento.setValorEstornado(pagamento.getValorBruto());
                 pagamento.setAtualizadoEm(LocalDateTime.now());
                 pagamentoRepository.save(pagamento);
             }
+        });
+    }
+
+    /**
+     * Estorna um pagamento retido descontando a taxa de cancelamento, que é creditada ao
+     * prestador (RN03).
+     *
+     * <p>A plataforma não retém nada aqui: a taxa de serviço apurada no pagamento volta ao
+     * cliente junto com o restante. Guarda os dois valores — devolvido e retido — em vez de
+     * derivar um do outro, porque registro financeiro se lê, não se recalcula.
+     *
+     * <p>Taxa zero ou ausente cai no estorno integral, mantendo um único caminho de saída.
+     *
+     * @param servico          solicitação sendo cancelada
+     * @param taxaCancelamento valor a reter para o prestador
+     */
+    @Transactional
+    public void estornarComTaxa(FatoServico servico, BigDecimal taxaCancelamento) {
+        if (taxaCancelamento == null || taxaCancelamento.compareTo(BigDecimal.ZERO) <= 0) {
+            estornarSeRetido(servico);
+            return;
+        }
+
+        buscarPorServicoOpcional(servico).ifPresent(pagamento -> {
+            if (pagamento.getStatus() != StatusPagamento.RETIDO) {
+                return;
+            }
+
+            BigDecimal bruto = pagamento.getValorBruto();
+            BigDecimal taxa = taxaCancelamento.compareTo(bruto) > 0 ? bruto : taxaCancelamento;
+            BigDecimal devolvido = bruto.subtract(taxa);
+
+            pagamento.setStatus(StatusPagamento.ESTORNADO_PARCIAL);
+            pagamento.setValorEstornado(devolvido);
+            pagamento.setValorTaxaCancelamento(taxa);
+            pagamento.setAtualizadoEm(LocalDateTime.now());
+            pagamentoRepository.save(pagamento);
+
+            Prestador prestador = servico.getPrestador();
+            prestador.setSaldoDisponivel(prestador.getSaldoDisponivel().add(taxa));
+            prestadorRepository.save(prestador);
         });
     }
 
@@ -120,6 +165,43 @@ public class PagamentoService {
      */
     public StatusPagamento obterStatus(FatoServico servico) {
         return buscarPorServicoOpcional(servico).map(Pagamento::getStatus).orElse(null);
+    }
+
+    /**
+     * Extrato de pagamentos de um cliente, do mais recente para o mais antigo.
+     *
+     * <p>Devolve os valores <b>persistidos</b> em cada pagamento — inclusive a taxa de
+     * serviço — e nunca os recalcula. A taxa vem de {@code parametro_negocio}, ajustável
+     * por administrador sem deploy (RN01), então recalcular exibiria a taxa vigente hoje
+     * num pagamento feito quando ela era outra.
+     *
+     * @param clienteId identificador do cliente autenticado
+     * @return lançamentos do cliente, lista vazia quando ele nunca pagou nada
+     */
+    public List<PagamentoExtratoResponse> listarExtratoDoCliente(Long clienteId) {
+        return pagamentoRepository.listarPorCliente(clienteId).stream()
+                .map(this::paraExtrato)
+                .toList();
+    }
+
+    private PagamentoExtratoResponse paraExtrato(Pagamento pagamento) {
+        FatoServico servico = pagamento.getFatoServico();
+        String categoria = servico.getServicoOfertado() != null
+                ? servico.getServicoOfertado().getCategoria()
+                : null;
+        String prestadorNome = servico.getPrestador() != null ? servico.getPrestador().getNome() : null;
+
+        return new PagamentoExtratoResponse(
+                servico.getId_servico(),
+                categoria,
+                prestadorNome,
+                pagamento.getValorBruto(),
+                pagamento.getValorTaxa(),
+                pagamento.getStatus(),
+                pagamento.getMetodoPagamento(),
+                pagamento.getCriadoEm(),
+                pagamento.getValorEstornado(),
+                pagamento.getValorTaxaCancelamento());
     }
 
     private Pagamento buscarPorServico(FatoServico servico) {
